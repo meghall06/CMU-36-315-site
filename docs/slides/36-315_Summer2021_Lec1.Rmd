@@ -86,7 +86,7 @@ Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon Un
 
 ---
 layout: true
-<div class="my-footer"><span>tinyurl.com/rladies-van</span></div>
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
 ---
 
 # Teaching Team
@@ -384,6 +384,33 @@ data %>%
 <br>
 <br>
 .large[Explain]
+
+---
+
+# At the end of the class
+
+<br>
+<br>
+.large[You can...]
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.medium[Ask relevant questions from data]
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.medium[Know which types of visualizations are appropriate for your data]
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.medium[Know which types of visualizations are appropriate for your *audience*]
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.medium[Create plots that are]
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Effective in their properties
+<br>
+<br>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elegant & aesthetically-pleasing
+
 
 ---
 
