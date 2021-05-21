@@ -1,12 +1,12 @@
 ---
 title: "36-315: Statistical Graphics & Visualization"
-author:
-- name: Meghan Hall
-  url: https://meghan.rbind.io
-  affiliation: Carnegie Mellon University
+# author:
+# - name: Meghan Hall
+#   url: https://meghan.rbind.io
+#   affiliation: Carnegie Mellon University
 #date: "`r Sys.Date()`"
 description: |
-  A companion website for the summer 2021 version of CMU course 36-315: Statistical Graphics & Visualization, taught by [Meghan Hall](https://meghan.rbind.io/).
+  A companion website for the summer 2021 version of Carnegie Mellon University course 36-315: Statistical Graphics & Visualization, taught by Meghan Hall.
 site: distill::distill_website
 ---
 
