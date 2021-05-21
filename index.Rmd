@@ -6,7 +6,7 @@ author:
   affiliation: Carnegie Mellon University
 #date: "`r Sys.Date()`"
 description: |
-  A companion website for the summer 2021 version of CMU course 36-315: Statistical Graphics & Visualization, taught by Meghan Hall.
+  A companion website for the summer 2021 version of CMU course 36-315: Statistical Graphics & Visualization, taught by [Meghan Hall](https://meghan.rbind.io/).
 site: distill::distill_website
 ---
 

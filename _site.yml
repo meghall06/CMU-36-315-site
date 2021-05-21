@@ -13,6 +13,8 @@ navbar:
       href: https://github.com/meghall06/CMU-36-315-site
     - icon: fab fa-twitter
       href: https://twitter.com/MeghanMHall
+    - icon: fas fa-user
+      href: https://meghan.rbind.io/
 output: 
   distill::distill_article:
     toc: true
