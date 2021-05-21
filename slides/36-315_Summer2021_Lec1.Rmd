@@ -86,7 +86,7 @@ Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon Un
 
 ---
 layout: true
-<div class="my-footer"><span>tinyurl.com/rladies-van</span></div>
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
 ---
 
 # Teaching Team
