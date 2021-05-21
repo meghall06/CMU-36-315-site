@@ -10,7 +10,7 @@ include: ["slides/"]
 navbar:
   right:
     - icon: fab fa-github
-      href: https://github.com/meghall06
+      href: https://github.com/meghall06/CMU-36-315-site
     - icon: fab fa-twitter
       href: https://twitter.com/MeghanMHall
 output: 
