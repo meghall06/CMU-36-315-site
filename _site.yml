@@ -1,0 +1,19 @@
+name: "CMU-36-315-site"
+title: "CMU 36-315"
+favicon: icon.png
+description: |
+  CMU 36-315
+output_dir: "docs"
+include: ["slides/"]
+#creative_commons: CC BY-SA
+#repository_url: https://github.com/meghall06
+navbar:
+  right:
+    - icon: fab fa-github
+      href: https://github.com/meghall06
+    - icon: fab fa-twitter
+      href: https://twitter.com/MeghanMHall
+output: 
+  distill::distill_article:
+    toc: true
+    css: styles.css

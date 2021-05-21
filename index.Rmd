@@ -1,0 +1,72 @@
+---
+title: "36-315: Statistical Graphics & Visualization"
+author:
+- name: Meghan Hall
+  url: https://meghan.rbind.io
+  affiliation: Carnegie Mellon University
+#date: "`r Sys.Date()`"
+description: |
+  A companion website for the summer 2021 version of CMU course 36-315: Statistical Graphics & Visualization, taught by Meghan Hall.
+site: distill::distill_website
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## Course Objectives
+
+This course introduces the most common forms of graphical displays along with their uses and misuses. Students will learn how to create these displays, how to understand them, and how to distinguish when and where particular graphics are appropriate. This course uses R, RStudio, `ggplot2` and its extensions, and R Markdown.
+
+Specific objectives:
+
+1. Create statistical graphics.
+2. Understand the fundamentals of data and reproducible data analysis.
+3. Write about statistical graphics.
+4. Speak about statistical graphics and data analyses.
+5. Assess and critique statistical graphics.
+
+## Lectures
+
+Lecture slides are available below in html format, and the .Rmd files are available at the GitHub repo linked above.
+
++ [Lecture 1](slides/36-315_Summer2021_Lec1.html)
+
+## Resources
+
+### Data Visualization
+
++ Fundamentals of Data Visualization: <https://clauswilke.com/dataviz/index.html>
+
++ Data Visualization: A Practical Introduction: <https://socviz.co/index.html#preface>
+
+### The tidyverse
+
++ Best resource for overall analysis in R using the tidyverse: <https://r4ds.had.co.nz/>
+
+### `ggplot2`
+
++ `ggplot2` book: <https://ggplot2-book.org/>
+
++ The `ggplot2` cheatsheet: <https://www.maths.usyd.edu.au/u/UG/SM/STAT3022/r/current/Misc/data-visualization-2.1.pdf>
+
++ Details of various charts made in R: <https://www.r-graph-gallery.com/index.html>
+
++ Creating custom themes: <https://themockup.blog/posts/2020-12-26-creating-and-using-custom-ggplot2-themes/>
+
++ R Graphics cookbook: <https://r-graphics.org/>
+
++ A guide to various scales: <https://ggplot2tor.com/scales>
+
+### R Markdown
+
++ The definitive guide to R Markdown: <https://bookdown.org/yihui/rmarkdown/>
+
+
+
+
+
+
+## Acknowledgments {.appendix}
+
+This website is made with the [distill package](https://rstudio.github.io/distill/). Many thanks to [Alison Hill]((https://alison.rbind.io/)) and [Desirée De Leon](https://desiree.rbind.io/) and their [Teaching in Production](https://rstudio-education.github.io/teaching-in-production/) website, which provided the inspiration for this site. Also thanks to Tom Mock for his enormously helpful [introduction to distill](https://themockup.blog/posts/2020-08-01-building-a-blog-with-distill/).

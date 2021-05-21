@@ -1,0 +1,66 @@
+@import url('https://fonts.googleapis.com/css2?family=Source+Serif+Pro&display=swap');
+
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap');
+
+body {
+  font-family: "Source Serif Pro";
+  /*color: #1f1f1f;*/
+  color: #405359;
+  font-size: 16px;
+}
+
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Open Sans";
+  letter-spacing: 2px;
+  line-height: 2rem;
+  color: #bb0000;
+  font-weight: 300;
+}
+
+d-appendix {
+  color: #ffffff;
+  background-color: #bb0000;
+  border-top: none !important;
+}
+
+.distill-site-header{ 
+  padding: 10px 0px;
+  background-color: #bb0000;;
+  color: #ffffff;
+  font-size: 15px;
+  font-family: "Open Sans";
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+d-byline {
+    padding: 0 0;
+}
+
+d-article ul {
+  list-style: none; /* Remove default bullets */
+}
+
+d-article ul li::before {
+  content: "\2022";  /* Add content: \2022 is the CSS Code/unicode for a bullet */
+  color: #bb0000; /* Change the color */
+  font-weight: bold; /* If you want it to be bold */
+  display: inline-block; /* Needed to add space between the bullet and the text */
+  width: 1em; /* Also needed for space (tweak if needed) */
+  margin-left: -1em; /* Also needed for space (tweak if needed) */
+}
+
+d-article ul > li > p {
+  display: inline; /* to have content show up next to bullet */
+  line-height: 1.6em;
+}
+
+d-article ul > li { /*to add back in space between bullet items that I took away by making p display inline */
+  margin-top: 1em;
+  margin-bottom: 1em;
+}
+
+.d-contents ul li::before {
+  content: " ";  /* Remove toc bullets */
+}
