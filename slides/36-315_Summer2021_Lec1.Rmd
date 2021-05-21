@@ -89,7 +89,7 @@ layout: true
 <div class="my-footer"><span>cmu-36315.netlify.app</span></div>
 ---
 
-# Teaching Team
+# Teaching team
 
 .large[Instructor: Meghan Hall]
 
@@ -106,7 +106,7 @@ Office hours TBD
 
 ---
 
-# Course Objectives
+# Course objectives
 
 1. Create statistical graphics.
 <br>
@@ -136,7 +136,7 @@ Office hours TBD
 
 ---
 
-# Course Tools
+# Course tools
 
 <br>
 <br>
@@ -160,7 +160,7 @@ Office hours TBD
 
 ---
 
-# Course Components
+# Course components
 
 <br>
 <br>
@@ -170,7 +170,7 @@ Office hours TBD
 
 ---
 
-# Course Components
+# Course components
 
 <br>
 <br>
@@ -191,7 +191,7 @@ Code style
 
 ---
 
-# Code Style
+# Code style
 
 <br>
 <br>
@@ -263,7 +263,7 @@ course_components %>%
 
 ---
 
-# Various Logistics 
+# Various logistics 
 
 <br>
 <br>
@@ -387,7 +387,7 @@ data %>%
 
 ---
 
-# At the end of the class
+# By the end of the class
 
 <br>
 <br>
@@ -406,15 +406,15 @@ data %>%
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.medium[Create plots that are]
 <br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Effective in their properties
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Effective in their properties
 <br>
 <br>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elegant & aesthetically-pleasing
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Elegant & aesthetically-pleasing
 
 
 ---
 
-# The Golden Rules of Graphs
+# Some golden rules of graphs
 
 <br>
 <br>
@@ -431,7 +431,7 @@ Don’t distort data, intentionally or not.
 
 --
 
-The graph should (mostly) stand alone.
+Be mindful of the data-to-ink ratio.
 
 --
 
@@ -447,7 +447,7 @@ Titles, subtitles, and captions should add information.
 
 ---
 
-# Coming Up
+# Upcoming
 
 <br>
 
