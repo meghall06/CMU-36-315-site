@@ -69,4 +69,4 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 
 ## Acknowledgments {.appendix}
 
-This website is made with the [distill package](https://rstudio.github.io/distill/). Many thanks to [Alison Hill]((https://alison.rbind.io/)) and [Desirée De Leon](https://desiree.rbind.io/) and their [Teaching in Production](https://rstudio-education.github.io/teaching-in-production/) website, which provided the inspiration for this site. Also thanks to Tom Mock for his enormously helpful [introduction to distill](https://themockup.blog/posts/2020-08-01-building-a-blog-with-distill/).
+This website is made with the [distill package](https://rstudio.github.io/distill/). Many thanks to [Alison Hill](https://alison.rbind.io/) and [Desirée De Leon](https://desiree.rbind.io/) and their [Teaching in Production](https://rstudio-education.github.io/teaching-in-production/) website, which provided the inspiration for this site. Also thanks to Tom Mock for his enormously helpful [introduction to distill](https://themockup.blog/posts/2020-08-01-building-a-blog-with-distill/).
