@@ -24,6 +24,10 @@ div.my-footer span {
   font-family: Source Serif Pro;
 }
 
+.huge { 
+  font-size: 50px;
+}
+
 .large { 
   font-size: 32px;
 }

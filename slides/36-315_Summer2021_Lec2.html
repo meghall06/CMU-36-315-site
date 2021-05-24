@@ -1,0 +1,1134 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec2</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 2
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; May 24, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Syllabus overview]
+&lt;br&gt;
+.medium[Email me with any questions]
+
+&lt;br&gt;
+
+.large[Why do we visualize data?]
+&lt;br&gt;
+.medium[Explore, diagnose, explain]
+
+---
+
+# Updates
+
+&lt;br&gt;
+
+.large[Alternate lab]
+&lt;br&gt;
+.medium[8:00pm-9:20pm EDT, Tuesday/Thursday]
+
+&lt;br&gt;
+
+.large[Office hours]
+&lt;br&gt;
+.medium[Listed on Canvas, start Friday!]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[The grammar of graphics]
+&lt;br&gt;
+.medium[How graphics are constructed in R]
+
+&lt;br&gt;
+
+.large[Tidyverse principles]
+&lt;br&gt;
+.medium[For any necessary data manipulation]
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.large[What exactly is the **g**rammar of **g**raphics?]
+&lt;br&gt;
+&lt;br&gt;
+.medium["the whole system and structure of a language"]
+
+---
+
+# ggplot
+
+&lt;br&gt;
+
+.large[A graphic...]
+&lt;br&gt;
+&lt;br&gt;
+.medium[maps the **data** +]
+&lt;br&gt;
+&lt;br&gt;
+.medium[to the **aesthetic attributes** +]
+&lt;br&gt;
+&lt;br&gt;
+.medium[of **geometric points** +]
+&lt;br&gt;
+&lt;br&gt;
+--
+.medium[*with possible **statistical transformations** +*]
+&lt;br&gt;
+&lt;br&gt;
+.medium[*different **coordinate systems** +*]
+&lt;br&gt;
+&lt;br&gt;
+.medium[*and **faceting** *]
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.huge.center[Data **+** Mapping]
+
+---
+
+# How do we "map" data?
+
+&lt;br&gt;
+
+.medium[Encoding data into visual cues dictates how we signify *changes* and *comparisons*]
+&lt;br&gt;
+&lt;br&gt;
+.medium[A non-exhaustive list:]
+
+* length
+* color (or saturation)
+* position
+* size
+* shape
+* area
+* volume
+* angle
+
+---
+
+class: center
+
+# .left[Today's data]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.pull-left[
+
+&lt;img src="figs/Lec2/penguinshex.png" width="60%"/&gt;
+
+]
+
+.pull-right[
+
+&lt;img src="figs/Lec2/penguins.png" width="100%"/&gt;
+
+]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.right[*Artwork by @allison_horst*]
+
+---
+
+# How are we encoding this?
+
+&lt;img src="figs/Lec2/color-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# How are we encoding this?
+
+&lt;img src="figs/Lec2/length-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# How are we encoding this?
+
+&lt;img src="figs/Lec2/length-color-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+--
+
+.right.large[🤔]
+
+---
+
+# How are we encoding this?
+
+&lt;img src="figs/Lec2/size-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+--
+
+.right.large[🤔]
+
+---
+
+# How are we encoding this?
+
+&lt;img src="figs/Lec2/pie-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+--
+
+.right.large[🤔]
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.huge.center[Data **+** Mapping]
+
+--
+
+1. **layer**
+&lt;br&gt;
+&lt;br&gt;
+2. scale
+&lt;br&gt;
+&lt;br&gt;
+3. coord
+&lt;br&gt;
+&lt;br&gt;
+4. facet
+&lt;br&gt;
+&lt;br&gt;
+5. theme
+
+---
+
+# Mapping components: layer
+
+&lt;br&gt;
+
+.large[**geom**]
+&lt;br&gt;
+.medium[Geometric elements (bars, lines, points, etc.)]
+
+--
+
+&lt;br&gt;
+
+.large[**stat**]
+&lt;br&gt;
+.medium[Statistical transformations (summarizing data)]
+
+---
+
+# Mapping components: layer
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = species))
+```
+
+--
+
+&lt;img src="figs/Lec2/layer-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: layer
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = species)) +
+  geom_bar()
+```
+
+--
+
+&lt;img src="figs/Lec2/layer-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: layer
+
+
+```r
+penguins %&gt;% 
+* group_by(species) %&gt;%
+* summarize(mass_mean = mean(body_mass_g, na.rm = TRUE)) %&gt;%
+  ggplot(aes(x = species, y = mass_mean)) +
+  # what happens if you don't include the stat argument?
+  geom_bar(stat = "identity")
+```
+
+--
+
+&lt;img src="figs/Lec2/layer-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: layer
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point()
+```
+
+--
+
+&lt;img src="figs/Lec2/layer-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: layer
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = sex, y = body_mass_g)) +
+  geom_boxplot()
+```
+
+--
+
+&lt;img src="figs/Lec2/layer-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: layer
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g)) +
+  geom_histogram()
+```
+
+--
+
+&lt;img src="figs/Lec2/layer-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.huge.center[Data **+** Mapping]
+
+
+1. layer
+&lt;br&gt;
+&lt;br&gt;
+2. **scale**
+&lt;br&gt;
+&lt;br&gt;
+3. coord
+&lt;br&gt;
+&lt;br&gt;
+4. facet
+&lt;br&gt;
+&lt;br&gt;
+5. theme
+
+---
+
+# Mapping components: scale
+
+&lt;br&gt;
+
+.large[data ➡️ aesthetics]
+&lt;br&gt;
+.medium[shape, color, size, etc.]
+
+--
+
+&lt;br&gt;
+
+.large[how you interpret the plot]
+&lt;br&gt;
+.medium[scales and legends]
+
+---
+
+# Mapping components: scale
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point()
+```
+
+
+
+&lt;img src="figs/Lec2/scale-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: scale
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(color = "blue", size = 2)
+```
+
+--
+
+&lt;img src="figs/Lec2/scale-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: scale
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species), size = 2)
+```
+
+--
+
+&lt;img src="figs/Lec2/scale-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: scale
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species), size = 2) +
+  scale_color_manual(values = c("#aa6600","#666666","#224477"))
+```
+
+--
+
+&lt;img src="figs/Lec2/scale-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: scale
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species), size = 2) +
+  scale_color_manual(values = c("#aa6600","#666666","#224477")) +
+  scale_x_continuous(name = "Bill Length (mm)", 
+                     breaks = seq(30, 60, by = 5), limits = c(30, 60))
+```
+
+--
+
+&lt;img src="figs/Lec2/scale-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.huge.center[Data **+** Mapping]
+
+
+1. layer
+&lt;br&gt;
+&lt;br&gt;
+2. scale
+&lt;br&gt;
+&lt;br&gt;
+3. **coord**
+&lt;br&gt;
+&lt;br&gt;
+4. facet
+&lt;br&gt;
+&lt;br&gt;
+5. theme
+
+---
+
+# Mapping components: coord
+
+&lt;br&gt;
+
+.large[x and y]
+&lt;br&gt;
+.medium[or latitude and longitude, or radius and angle]
+
+--
+
+&lt;br&gt;
+
+.large[we'll discuss more about maps later!]
+
+---
+
+# Mapping components: coord
+
+
+```r
+penguins %&gt;% 
+  group_by(species) %&gt;%
+  summarize(mass_mean = mean(body_mass_g, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(x = species, y = mass_mean)) +
+  geom_bar(stat = "identity")
+```
+
+
+
+&lt;img src="figs/Lec2/coord-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: coord
+
+
+```r
+penguins %&gt;% 
+  group_by(species) %&gt;%
+  summarize(mass_mean = mean(body_mass_g, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(x = species, y = mass_mean)) +
+  geom_bar(stat = "identity") +
+* coord_flip()
+```
+
+--
+
+&lt;img src="figs/Lec2/coord-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: coord
+
+
+```r
+penguins %&gt;% 
+  count(sex) %&gt;% 
+  ggplot(aes(x = "", y = n, fill = sex)) +
+  geom_bar(stat = "identity", width = 1, color = "white") +
+* coord_polar("y", start = 0) +
+  theme_void()
+```
+
+--
+
+&lt;img src="figs/Lec2/coord-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+--
+
+.right.large[🤔]
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.huge.center[Data **+** Mapping]
+
+
+1. layer
+&lt;br&gt;
+&lt;br&gt;
+2. scale
+&lt;br&gt;
+&lt;br&gt;
+3. coord
+&lt;br&gt;
+&lt;br&gt;
+4. **facet**
+&lt;br&gt;
+&lt;br&gt;
+5. theme
+
+---
+
+# Mapping components: facet
+
+&lt;br&gt;
+
+.large[create small multiples]
+&lt;br&gt;
+.medium[useful for the *explore* part of data viz]
+
+---
+
+# Mapping components: facet
+
+
+```r
+penguins %&gt;% 
+  filter(!is.na(sex)) %&gt;% 
+  ggplot(aes(x = sex, y = body_mass_g)) +
+  geom_point(position = "jitter")
+```
+
+
+
+&lt;img src="figs/Lec2/facet-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: facet
+
+
+```r
+penguins %&gt;% 
+  filter(!is.na(sex)) %&gt;% 
+  ggplot(aes(x = sex, y = body_mass_g)) +
+  geom_point(position = "jitter") +
+* facet_wrap(~species)
+```
+
+--
+
+&lt;img src="figs/Lec2/facet-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ggplot
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+.huge.center[Data **+** Mapping]
+
+
+1. layer
+&lt;br&gt;
+&lt;br&gt;
+2. scale
+&lt;br&gt;
+&lt;br&gt;
+3. coord
+&lt;br&gt;
+&lt;br&gt;
+4. facet
+&lt;br&gt;
+&lt;br&gt;
+5. **theme**
+
+---
+
+# Mapping components: theme
+
+&lt;br&gt;
+
+.large[adjust individual pieces of the plot]
+&lt;br&gt;
+.medium[font size, gridlines, legend position, etc.]
+
+--
+
+&lt;br&gt;
+
+.large[or go full out with a custom theme!]
+
+---
+
+# Mapping components: theme
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species), size = 2) +
+  scale_color_manual(values = c("#aa6600","#666666","#224477"))
+```
+
+
+
+&lt;img src="figs/Lec2/theme-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: theme
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm)) +
+  geom_point(aes(color = species), size = 2) +
+  scale_color_manual(values = c("#aa6600","#666666","#224477")) +
+  theme(legend.position = "top", legend.title = element_blank())
+```
+
+--
+
+&lt;img src="figs/Lec2/theme-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: theme
+
+
+```r
+penguins %&gt;% 
+  filter(!is.na(sex)) %&gt;% 
+  ggplot(aes(x = sex, y = body_mass_g)) +
+  geom_point(position = "jitter") +
+  facet_wrap(~species)
+```
+
+
+
+&lt;img src="figs/Lec2/theme-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Mapping components: theme
+
+
+```r
+penguins %&gt;% 
+  filter(!is.na(sex)) %&gt;% 
+  ggplot(aes(x = sex, y = body_mass_g)) +
+  geom_point(position = "jitter") +
+  facet_wrap(~species) +
+  theme(panel.grid.major.x = element_blank())
+```
+
+--
+
+&lt;img src="figs/Lec2/theme-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ggplot in review
+
+&lt;br&gt;
+
+.large[A graphic...]
+&lt;br&gt;
+&lt;br&gt;
+.medium[maps the **data** +]
+&lt;br&gt;
+&lt;br&gt;
+.medium[to the **aesthetic attributes** +]
+&lt;br&gt;
+&lt;br&gt;
+.medium[of **geometric points** +]
+&lt;br&gt;
+&lt;br&gt;
+.medium[*with possible **statistical transformations** +*]
+&lt;br&gt;
+&lt;br&gt;
+.medium[*different **coordinate systems** +*]
+&lt;br&gt;
+&lt;br&gt;
+.medium[*and **faceting** *]
+
+---
+
+# What's the tidyverse?
+
+.center[![tidyverse packages](figs/Lec2/tidyverse.png)]
+
+---
+
+# What's the tidyverse?
+
+&lt;br&gt;
+
+.large[An "opinionated" set of packages]
+&lt;br&gt;
+.medium[Similar philosophies, grammar, data structures]
+
+&lt;br&gt;
+
+.large[`dplyr`, `stringr`, `tidyr`, `readr`, `forcats`]
+&lt;br&gt;
+.medium[Useful for basic data manipulation]
+
+&lt;br&gt;
+
+.large[Best resource: [r4ds.had.co.nz/](https://r4ds.had.co.nz/)]
+
+---
+
+# Useful functions from `dplyr`
+
+
+```r
+penguins %&gt;% 
+  count(species)
+```
+
+```
+## # A tibble: 3 x 2
+##   species       n
+##   &lt;fct&gt;     &lt;int&gt;
+## 1 Adelie      152
+## 2 Chinstrap    68
+## 3 Gentoo      124
+```
+
+--
+
+
+```r
+penguins %&gt;% 
+  filter(species == "Gentoo") %&gt;% 
+  count(species)
+```
+
+```
+## # A tibble: 1 x 2
+##   species     n
+##   &lt;fct&gt;   &lt;int&gt;
+## 1 Gentoo    124
+```
+
+---
+
+# Useful functions from `dplyr`
+
+
+```r
+penguins %&gt;% 
+  filter(species %in% c("Gentoo","Chinstrap")) %&gt;% 
+  count(species)
+```
+
+
+```r
+penguins %&gt;% 
+  filter(species == "Gentoo" | species == "Chinstrap") %&gt;% 
+  count(species)
+```
+
+
+```r
+penguins %&gt;% 
+  filter(species != "Adelie") %&gt;% 
+  count(species)
+```
+
+```
+## # A tibble: 2 x 2
+##   species       n
+##   &lt;fct&gt;     &lt;int&gt;
+## 1 Chinstrap    68
+## 2 Gentoo      124
+```
+
+---
+
+# Useful functions from `dplyr`
+
+
+```r
+penguins %&gt;% 
+  count(sex)
+```
+
+```
+## # A tibble: 3 x 2
+##   sex        n
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 female   165
+## 2 male     168
+## 3 &lt;NA&gt;      11
+```
+
+
+```r
+penguins %&gt;% 
+  filter(!is.na(sex)) %&gt;% 
+  count(sex)
+```
+
+```
+## # A tibble: 2 x 2
+##   sex        n
+##   &lt;fct&gt;  &lt;int&gt;
+## 1 female   165
+## 2 male     168
+```
+
+---
+
+# Useful functions from `dplyr`
+
+
+```r
+penguins %&gt;% 
+  group_by(species) %&gt;% 
+  summarize(mass_mean = mean(body_mass_g))
+```
+
+```
+## # A tibble: 3 x 2
+##   species   mass_mean
+##   &lt;fct&gt;         &lt;dbl&gt;
+## 1 Adelie          NA 
+## 2 Chinstrap     3733.
+## 3 Gentoo          NA
+```
+
+--
+
+
+```r
+penguins %&gt;% 
+  filter(is.na(body_mass_g))
+```
+
+```
+## # A tibble: 2 x 8
+##   species island bill_length_mm bill_depth_mm flipper_length_… body_mass_g sex  
+##   &lt;fct&gt;   &lt;fct&gt;           &lt;dbl&gt;         &lt;dbl&gt;            &lt;int&gt;       &lt;int&gt; &lt;fct&gt;
+## 1 Adelie  Torge…             NA            NA               NA          NA &lt;NA&gt; 
+## 2 Gentoo  Biscoe             NA            NA               NA          NA &lt;NA&gt; 
+## # … with 1 more variable: year &lt;int&gt;
+```
+
+---
+
+# Useful functions from `dplyr`
+
+
+```r
+penguins %&gt;% 
+  group_by(species) %&gt;% 
+  summarize(mass_mean = mean(body_mass_g, na.rm = TRUE))
+```
+
+```
+## # A tibble: 3 x 2
+##   species   mass_mean
+##   &lt;fct&gt;         &lt;dbl&gt;
+## 1 Adelie        3701.
+## 2 Chinstrap     3733.
+## 3 Gentoo        5076.
+```
+
+---
+
+# Useful functions from `dplyr`
+
+&lt;br&gt;
+.medium[`select()` is like `filter()` but for variables instead of observations]
+&lt;br&gt;
+&lt;br&gt;
+.medium[`arrange()` sorts data]
+&lt;br&gt;
+&lt;br&gt;
+.medium[`mutate()` creates new variables (`ifelse` and `case_when` are often useful)]
+&lt;br&gt;
+&lt;br&gt;
+.medium[`rename()` does exactly what you think]
+&lt;br&gt;
+&lt;br&gt;
+.medium[`left_join()` (and other joins) combines data frames based on common keys]
+
+---
+
+# Useful functions from `stringr` and `tidyr`
+
+&lt;br&gt;
+.medium[`str_detect()` detects whether or not a pattern is present in a string]
+&lt;br&gt;
+&lt;br&gt;
+.medium[`str_replace()` replaces a pattern in a string with something else]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.medium[`pivot_longer()` "lengthens" data, increasing the number of rows &amp; decreasing the number of columns]
+&lt;br&gt;
+&lt;br&gt;
+.medium[`pivot_wider()` does the opposite]
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lab 1 on Tuesday May 25]
+&lt;br&gt;
+.medium[Assignments due 11:30am EDT Wednesday]
+
+&lt;br&gt;
+
+.large[Lecture 3 on Wednesday May 26]
+&lt;br&gt;
+.medium[Data types and bar charts]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
