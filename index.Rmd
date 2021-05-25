@@ -28,10 +28,16 @@ Specific objectives:
 
 ## Lectures
 
-Lecture slides are available below in html format, and the .Rmd files are available at the GitHub repo linked above.
+Lecture slides are available below in html format, and the .Rmd files are available at the GitHub repo linked in the nav bar above.
 
 + [Lecture 1](slides/36-315_Summer2021_Lec1.html): intro and why data viz
 + [Lecture 2](slides/36-315_Summer2021_Lec2.html): the grammar of graphics
+
+## Labs
+
+Lab slides are available below in html format, and the .Rmd files are available at the GitHub repo linked in the nav bar above.
+
++ [Lab 1](slides/36-315_Summer2021_Lab1_lec.html)
 
 ## Resources
 
@@ -62,6 +68,10 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 ### R Markdown
 
 + The definitive guide to R Markdown: <https://bookdown.org/yihui/rmarkdown/>
+
++ R Markdown reference guide: <https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf>
+
++ R Markdown cheat sheet: <https://www.rstudio.com/wp-content/uploads/2015/02/rmarkdown-cheatsheet.pdf>
 
 
 
