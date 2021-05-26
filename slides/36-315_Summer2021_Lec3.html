@@ -1,0 +1,1798 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec3</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 3
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; May 26, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[The grammar of graphics]
+&lt;br&gt;
+.medium[How graphics are constructed in R]
+
+&lt;br&gt;
+
+.large[Tidyverse principles]
+&lt;br&gt;
+.medium[For any necessary data manipulation]
+
+---
+
+# Updates
+
+&lt;br&gt;
+
+.large[Lab 1]
+&lt;br&gt;
+.medium[Solution has been posted]
+&lt;br&gt;
+.medium[Piazza reminder]
+
+&lt;br&gt;
+
+.large[Homework 1]
+&lt;br&gt;
+.medium[Due Tuesday June 1, posted soon]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Bar graphs]
+&lt;br&gt;
+.medium[Of all shapes &amp; sizes]
+
+&lt;br&gt;
+
+.large[Tidyverse principles]
+&lt;br&gt;
+.medium[For any necessary data manipulation]
+
+---
+
+# Tidyverse review: the pipe
+
+&lt;br&gt;
+&lt;br&gt;
+.huge.center[`%&gt;%`]
+&lt;br&gt;
+&lt;br&gt;
+.medium[Allows you to "chain" multiple operations together]
+&lt;br&gt;
+&lt;br&gt;
+.medium[Helps avoid intermediate steps]
+&lt;br&gt;
+&lt;br&gt;
+.medium[Easier to read!]
+&lt;br&gt;
+&lt;br&gt;
+.medium[Remember the `ggplot` equivalent is `+`]
+
+---
+
+# Tidyverse review: the pipe
+
+
+```r
+penguins1 &lt;- mutate(penguins, big_penguin = 
+                      ifelse(body_mass_g &gt;= 5000, "yes", "no"))
+
+penguins2 &lt;- filter(penguins1, !is.na(body_mass_g))
+```
+
+--
+
+
+```r
+penguins &lt;- mutate(penguins, big_penguin = 
+                     ifelse(body_mass_g &gt;= 5000, "yes", "no"))
+
+penguins &lt;- filter(penguins, !is.na(body_mass_g))
+```
+
+--
+
+
+```r
+big_penguins &lt;- penguins %&gt;% 
+  mutate(penguins, big_penguin = 
+           ifelse(body_mass_g &gt;= 5000, "yes", "no")) %&gt;% 
+  filter(!is.na(body_mass_g))
+```
+
+---
+
+# Tidyverse review: pivoting
+
+.medium[Let's look at some sample data]
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2007 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2008 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2009 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2005 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2983 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3124 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3076 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2965 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3231 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3687 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3642 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3810 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+.medium[Components of "tidy" data:]
+1. Each variable must have its own column
+2. Each observation must have its own row
+3. Each value must have its own cell
+
+---
+
+# Tidyverse review: pivoting
+
+
+```r
+penguins_pivoted &lt;- penguins_example %&gt;% 
+  pivot_longer(`2007`:`2009`, 
+               names_to = "year", values_to = "body_mass")
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; id &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; body_mass &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2005 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2983 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3124 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3076 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2965 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3231 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2007 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3687 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3642 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3810 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Tidyverse review: pivoting
+
+&lt;br&gt;
+
+.left[![pivot](figs/Lec3/pivot.png)]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.right[From [R for Data Science](https://r4ds.had.co.nz/)]
+
+---
+
+# Today's data
+
+.center[![GOT](figs/Lec3/GOT.png)]
+
+---
+
+# Today's data
+
+
+```r
+got %&gt;% 
+  glimpse()
+```
+
+```
+## Rows: 38
+## Columns: 25
+## $ name               &lt;chr&gt; "Battle of the Golden Tooth", "Battle at the Mummer…
+## $ year               &lt;dbl&gt; 298, 298, 298, 298, 298, 298, 298, 299, 299, 299, 2…
+## $ battle_number      &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, …
+## $ attacker_king      &lt;chr&gt; "Joffrey/Tommen Baratheon", "Joffrey/Tommen Barathe…
+## $ defender_king      &lt;chr&gt; "Robb Stark", "Robb Stark", "Robb Stark", "Joffrey/…
+## $ attacker_1         &lt;chr&gt; "Lannister", "Lannister", "Lannister", "Stark", "St…
+## $ attacker_2         &lt;chr&gt; NA, NA, NA, NA, "Tully", "Tully", NA, NA, NA, NA, N…
+## $ attacker_3         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ attacker_4         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ defender_1         &lt;chr&gt; "Tully", "Baratheon", "Tully", "Lannister", "Lannis…
+## $ defender_2         &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ defender_3         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ defender_4         &lt;lgl&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA, NA,…
+## $ attacker_outcome   &lt;chr&gt; "win", "win", "win", "loss", "win", "win", "win", "…
+## $ battle_type        &lt;chr&gt; "pitched battle", "ambush", "pitched battle", "pitc…
+## $ major_death        &lt;dbl&gt; 1, 1, 0, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, …
+## $ major_capture      &lt;dbl&gt; 0, 0, 1, 1, 1, 0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, …
+## $ attacker_size      &lt;dbl&gt; 15000, NA, 15000, 18000, 1875, 6000, NA, NA, 1000, …
+## $ defender_size      &lt;dbl&gt; 4000, 120, 10000, 20000, 6000, 12625, NA, NA, NA, N…
+## $ attacker_commander &lt;chr&gt; "Jaime Lannister", "Gregor Clegane", "Jaime Lannist…
+## $ defender_commander &lt;chr&gt; "Clement Piper, Vance", "Beric Dondarrion", "Edmure…
+## $ summer             &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, …
+## $ location           &lt;chr&gt; "Golden Tooth", "Mummer's Ford", "Riverrun", "Green…
+## $ region             &lt;chr&gt; "The Westerlands", "The Riverlands", "The Riverland…
+## $ note               &lt;chr&gt; NA, NA, NA, NA, NA, NA, NA, NA, NA, "Greyjoy's troo…
+```
+
+---
+
+# Today's data
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_king &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; region &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_size &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of the Golden Tooth &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Westerlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle at the Mummer's Ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Riverlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Riverrun &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Riverlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of the Green Fork &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Riverlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of the Whispering Wood &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Riverlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1875 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of the Camps &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Riverlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sack of Darry &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The Riverlands &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 298 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Moat Cailin &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The North &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 299 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of Deepwood Motte &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The North &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 299 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Battle of the Stony Shore &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; The North &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 299 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 264 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+
+---
+
+# Data types
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Categorical/qualitative]
+&lt;br&gt;
+.medium[Ordered vs. unordered/nominal]
+&lt;br&gt;
+.medium[`name`, `attacker_king`, `region`]
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Numeric/quantitative]
+&lt;br&gt;
+.medium[Discrete vs. continuous]
+&lt;br&gt;
+.medium[`attacker_size`, `defender_size`]
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[What about `year`?]
+
+---
+
+# The beauty of a bar chart
+
+&lt;br&gt;
+
+.large[Comparing a numeric variable and a categorical one]
+&lt;br&gt;
+.medium[Standard, grouped, stacked]
+
+&lt;br&gt;
+
+.large[Easy for eyes to perceive comparisons by length]
+&lt;br&gt;
+.medium[Assuming a fixed start point]
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[standard bar chart] &lt;br&gt;
+ordered &lt;br&gt;
+with a label &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[stacked bar chart] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+&lt;br&gt;
+
+]
+
+--
+
+.pull-right[
+
+.large[stacked bar chart] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[standard bar chart] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation
+
+]
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[**standard bar chart**] &lt;br&gt;
+*ordered* &lt;br&gt;
+*with a label* &lt;br&gt;
+**in which regions do battles happen?** &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[stacked bar chart] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+&lt;br&gt;
+
+]
+
+.pull-right[
+
+.large[stacked bar chart] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[standard bar chart] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation
+
+]
+
+---
+
+# 1. Standard bar chart
+
+
+```r
+got %&gt;% 
+  ggplot(aes(x = region)) + 
+  geom_bar()
+```
+
+&lt;img src="figs/Lec3/standard-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Standard bar chart
+
+
+```r
+got %&gt;% 
+  ggplot(aes(x = region)) + 
+  geom_bar() +
+  coord_flip()
+```
+
+&lt;img src="figs/Lec3/standard-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Standard bar chart
+
+
+```r
+got %&gt;% 
+* count(region) %&gt;%
+  ggplot(aes(x = reorder(region, n), y = n)) + 
+  geom_bar(stat = "identity") +
+  coord_flip()
+```
+
+--
+
+&lt;img src="figs/Lec3/standard-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Standard bar chart
+
+
+```r
+got %&gt;% 
+  count(region) %&gt;% 
+  ggplot(aes(x = reorder(region, n), y = n)) + 
+  geom_bar(stat = "identity") +
+  coord_flip() +
+* geom_text(aes(label = n), hjust = -0.5) +
+  scale_y_continuous(limits = c(0, 18))
+```
+
+---
+
+# 1. Standard bar chart
+
+&lt;img src="figs/Lec3/standard-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[standard bar chart] &lt;br&gt;
+ordered &lt;br&gt;
+with a label &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[**grouped bar chart**] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+**attacking kings use which battle types?** &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[stacked bar chart] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+&lt;br&gt;
+
+]
+
+.pull-right[
+
+.large[stacked bar chart] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[standard bar chart] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation
+
+]
+
+---
+
+# 2. Grouped bar chart
+
+
+```r
+got %&gt;%
+  ggplot(aes(x = attacker_king, fill = battle_type)) + 
+  geom_bar(position = "dodge")
+```
+
+--
+
+&lt;img src="figs/Lec3/grouped-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Grouped bar chart
+
+
+```r
+got %&gt;%
+* filter(!is.na(attacker_king) &amp; !is.na(battle_type)) %&gt;%
+  ggplot(aes(x = attacker_king, fill = battle_type)) + 
+  geom_bar(position = "dodge") +
+* theme(legend.position = c(0.1, 0.8))
+```
+
+--
+
+&lt;img src="figs/Lec3/grouped-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Grouped bar chart
+
+
+```r
+got %&gt;%
+* group_by(attacker_king, battle_type) %&gt;%
+* summarize(mean_size = mean(attacker_size, na.rm = TRUE)) %&gt;%
+  filter(!is.na(attacker_king) &amp; !is.na(battle_type)) %&gt;% 
+  ggplot(aes(x = attacker_king, y = mean_size, fill = battle_type)) + 
+  geom_bar(stat = "identity", position = "dodge") +
+  theme(legend.position = c(0.1, 0.8))
+```
+
+---
+
+# 2. Grouped bar chart
+
+&lt;img src="figs/Lec3/grouped-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[standard bar chart] &lt;br&gt;
+ordered &lt;br&gt;
+with a label &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[**stacked bar chart**] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+**in which regions do kings attack?** &lt;br&gt;
+**which attacking kings win?** &lt;br&gt;
+&lt;br&gt;
+
+]
+
+.pull-right[
+
+.large[stacked bar chart] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[standard bar chart] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation
+
+]
+
+---
+
+# 3. Stacked bar chart
+
+
+```r
+got %&gt;% 
+  filter(!is.na(attacker_king) &amp; !is.na(region)) %&gt;% 
+  ggplot(aes(x = attacker_king, fill = region)) + 
+  geom_bar(position = "stack")
+```
+
+--
+
+&lt;img src="figs/Lec3/stacked-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Stacked bar chart
+
+
+```r
+got %&gt;% 
+  filter(!is.na(attacker_king) &amp; !is.na(region)) %&gt;% 
+  ggplot(aes(x = attacker_king)) + 
+  geom_bar() +
+  facet_wrap(~region)
+```
+
+--
+
+&lt;img src="figs/Lec3/stacked-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Stacked bar chart
+
+
+```r
+got %&gt;% 
+  filter(!is.na(attacker_king) &amp; !is.na(region)) %&gt;% 
+  ggplot(aes(x = region)) + 
+  geom_bar() +
+  coord_flip() +
+  facet_wrap(~attacker_king)
+```
+
+--
+
+&lt;img src="figs/Lec3/stacked-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Stacked bar chart
+
+
+```r
+got %&gt;% 
+* add_count(attacker_king) %&gt;%
+  ggplot(aes(x = attacker_king, y = n, fill = attacker_outcome)) +
+  geom_bar(stat = "identity", position = "fill")
+```
+
+---
+
+# `add_count`
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_king &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 3. Stacked bar chart
+
+
+```r
+got %&gt;% 
+  add_count(attacker_king) %&gt;%
+  ggplot(aes(x = attacker_king, y = n, fill = attacker_outcome)) +
+* geom_bar(stat = "identity", position = "fill")
+```
+
+--
+
+&lt;img src="figs/Lec3/percent-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Stacked bar chart
+
+
+```r
+got %&gt;% 
+  filter(!is.na(attacker_king) &amp; !is.na(attacker_outcome)) %&gt;% 
+  add_count(attacker_king) %&gt;% 
+  ggplot(aes(x = attacker_king, y = n, fill = attacker_outcome)) +
+  geom_bar(stat = "identity", position = "fill") +
+* scale_y_continuous(name = "Percent Win", labels = scales::percent)
+```
+
+--
+
+&lt;img src="figs/Lec3/percent-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[standard bar chart] &lt;br&gt;
+ordered &lt;br&gt;
+with a label &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[stacked bar chart] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+&lt;br&gt;
+
+]
+
+.pull-right[
+
+.large[**stacked bar chart**] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+**which kings win?** &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[standard bar chart] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation
+
+]
+
+---
+
+# `pivot_longer`
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_king &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; defender_king &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_outcome &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; loss &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Balon/Euron Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `pivot_longer`
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_king, 
+         defender_king, attacker_outcome) %&gt;% 
+  pivot_longer(ends_with("king"), names_to = "type",
+               values_to = "king", values_drop_na = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_outcome &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; type &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; king &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; loss &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; loss &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `case_when`
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_king, 
+         defender_king, attacker_outcome) %&gt;% 
+  pivot_longer(ends_with("king"), names_to = "type",
+               values_to = "king", values_drop_na = TRUE) %&gt;% 
+  mutate(outcome = case_when(type == "attacker_king" ~ attacker_outcome,
+                             attacker_outcome == "win" ~ "loss",
+                             attacker_outcome == "loss" ~ "win"))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_outcome &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; type &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; king &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; outcome &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; loss &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; loss &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; attacker_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Joffrey/Tommen Baratheon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; win &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; defender_king &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; loss &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 4. Stacked bar chart
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_king, 
+         defender_king, attacker_outcome) %&gt;% 
+  filter(!is.na(attacker_outcome)) %&gt;% 
+  pivot_longer(ends_with("king"), names_to = "type",
+               values_to = "king", values_drop_na = TRUE) %&gt;% 
+  mutate(outcome = case_when(type == "attacker_king" ~ attacker_outcome,
+                             attacker_outcome == "win" ~ "loss",
+                             attacker_outcome == "loss" ~ "win")) %&gt;% 
+  add_count(king) %&gt;% 
+  ggplot(aes(x = king, y = n, fill = outcome)) +
+  geom_bar(stat = "identity", position = "fill") +
+  scale_y_continuous(name = "Percent Win", labels = scales::percent)
+```
+
+---
+
+# 4. Stacked bar chart
+
+&lt;img src="figs/Lec3/pivot-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[standard bar chart] &lt;br&gt;
+ordered &lt;br&gt;
+with a label &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[stacked bar chart] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+&lt;br&gt;
+
+]
+
+.pull-right[
+
+.large[stacked bar chart] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[**standard bar chart**] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+**which commanders initiated the most battles?** &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation
+
+]
+
+---
+
+# `separate`
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; attacker_commander &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jaime Lannister &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gregor Clegane &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jaime Lannister, Andros Brax &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Roose Bolton, Wylis Manderly, Medger Cerwyn, Harrion Karstark, Halys Hornwood &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark, Brynden Tully &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark, Tytos Blackwood, Brynden Tully &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gregor Clegane &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Victarion Greyjoy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Asha Greyjoy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Theon Greyjoy &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `separate`
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_commander) %&gt;% 
+* separate(attacker_commander, c("a","b","c","d","e","f"),
+*          sep = ", ")
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; a &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; b &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; c &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; d &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; e &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; f &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jaime Lannister &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gregor Clegane &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jaime Lannister &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Andros Brax &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Roose Bolton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Wylis Manderly &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medger Cerwyn &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Harrion Karstark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Halys Hornwood &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Brynden Tully &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Robb Stark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Tytos Blackwood &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Brynden Tully &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gregor Clegane &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Victarion Greyjoy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `pivot_longer`
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_commander) %&gt;% 
+  separate(attacker_commander, c("a","b","c","d","e","f"), 
+           sep = ", ") %&gt;% 
+* pivot_longer(a:f, values_to = "commander",
+*              names_to = NULL, values_drop_na = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; battle_number &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; commander &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jaime Lannister &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gregor Clegane &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jaime Lannister &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Andros Brax &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Roose Bolton &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Wylis Manderly &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Medger Cerwyn &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Harrion Karstark &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 5. Standard bar chart
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_commander) %&gt;% 
+  separate(attacker_commander, c("a","b","c","d","e","f"), 
+           sep = ", ") %&gt;% 
+  pivot_longer(a:f, values_to = "commander", 
+               names_to = NULL, values_drop_na = TRUE) %&gt;% 
+  count(commander) %&gt;%
+  ggplot(aes(x = commander, y = n)) +
+  geom_bar(stat = "identity")
+```
+
+---
+
+# 5. Standard bar chart
+
+&lt;img src="figs/Lec3/separate-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Standard bar chart
+
+
+```r
+got %&gt;% 
+  select(battle_number, attacker_commander) %&gt;% 
+  separate(attacker_commander, c("a","b","c","d","e","f"), 
+           sep = ", ") %&gt;% 
+  pivot_longer(a:f, values_to = "commander", 
+               names_to = NULL, values_drop_na = TRUE) %&gt;% 
+  count(commander) %&gt;%
+* filter(n &gt; 2) %&gt;%
+* ggplot(aes(x = reorder(commander, -n), y = n)) +
+  geom_bar(stat = "identity")
+```
+
+---
+
+# 5. Standard bar chart
+
+&lt;img src="figs/Lec3/separate-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# .left[Today's agenda]
+
+.pull-left[
+
+.large[standard bar chart] &lt;br&gt;
+ordered &lt;br&gt;
+with a label &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[grouped bar chart] &lt;br&gt;
+legend_position` &lt;br&gt;
+aggregate data &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[stacked bar chart] &lt;br&gt;
+percent stacked &lt;br&gt;
+add_count &lt;br&gt;
+&lt;br&gt;
+
+]
+
+.pull-right[
+
+.large[stacked bar chart] &lt;br&gt;
+pivot_longer &lt;br&gt;
+case_when &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[standard bar chart] &lt;br&gt;
+separate &lt;br&gt;
+pivot_longer &lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[**grouped bar chart**] &lt;br&gt;
+year as character &lt;br&gt;
+string manipulation &lt;br&gt;
+**which kings attacked in which years?** &lt;br&gt;
+
+]
+
+---
+
+# 6. Grouped bar chart
+
+
+```r
+got %&gt;%
+  filter(!is.na(attacker_king)) %&gt;% 
+  count(attacker_king, year) %&gt;% 
+  ggplot(aes(x = attacker_king, y = n, fill = year)) + 
+  geom_bar(stat = "identity", position = "dodge")
+```
+
+--
+
+&lt;img src="figs/Lec3/string-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 6. Grouped bar chart
+
+
+```r
+got %&gt;%
+  filter(!is.na(attacker_king)) %&gt;% 
+  count(attacker_king, year) %&gt;% 
+* ggplot(aes(x = attacker_king, y = n, fill = as.character(year))) +
+  geom_bar(stat = "identity", position = "dodge")
+```
+
+--
+
+&lt;img src="figs/Lec3/string-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 6. Grouped bar chart
+
+
+```r
+got %&gt;%
+  filter(!is.na(attacker_king)) %&gt;% 
+  count(attacker_king, year) %&gt;% 
+  ggplot(aes(x = attacker_king, y = n, fill = as.character(year))) +
+  geom_bar(stat = "identity", position = "dodge") +
+* geom_text(aes(label = n), position = position_dodge(0.9),
+*           vjust = -0.5)
+```
+
+---
+
+# 6. Grouped bar chart
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="figs/Lec3/string-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 6. Grouped bar chart
+
+
+```r
+got %&gt;%
+  filter(!is.na(attacker_king)) %&gt;% 
+  count(attacker_king, year) %&gt;% 
+  ggplot(aes(x = attacker_king, y = n, fill = as.character(year))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = n), position = position_dodge(0.9), 
+            vjust = -0.5) +
+* labs(fill = "Year",
+*      title = "Number of battles by attacking king and year") +
+* theme(axis.title = element_blank(),
+*       axis.text = element_text(size = 14),
+*       plot.title = element_text(size = 16))
+```
+
+---
+
+# 6. Grouped bar chart
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="figs/Lec3/string-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 6. Grouped bar chart
+
+
+```r
+got %&gt;%
+  filter(!is.na(attacker_king)) %&gt;% 
+  count(attacker_king, year) %&gt;% 
+* mutate(attacker_king = str_replace(attacker_king, "/", "/\n"),
+*        attacker_king = str_replace(attacker_king, " ", "\n")) %&gt;%
+  ggplot(aes(x = attacker_king, y = n, fill = as.character(year))) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = n), position = position_dodge(0.9), 
+            vjust = -0.5) +
+  labs(fill = "Year",
+       title = "Number of battles by attacking king and year") + 
+  theme(axis.title = element_blank(),
+        axis.text = element_text(size = 14),
+        plot.title = element_text(size = 16))
+```
+
+---
+
+# 6. Grouped bar chart
+
+&lt;br&gt;
+&lt;br&gt;
+
+&lt;img src="figs/Lec3/string-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lab 2 on Thursday May 27]
+&lt;br&gt;
+.medium[Assignments due 11:30am EDT Friday]
+
+&lt;br&gt;
+
+.large[Lecture 4 on Friday May 28]
+&lt;br&gt;
+.medium[Histograms and box plots]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
