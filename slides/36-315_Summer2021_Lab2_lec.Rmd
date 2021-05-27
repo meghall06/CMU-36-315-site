@@ -1,0 +1,183 @@
+---
+title: "36-315-Lab2"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(showtext)
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lab1/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lab 2
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> May 27, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# Today
+
+<br>
+
+.large[Reviewing bar charts]
+<br>
+.medium[]
+
+---
+
+# Standard bar chart
+
+```{r standard, eval = FALSE}
+got %>% 
+  ggplot(aes(x = region)) +
+  geom_bar()
+```
+
+<br>
+
+.medium[If you don't have a variable on the `y` aesthetic, you don't need a `stat` argument]
+
+<br>
+
+.medium[If you *do* have a variable on the `y` aesthetic (whether a count, aggregate, or other data), you need the `stat  = "identity"` argument within `geom_bar()`]
+
+---
+
+# Grouped bar chart
+
+```{r grouped, eval = FALSE}
+got %>%
+  ggplot(aes(x = attacker_king, fill = battle_type)) + 
+  geom_bar(position = "dodge")
+```
+
+<br>
+
+.medium[The `position = "dodge"` argument within `geom_bar()` will create a grouped bar chart, as long as you have a `fill` aesthetic]
+
+---
+
+# Stacked bar chart
+
+```{r stacked, eval = FALSE}
+got %>% 
+  ggplot(aes(x = attacker_king, fill = region)) + 
+  geom_bar(position = "stack")
+```
+
+<br>
+
+.medium[The `position = "stack"` argument within `geom_bar()` will create a stacked bar chart, as long as you have a `fill` aesthetic]
+
+<br>
+
+.medium[Be careful using this chart type with a `fill` variable that has too many levels, as it's hard to compare]
+
+---
+
+# Percent stacked bar chart
+
+```{r percent, eval = FALSE}
+got %>% 
+  add_count(attacker_king) %>%
+  ggplot(aes(x = attacker_king, y = n, fill = attacker_outcome)) +
+  geom_bar(stat = "identity", position = "fill")
+```
+
+<br>
+
+.medium[The `position = "fill"` argument within `geom_bar()` will create a percent stacked bar chart, as long as you have a `fill` aesthetic and a summary variable on the `y` aesthetic]
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Lab assignment due 11:30am EDT Friday!]
+<br>
+.medium[Ask questions on Piazza if they don't get answered here]
+
+<br>
+
+.large[Lecture 4 on Friday May 28]
+<br>
+.medium[Histograms and box plots]
+
+<br>
+
+.large[Homework 1 due Tuesday June 1]
+<br>
+.medium[Will be posted soon]

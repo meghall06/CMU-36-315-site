@@ -39,6 +39,7 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 Lab slides are available below in html format, and the .Rmd files are available at the GitHub repo linked in the nav bar above.
 
 + [Lab 1](slides/36-315_Summer2021_Lab1_lec.html)
++ [Lab 2](slides/36-315_Summer2021_Lab2_lec.html)
 
 ## Resources
 
