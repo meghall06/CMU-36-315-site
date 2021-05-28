@@ -1,0 +1,1202 @@
+---
+title: "36-315-Lec4"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(showtext)
+library(ggridges)
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec4/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+chopped <- read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-08-25/chopped.tsv')
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 4
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> May 28, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# From last time
+
+<br>
+
+.large[Bar graphs]
+<br>
+.medium[Of all shapes & sizes]
+
+<br>
+
+.large[Tidyverse principles]
+<br>
+.medium[For any necessary data manipulation]
+
+---
+
+# Updates
+
+<br>
+
+.large[Labs]
+<br>
+.medium[Piazza reminder]
+<br>
+.medium[Gradescope]
+<br>
+.medium[Deadlines]
+
+<br>
+
+.large[Homework 1]
+<br>
+.medium[Posted this AM, due Tuesday]
+
+<br>
+
+.large[Syllabus update]
+
+---
+
+# Today
+
+<br>
+
+.large[Graphing distributions]
+<br>
+.medium[Various techniques and considerations]
+
+<br>
+
+.large[Histograms and box plots]
+<br>
+.medium[And density plots and violin plots]
+
+---
+
+# Today's data
+
+.center[![chopped](figs/Lec4/chopped.png)]
+
+---
+
+# Today's data
+
+```{r glimpse}
+chopped %>% 
+  glimpse()
+```
+
+---
+
+# Today's data
+
+```{r head, echo = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1, judge2, judge3, appetizer, entree, dessert) %>% 
+  head(3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Data types
+
+<br>
+<br>
+.large[Categorical/qualitative]
+<br>
+.medium[Ordered vs. unordered/nominal]
+<br>
+.medium[judges, ingredients, date]
+<br>
+
+<br>
+.large[Numeric/quantitative]
+<br>
+.medium[Discrete vs. continuous]
+<br>
+.medium[`episode_rating`]
+<br>
+
+---
+
+# Visualizing distributions
+
+<br>
+
+.large[Focusing on one variable]
+<br>
+.medium[Today: `episode_rating`]
+
+<br>
+
+.large[Pros/cons of different ways to visualize distributions]
+<br>
+.medium[And compare distributions]
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. box plots
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. **histograms**
+
+2. density plots
+
+3. box plots
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+# 1. Histograms
+
+<br>
+
+.large[You need:]
+<br>
+.medium[A numeric value with lots of values]
+<br>
+.medium[and meaningful differences between values]
+
+<br>
+
+.large[Pro: can view the entire distribution]
+
+<br>
+
+.large[Con: need to be careful with bin width]
+
+---
+
+# 1. Histograms
+
+```{r histogram-1, eval = FALSE}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram()
+```
+
+--
+
+```{r histogram-1, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+# 1. Histograms
+
+```{r histogram-2, fig.align="center", fig.height = 5}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(bins = 5)
+```
+
+---
+
+# 1. Histograms
+
+```{r histogram-3, fig.align="center", fig.height = 5}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(bins = 100)
+```
+
+---
+
+# 1. Histograms
+
+```{r histogram-4, fig.align="center", fig.height = 5}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(bins = 35)
+```
+
+---
+
+# 1. Histograms
+
+```{r histogram-5, fig.align="center", fig.height = 5}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+---
+
+# 1. Histograms
+
+```{r histogram-6, fig.align="center", fig.height = 5}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+---
+
+# 1. Histograms
+
+```{r histogram-7, eval = FALSE}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(binwidth = 0.1,  fill = "#ce7232", color = "black")
+```
+
+--
+
+```{r histogram-7, echo = FALSE, fig.align="center", fig.height = 4.5}
+```
+
+---
+
+# 1. Histograms
+
+**comparing distributions and using `str_detect`**
+
+```{r histogram-8, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(`str_detect`(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  ggplot(aes(x = episode_rating, fill = berry_dessert)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+--
+
+```{r histogram-8, echo = FALSE, fig.align="center", fig.height = 4}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. histograms
+
+2. **density plots**
+
+3. box plots
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+# 2. Density plots
+
+<br>
+
+.large[Smoothed version of the histogram]
+
+<br>
+
+.large[You need:]
+<br>
+.medium[A large sample size]
+<br>
+.medium[(Can be misleading with small data sets)]
+
+---
+
+# 2. Density plots
+
+```{r density-1, eval = FALSE}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_density()
+```
+
+--
+
+```{r density-1, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+# 2. Density plots
+
+```{r density-2, eval = FALSE}
+chopped %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_density(fill = "#ce7232", `alpha` = 0.75)
+```
+
+--
+
+```{r density-2, echo = FALSE, fig.align="center", fig.height = 5}
+```
+
+---
+
+# 2. Density plots
+
+**overlaying a histogram**
+
+```{r density-3, eval = FALSE}
+chopped %>% 
+  ggplot(aes(x = episode_rating, y = ..density..)) +
+  # the y argument scales down the histogram 
+  # to match the density curve
+  geom_histogram(binwidth = 0.1, fill = "#ce7232", 
+                 color = "black", alpha = 0.75) +
+  geom_density()
+```
+
+---
+
+# 2. Density plots
+
+<br>
+
+```{r density-3, echo = FALSE, fig.align="center", fig.height = 5.5}
+```
+
+---
+
+# 2. Density plots
+
+**comparing two distributions**
+
+```{r density-4, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  ggplot(aes(x = episode_rating, `fill` = berry_dessert)) +
+  geom_density(alpha = 0.4)
+```
+
+---
+
+# 2. Density plots
+
+<br>
+
+```{r density-4, echo = FALSE, fig.align="center", fig.height = 5.5}
+```
+
+---
+
+# 2. Density plots
+
+```{r density-5, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  ggplot(aes(x = episode_rating, `color` = berry_dessert)) +
+  geom_density()
+```
+
+---
+
+# 2. Density plots
+
+<br>
+
+```{r density-5, echo = FALSE, fig.align="center", fig.height = 5.5}
+```
+
+---
+
+# 2. Density plots
+
+```{r density-6, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  filter(!is.na(episode_rating)) %>% 
+  ggplot(aes(x = episode_rating)) +
+  geom_density(fill = "#ce7232", alpha = 0.5) +
+  facet_wrap(~berry_dessert)
+```
+
+---
+
+# 2. Density plots
+
+<br>
+
+```{r density-6, echo = FALSE, fig.align="center", fig.height = 5.5}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. **box plots**
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+# 3. Box plots
+
+<br>
+
+.large[Compact!]
+
+<br>
+
+.large[Shows:]
+<br>
+.medium[Median, 25/75 percentiles]
+<br>
+.medium[Potential outliers]
+
+<br>
+
+.large[Can't see the full distribution (not good for multi-modality)]
+
+---
+
+# 3. Box plots
+
+```{r box-1, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  filter(!is.na(episode_rating)) %>% 
+  ggplot(aes(y = berry_dessert, x = episode_rating)) +
+  geom_boxplot()
+```
+
+--
+
+```{r box-1, echo = FALSE, fig.align="center", fig.height = 4}
+```
+
+---
+
+# 3. Box plots
+
+```{r box-2, eval = FALSE}
+chopped %>%
+  mutate(year = `str_sub`(air_date, -4)) %>% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot()
+```
+
+---
+
+# `str_sub`
+
+```{r str-sub-1, eval = FALSE}
+chopped %>% 
+  select(date) %>% 
+  mutate(year = `str_sub`(air_date, -4))
+```
+
+--
+
+```{r str-sub-2, echo = FALSE}
+chopped %>% 
+  select(air_date) %>% 
+  mutate(year = `str_sub`(air_date, -4)) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# 3. Box plots
+
+```{r box-2, echo = TRUE, eval = FALSE}
+```
+
+--
+
+```{r box-2, echo = FALSE, fig.align="center", fig.height = 5}
+```
+
+---
+
+# 3. Box plots
+
+**modifying outliers**
+
+```{r box-3, eval = FALSE}
+chopped %>%
+  mutate(year = str_sub(air_date, -4)) %>% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot(fill = "gray", outlier.color = "#ce7232", 
+               outlier.shape = "circle open", outlier.size = 2)
+```
+
+---
+
+# 3. Box plots
+
+<br>
+
+```{r box-3, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+# 3. Box plots
+
+**highlighting a certain group**
+
+```{r box-4, eval = FALSE}
+chopped %>% 
+  mutate(year = str_sub(air_date, -4)) %>% 
+  mutate(highlight_2013 = ifelse(year == 2013, 
+                                 "highlight", "normal")) %>% 
+  ggplot(aes(y = year, x = episode_rating, fill = highlight_2013)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("#bb0000","#dddddd")) +
+  theme(legend.position = "none")
+```
+
+---
+
+# 3. Box plots
+
+<br>
+
+```{r box-4, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+# 3. Box plots
+
+**marking the mean**
+
+```{r box-5, eval = FALSE}
+chopped %>%
+  mutate(year = str_sub(air_date, -4)) %>% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot(fill = "gray") +
+  stat_summary(fun = mean, geom = "point", #<<
+               shape = "square", size = 2, color = "red") #<<
+```
+
+---
+
+# 3. Box plots
+
+<br>
+
+```{r box-5, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+# 3. Box plots
+
+**adding jittered points**
+
+```{r box-6, eval = FALSE}
+chopped %>%
+  mutate(year = str_sub(air_date, -4)) %>% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot() +
+  geom_jitter(color = "black", size = 0.4, alpha = 0.5) #<<
+```
+
+---
+
+# 3. Box plots
+
+<br>
+
+```{r box-6, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+# 3. Box plots
+
+**suppressing outliers**
+
+```{r box-7, eval = FALSE}
+chopped %>%
+  mutate(year = str_sub(air_date, -4)) %>% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot(outlier.shape = NA) + #<<
+  geom_jitter(color="black", size = 0.4, alpha = 0.5)
+```
+
+---
+
+# 3. Box plots
+
+<br>
+
+```{r box-7, echo = FALSE, fig.align="center", fig.height = 5.25}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. box plots
+
+4. **violin plots**
+
+5. ridgeline plots
+
+]
+
+---
+
+# 4. Violin plots
+
+<br>
+
+.large[Similar to a boxplot]
+<br>
+.medium[Shows more of the distribution]
+
+<br>
+
+.large[Useful when you have lots of data]
+<br>
+.medium[And the jittering looks busy]
+
+---
+
+# 4. Violin plots
+
+```{r violin-2, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  filter(!is.na(episode_rating)) %>% 
+  ggplot(aes(y = berry_dessert, x = episode_rating)) + 
+  geom_violin()
+```
+
+--
+
+```{r violin-2, echo = FALSE, fig.align="center", fig.height = 4}
+```
+
+---
+
+# 4. Violin plots
+
+**overlaying a boxplot**
+
+```{r violin-3, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  filter(!is.na(episode_rating)) %>% 
+  ggplot(aes(y = berry_dessert, x = episode_rating)) + 
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+<br>
+
+```{r violin-3, echo = FALSE, fig.align="center", fig.height = 5.5}
+```
+
+---
+
+# 4. Violin plots
+
+```{r head, echo = FALSE}
+```
+
+---
+
+# 4. Violin plots
+
+```{r violin-4, eval = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", names_to = NULL)
+```
+
+--
+
+```{r violin-5, echo = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %>%  
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# 4. Violin plots
+
+```{r violin-6, eval = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %>% 
+  add_count(judge)
+```
+
+--
+
+```{r violin-7, echo = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", names_to = NULL) %>% 
+  add_count(judge) %>%
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# 4. Violin plots
+
+```{r violin-8, eval = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  ggplot(aes(y = judge, x = episode_rating)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+<br>
+
+```{r violin-8, echo = FALSE, fig.align="center", fig.height = 5.5}
+```
+
+---
+
+# 4. Violin plots
+
+**adding a custom axis**
+
+```{r violin-9, eval = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  mutate(custom_axis = paste0(judge, "\n", n, " episodes")) %>% #<<
+  ggplot(aes(y = custom_axis, x = episode_rating)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+```{r violin-9, echo = FALSE, fig.align="center", fig.height = 6.5}
+```
+
+---
+
+# 4. Violin plots
+
+**ordering the custom axis**
+
+```{r violin-10, eval = FALSE}
+chopped %>% 
+  select(series_episode, episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  mutate(custom_axis = paste0(judge, "\n", n, " episodes")) %>% 
+  ggplot(aes(y = reorder(custom_axis, n), x = episode_rating)) + #<<
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+```{r violin-10, echo = FALSE, fig.align="center", fig.height = 6.5}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. box plots
+
+4. violin plots
+
+5. **ridgeline plots**
+
+]
+
+---
+
+# 5. Ridgeline plots
+
+<br>
+
+.large[Another option to visualize & compare multiple distributions]
+
+<br>
+
+.large[Requires the `ggridges` package]
+<br>
+.medium[An extension of `ggplot2`]
+<br>
+.medium[Uses the same syntax]
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-1, eval = FALSE}
+chopped %>% 
+  select(episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges() #<<
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-1, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-2, eval = FALSE}
+chopped %>% 
+  select(episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges(stat = "binline", binwidth = 0.1) #<<
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-2, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# 5. Ridgeline plots
+
+**including a median line**
+
+```{r ridge-3, eval = FALSE}
+chopped %>% 
+  select(episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100 & !is.na(episode_rating)) %>% 
+  ggplot(aes(x = episode_rating, y = judge, episode_rating)) +
+  stat_density_ridges(quantile_lines = TRUE, quantiles = 2) #<<
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-3, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# 5. Ridgeline plots
+
+**ordering by mean**
+
+```{r ridge-4, eval = FALSE}
+chopped %>% 
+  select(episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100 & !is.na(episode_rating)) %>% 
+  mutate(judge = fct_reorder(judge, episode_rating, .fun = mean)) %>% #<<
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges()
+```
+
+.center[![forcats](figs/Lec4/forcats.png)]
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-4, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# 5. Ridgeline plots
+
+**adding jittered points**
+
+```{r ridge-5, eval = FALSE}
+chopped %>% 
+  select(episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges(jittered_points = TRUE, #<<
+                      alpha = 0.5, point_size = 0.5) #<<
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-5, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# 5. Ridgeline plots
+
+**adding a rug plot**
+
+```{r ridge-6, eval = FALSE}
+chopped %>% 
+  select(episode_rating, judge1:judge3) %>% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %>% 
+  add_count(judge) %>% 
+  filter(n > 100) %>% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges(jittered_points = TRUE,
+    position = position_points_jitter(width = 0.05, height = 0),
+    point_shape = '|', point_size = 3, point_alpha = 1, #<<
+    alpha = 0.7)
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-6, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# 5. Ridgeline plots
+
+**adding a raincloud plot**
+
+```{r ridge-7, eval = FALSE}
+chopped %>% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %>% 
+  filter(!is.na(episode_rating)) %>% 
+  ggplot(aes(x = episode_rating, y = berry_dessert)) +
+  geom_density_ridges(jittered_points = TRUE, alpha = 0.5, 
+                      point_size = 0.5, scale = 0.6,
+                      position = "raincloud") #<<
+```
+
+---
+
+# 5. Ridgeline plots
+
+```{r ridge-7, echo = FALSE, fig.align="center", fig.height = 6}
+```
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Homework 1 due 11:30am EDT Tuesday]
+<br>
+.medium[Office hours]
+
+<br>
+
+.large[Lab 3 on Tuesday June 1]
+
+<br>
+
+.large[Lecture 5 on Wednesday June 2]
+

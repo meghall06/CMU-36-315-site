@@ -1,0 +1,1552 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec4</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 4
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; May 28, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Bar graphs]
+&lt;br&gt;
+.medium[Of all shapes &amp; sizes]
+
+&lt;br&gt;
+
+.large[Tidyverse principles]
+&lt;br&gt;
+.medium[For any necessary data manipulation]
+
+---
+
+# Updates
+
+&lt;br&gt;
+
+.large[Labs]
+&lt;br&gt;
+.medium[Piazza reminder]
+&lt;br&gt;
+.medium[Gradescope]
+&lt;br&gt;
+.medium[Deadlines]
+
+&lt;br&gt;
+
+.large[Homework 1]
+&lt;br&gt;
+.medium[Posted this AM, due Tuesday]
+
+&lt;br&gt;
+
+.large[Syllabus update]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Graphing distributions]
+&lt;br&gt;
+.medium[Various techniques and considerations]
+
+&lt;br&gt;
+
+.large[Histograms and box plots]
+&lt;br&gt;
+.medium[And density plots and violin plots]
+
+---
+
+# Today's data
+
+.center[![chopped](figs/Lec4/chopped.png)]
+
+---
+
+# Today's data
+
+
+```r
+chopped %&gt;% 
+  glimpse()
+```
+
+```
+## Rows: 569
+## Columns: 21
+## $ season           &lt;dbl&gt; 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2,…
+## $ season_episode   &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 1, 2, 3, 4…
+## $ series_episode   &lt;dbl&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16…
+## $ episode_rating   &lt;dbl&gt; 9.2, 8.8, 8.9, 8.5, 8.8, 8.5, 8.8, 9.0, 8.9, 8.8, 8.8…
+## $ episode_name     &lt;chr&gt; "Octopus, Duck, Animal Crackers", "Tofu, Blueberries,…
+## $ episode_notes    &lt;chr&gt; "This is the first episode with only three official i…
+## $ air_date         &lt;chr&gt; "January 13, 2009", "January 20, 2009", "January 27, …
+## $ judge1           &lt;chr&gt; "Marc Murphy", "Aarón Sánchez", "Aarón Sánchez", "Sco…
+## $ judge2           &lt;chr&gt; "Alex Guarnaschelli", "Alex Guarnaschelli", "Alex Gua…
+## $ judge3           &lt;chr&gt; "Aarón Sánchez", "Marc Murphy", "Marc Murphy", "Geoff…
+## $ appetizer        &lt;chr&gt; "baby octopus, bok choy, oyster sauce, smoked paprika…
+## $ entree           &lt;chr&gt; "duck breast, green onions, ginger, honey", "daikon, …
+## $ dessert          &lt;chr&gt; "prunes, animal crackers, cream cheese", "phyllo doug…
+## $ contestant1      &lt;chr&gt; "Summer Kriegshauser", "Raymond Jackson", "Margaritte…
+## $ contestant1_info &lt;chr&gt; "Private Chef and Nutrition Coach  New York  NY", "Pr…
+## $ contestant2      &lt;chr&gt; "Perry Pollaci", "Klaus Kronsteiner", "Rachelle Rodwe…
+## $ contestant2_info &lt;chr&gt; "Private Chef and Sous chef  Bar Blanc  New York  NY"…
+## $ contestant3      &lt;chr&gt; "Katie Rosenhouse", "Christopher Jackson", "Chris Bur…
+## $ contestant3_info &lt;chr&gt; "Pastry Chef  Olana Restaurant  New York  NY", "Execu…
+## $ contestant4      &lt;chr&gt; "Sandy Davis", "Pippa Calland", "Andre Marrero", "Ein…
+## $ contestant4_info &lt;chr&gt; "Catering Chef  Showstoppers Catering at Union Theolo…
+```
+
+---
+
+# Today's data
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; series_episode &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; episode_rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge1 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge2 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge3 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; appetizer &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; entree &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; dessert &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; baby octopus, bok choy, oyster sauce, smoked paprika &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; duck breast, green onions, ginger, honey &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; prunes, animal crackers, cream cheese &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; firm tofu, tomato paste, prosciutto &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; daikon, pork loin, Napa cabbage, Thai chiles, Blue Point oysters &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; phyllo dough, gorgonzola cheese, pineapple rings, blueberries &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; lump crab meat, dried shiitake mushrooms, pink grapefruit, bran cereal &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ground beef, cannellini beans, tahini paste, grape jelly &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; brioche, cantaloupe, pecans, avocados &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Data types
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Categorical/qualitative]
+&lt;br&gt;
+.medium[Ordered vs. unordered/nominal]
+&lt;br&gt;
+.medium[judges, ingredients, date]
+&lt;br&gt;
+
+&lt;br&gt;
+.large[Numeric/quantitative]
+&lt;br&gt;
+.medium[Discrete vs. continuous]
+&lt;br&gt;
+.medium[`episode_rating`]
+&lt;br&gt;
+
+---
+
+# Visualizing distributions
+
+&lt;br&gt;
+
+.large[Focusing on one variable]
+&lt;br&gt;
+.medium[Today: `episode_rating`]
+
+&lt;br&gt;
+
+.large[Pros/cons of different ways to visualize distributions]
+&lt;br&gt;
+.medium[And compare distributions]
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. box plots
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. **histograms**
+
+2. density plots
+
+3. box plots
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+# 1. Histograms
+
+&lt;br&gt;
+
+.large[You need:]
+&lt;br&gt;
+.medium[A numeric value with lots of values]
+&lt;br&gt;
+.medium[and meaningful differences between values]
+
+&lt;br&gt;
+
+.large[Pro: can view the entire distribution]
+
+&lt;br&gt;
+
+.large[Con: need to be careful with bin width]
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram()
+```
+
+--
+
+&lt;img src="figs/Lec4/histogram-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(bins = 5)
+```
+
+&lt;img src="figs/Lec4/histogram-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(bins = 100)
+```
+
+&lt;img src="figs/Lec4/histogram-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(bins = 35)
+```
+
+&lt;img src="figs/Lec4/histogram-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(binwidth = 0.5)
+```
+
+&lt;img src="figs/Lec4/histogram-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+&lt;img src="figs/Lec4/histogram-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_histogram(binwidth = 0.1,  fill = "#ce7232", color = "black")
+```
+
+--
+
+&lt;img src="figs/Lec4/histogram-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1. Histograms
+
+**comparing distributions and using `str_detect`**
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(`str_detect`(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  ggplot(aes(x = episode_rating, fill = berry_dessert)) +
+  geom_histogram(binwidth = 0.1)
+```
+
+--
+
+&lt;img src="figs/Lec4/histogram-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. histograms
+
+2. **density plots**
+
+3. box plots
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+# 2. Density plots
+
+&lt;br&gt;
+
+.large[Smoothed version of the histogram]
+
+&lt;br&gt;
+
+.large[You need:]
+&lt;br&gt;
+.medium[A large sample size]
+&lt;br&gt;
+.medium[(Can be misleading with small data sets)]
+
+---
+
+# 2. Density plots
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_density()
+```
+
+--
+
+&lt;img src="figs/Lec4/density-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Density plots
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_density(fill = "#ce7232", `alpha` = 0.75)
+```
+
+--
+
+&lt;img src="figs/Lec4/density-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Density plots
+
+**overlaying a histogram**
+
+
+```r
+chopped %&gt;% 
+  ggplot(aes(x = episode_rating, y = ..density..)) +
+  # the y argument scales down the histogram 
+  # to match the density curve
+  geom_histogram(binwidth = 0.1, fill = "#ce7232", 
+                 color = "black", alpha = 0.75) +
+  geom_density()
+```
+
+---
+
+# 2. Density plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/density-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Density plots
+
+**comparing two distributions**
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  ggplot(aes(x = episode_rating, `fill` = berry_dessert)) +
+  geom_density(alpha = 0.4)
+```
+
+---
+
+# 2. Density plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/density-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Density plots
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  ggplot(aes(x = episode_rating, `color` = berry_dessert)) +
+  geom_density()
+```
+
+---
+
+# 2. Density plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/density-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2. Density plots
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  filter(!is.na(episode_rating)) %&gt;% 
+  ggplot(aes(x = episode_rating)) +
+  geom_density(fill = "#ce7232", alpha = 0.5) +
+  facet_wrap(~berry_dessert)
+```
+
+---
+
+# 2. Density plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/density-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. **box plots**
+
+4. violin plots
+
+5. ridgeline plots
+
+]
+
+---
+
+# 3. Box plots
+
+&lt;br&gt;
+
+.large[Compact!]
+
+&lt;br&gt;
+
+.large[Shows:]
+&lt;br&gt;
+.medium[Median, 25/75 percentiles]
+&lt;br&gt;
+.medium[Potential outliers]
+
+&lt;br&gt;
+
+.large[Can't see the full distribution (not good for multi-modality)]
+
+---
+
+# 3. Box plots
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  filter(!is.na(episode_rating)) %&gt;% 
+  ggplot(aes(y = berry_dessert, x = episode_rating)) +
+  geom_boxplot()
+```
+
+--
+
+&lt;img src="figs/Lec4/box-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Box plots
+
+
+```r
+chopped %&gt;%
+  mutate(year = `str_sub`(air_date, -4)) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot()
+```
+
+---
+
+# `str_sub`
+
+
+```r
+chopped %&gt;% 
+  select(date) %&gt;% 
+  mutate(year = `str_sub`(air_date, -4))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; air_date &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; January 13, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; January 20, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; January 27, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; February 3, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; February 10, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; February 17, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; February 24, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; March 3, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; March 10, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; March 17, 2009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2009 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 3. Box plots
+
+
+```r
+chopped %&gt;%
+  mutate(year = `str_sub`(air_date, -4)) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot()
+```
+
+--
+
+&lt;img src="figs/Lec4/box-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Box plots
+
+**modifying outliers**
+
+
+```r
+chopped %&gt;%
+  mutate(year = str_sub(air_date, -4)) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot(fill = "gray", outlier.color = "#ce7232", 
+               outlier.shape = "circle open", outlier.size = 2)
+```
+
+---
+
+# 3. Box plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/box-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Box plots
+
+**highlighting a certain group**
+
+
+```r
+chopped %&gt;% 
+  mutate(year = str_sub(air_date, -4)) %&gt;% 
+  mutate(highlight_2013 = ifelse(year == 2013, 
+                                 "highlight", "normal")) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating, fill = highlight_2013)) +
+  geom_boxplot() +
+  scale_fill_manual(values = c("#bb0000","#dddddd")) +
+  theme(legend.position = "none")
+```
+
+---
+
+# 3. Box plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/box-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Box plots
+
+**marking the mean**
+
+
+```r
+chopped %&gt;%
+  mutate(year = str_sub(air_date, -4)) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot(fill = "gray") +
+* stat_summary(fun = mean, geom = "point",
+*              shape = "square", size = 2, color = "red")
+```
+
+---
+
+# 3. Box plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/box-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Box plots
+
+**adding jittered points**
+
+
+```r
+chopped %&gt;%
+  mutate(year = str_sub(air_date, -4)) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating)) +
+  geom_boxplot() +
+* geom_jitter(color = "black", size = 0.4, alpha = 0.5)
+```
+
+---
+
+# 3. Box plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/box-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3. Box plots
+
+**suppressing outliers**
+
+
+```r
+chopped %&gt;%
+  mutate(year = str_sub(air_date, -4)) %&gt;% 
+  ggplot(aes(y = year, x = episode_rating)) +
+* geom_boxplot(outlier.shape = NA) +
+  geom_jitter(color="black", size = 0.4, alpha = 0.5)
+```
+
+---
+
+# 3. Box plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/box-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. box plots
+
+4. **violin plots**
+
+5. ridgeline plots
+
+]
+
+---
+
+# 4. Violin plots
+
+&lt;br&gt;
+
+.large[Similar to a boxplot]
+&lt;br&gt;
+.medium[Shows more of the distribution]
+
+&lt;br&gt;
+
+.large[Useful when you have lots of data]
+&lt;br&gt;
+.medium[And the jittering looks busy]
+
+---
+
+# 4. Violin plots
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  filter(!is.na(episode_rating)) %&gt;% 
+  ggplot(aes(y = berry_dessert, x = episode_rating)) + 
+  geom_violin()
+```
+
+--
+
+&lt;img src="figs/Lec4/violin-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 4. Violin plots
+
+**overlaying a boxplot**
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  filter(!is.na(episode_rating)) %&gt;% 
+  ggplot(aes(y = berry_dessert, x = episode_rating)) + 
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/violin-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 4. Violin plots
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; series_episode &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; episode_rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge1 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge2 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge3 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; appetizer &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; entree &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; dessert &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; baby octopus, bok choy, oyster sauce, smoked paprika &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; duck breast, green onions, ginger, honey &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; prunes, animal crackers, cream cheese &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; firm tofu, tomato paste, prosciutto &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; daikon, pork loin, Napa cabbage, Thai chiles, Blue Point oysters &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; phyllo dough, gorgonzola cheese, pineapple rings, blueberries &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; lump crab meat, dried shiitake mushrooms, pink grapefruit, bran cereal &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ground beef, cannellini beans, tahini paste, grape jelly &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; brioche, cantaloupe, pecans, avocados &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 4. Violin plots
+
+
+```r
+chopped %&gt;% 
+  select(series_episode, episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, values_to = "judge", names_to = NULL)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; series_episode &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; episode_rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Scott Conant &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 4. Violin plots
+
+
+```r
+chopped %&gt;% 
+  select(series_episode, episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %&gt;% 
+  add_count(judge)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; series_episode &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; episode_rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; judge &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 191 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 208 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9.2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 126 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 126 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 208 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 191 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Aarón Sánchez &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 126 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alex Guarnaschelli &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 208 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.9 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Marc Murphy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 191 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Scott Conant &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 194 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# 4. Violin plots
+
+
+```r
+chopped %&gt;% 
+  select(series_episode, episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+  ggplot(aes(y = judge, x = episode_rating)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+&lt;br&gt;
+
+&lt;img src="figs/Lec4/violin-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 4. Violin plots
+
+**adding a custom axis**
+
+
+```r
+chopped %&gt;% 
+  select(series_episode, episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+* mutate(custom_axis = paste0(judge, "\n", n, " episodes")) %&gt;%
+  ggplot(aes(y = custom_axis, x = episode_rating)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+&lt;img src="figs/Lec4/violin-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 4. Violin plots
+
+**ordering the custom axis**
+
+
+```r
+chopped %&gt;% 
+  select(series_episode, episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+  mutate(custom_axis = paste0(judge, "\n", n, " episodes")) %&gt;% 
+* ggplot(aes(y = reorder(custom_axis, n), x = episode_rating)) +
+  geom_violin() +
+  geom_boxplot(width = 0.1, color = "grey", alpha = 0.5,
+               outlier.colour = "red")
+```
+
+---
+
+# 4. Violin plots
+
+&lt;img src="figs/Lec4/violin-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. histograms
+
+2. density plots
+
+3. box plots
+
+4. violin plots
+
+5. **ridgeline plots**
+
+]
+
+---
+
+# 5. Ridgeline plots
+
+&lt;br&gt;
+
+.large[Another option to visualize &amp; compare multiple distributions]
+
+&lt;br&gt;
+
+.large[Requires the `ggridges` package]
+&lt;br&gt;
+.medium[An extension of `ggplot2`]
+&lt;br&gt;
+.medium[Uses the same syntax]
+
+---
+
+# 5. Ridgeline plots
+
+
+```r
+chopped %&gt;% 
+  select(episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+* geom_density_ridges()
+```
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Ridgeline plots
+
+
+```r
+chopped %&gt;% 
+  select(episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+* geom_density_ridges(stat = "binline", binwidth = 0.1)
+```
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Ridgeline plots
+
+**including a median line**
+
+
+```r
+chopped %&gt;% 
+  select(episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100 &amp; !is.na(episode_rating)) %&gt;% 
+  ggplot(aes(x = episode_rating, y = judge, episode_rating)) +
+* stat_density_ridges(quantile_lines = TRUE, quantiles = 2)
+```
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Ridgeline plots
+
+**ordering by mean**
+
+
+```r
+chopped %&gt;% 
+  select(episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100 &amp; !is.na(episode_rating)) %&gt;% 
+* mutate(judge = fct_reorder(judge, episode_rating, .fun = mean)) %&gt;%
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges()
+```
+
+.center[![forcats](figs/Lec4/forcats.png)]
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Ridgeline plots
+
+**adding jittered points**
+
+
+```r
+chopped %&gt;% 
+  select(episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, values_to = "judge", 
+               names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+* geom_density_ridges(jittered_points = TRUE,
+*                     alpha = 0.5, point_size = 0.5)
+```
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Ridgeline plots
+
+**adding a rug plot**
+
+
+```r
+chopped %&gt;% 
+  select(episode_rating, judge1:judge3) %&gt;% 
+  pivot_longer(judge1:judge3, 
+               values_to = "judge", names_to = NULL) %&gt;% 
+  add_count(judge) %&gt;% 
+  filter(n &gt; 100) %&gt;% 
+  ggplot(aes(x = episode_rating, y = judge)) +
+  geom_density_ridges(jittered_points = TRUE,
+    position = position_points_jitter(width = 0.05, height = 0),
+*   point_shape = '|', point_size = 3, point_alpha = 1,
+    alpha = 0.7)
+```
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5. Ridgeline plots
+
+**adding a raincloud plot**
+
+
+```r
+chopped %&gt;% 
+  mutate(berry_dessert = ifelse(str_detect(dessert, "berries"), 
+                      "Berry Dessert", "Berry-Free Dessert")) %&gt;% 
+  filter(!is.na(episode_rating)) %&gt;% 
+  ggplot(aes(x = episode_rating, y = berry_dessert)) +
+  geom_density_ridges(jittered_points = TRUE, alpha = 0.5, 
+                      point_size = 0.5, scale = 0.6,
+*                     position = "raincloud")
+```
+
+---
+
+# 5. Ridgeline plots
+
+&lt;img src="figs/Lec4/ridge-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Homework 1 due 11:30am EDT Tuesday]
+&lt;br&gt;
+.medium[Office hours]
+
+&lt;br&gt;
+
+.large[Lab 3 on Tuesday June 1]
+
+&lt;br&gt;
+
+.large[Lecture 5 on Wednesday June 2]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

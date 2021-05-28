@@ -33,6 +33,7 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 + [Lecture 1](slides/36-315_Summer2021_Lec1.html): intro and why data viz
 + [Lecture 2](slides/36-315_Summer2021_Lec2.html): the grammar of graphics
 + [Lecture 3](slides/36-315_Summer2021_Lec3.html): bar graphs
++ [Lecture 4](slides/36-315_Summer2021_Lec4.html): visualizing distributions
 
 ## Labs
 
