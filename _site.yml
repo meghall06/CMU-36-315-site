@@ -5,6 +5,7 @@ description: |
   CMU 36-315
 output_dir: "docs"
 include: ["slides/"]
+exclude: ["data/"]
 #creative_commons: CC BY-SA
 #repository_url: https://github.com/meghall06
 navbar:

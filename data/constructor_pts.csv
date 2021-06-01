@@ -1,0 +1,1212 @@
+﻿constructorStandingsId,raceId,constructorId,points,position,positionText,wins,name,year,round,date,race_name
+26733,969,6,37,1,1,1,Ferrari,2017,1,2017-03-26,Australian Grand Prix
+26189,931,131,242,1,1,5,Mercedes,2015,6,2015-05-24,Monaco Grand Prix
+26190,931,6,158,2,2,1,Ferrari,2015,6,2015-05-24,Monaco Grand Prix
+26191,931,3,81,3,3,0,Williams,2015,6,2015-05-24,Monaco Grand Prix
+26192,931,15,21,5,5,0,Sauber,2015,6,2015-05-24,Monaco Grand Prix
+26193,931,9,52,4,4,0,Red Bull,2015,6,2015-05-24,Monaco Grand Prix
+26194,931,10,17,6,6,0,Force India,2015,6,2015-05-24,Monaco Grand Prix
+26195,931,5,15,8,8,0,Toro Rosso,2015,6,2015-05-24,Monaco Grand Prix
+26196,931,1,4,9,9,0,McLaren,2015,6,2015-05-24,Monaco Grand Prix
+26197,931,208,16,7,7,0,Lotus F1,2015,6,2015-05-24,Monaco Grand Prix
+26198,931,209,0,10,10,0,Manor Marussia,2015,6,2015-05-24,Monaco Grand Prix
+26199,932,131,285,1,1,6,Mercedes,2015,7,2015-06-07,Canadian Grand Prix
+26200,932,6,180,2,2,1,Ferrari,2015,7,2015-06-07,Canadian Grand Prix
+26201,932,3,104,3,3,0,Williams,2015,7,2015-06-07,Canadian Grand Prix
+26202,932,15,21,6,6,0,Sauber,2015,7,2015-06-07,Canadian Grand Prix
+26203,932,9,54,4,4,0,Red Bull,2015,7,2015-06-07,Canadian Grand Prix
+26204,932,10,21,7,7,0,Force India,2015,7,2015-06-07,Canadian Grand Prix
+26205,932,5,15,8,8,0,Toro Rosso,2015,7,2015-06-07,Canadian Grand Prix
+26206,932,1,4,9,9,0,McLaren,2015,7,2015-06-07,Canadian Grand Prix
+26207,932,208,23,5,5,0,Lotus F1,2015,7,2015-06-07,Canadian Grand Prix
+26208,932,209,0,10,10,0,Manor Marussia,2015,7,2015-06-07,Canadian Grand Prix
+26209,933,131,328,1,1,7,Mercedes,2015,8,2015-06-21,Austrian Grand Prix
+26210,933,6,192,2,2,1,Ferrari,2015,8,2015-06-21,Austrian Grand Prix
+26211,933,3,129,3,3,0,Williams,2015,8,2015-06-21,Austrian Grand Prix
+26212,933,15,21,7,7,0,Sauber,2015,8,2015-06-21,Austrian Grand Prix
+26213,933,9,55,4,4,0,Red Bull,2015,8,2015-06-21,Austrian Grand Prix
+26214,933,10,31,5,5,0,Force India,2015,8,2015-06-21,Austrian Grand Prix
+26215,933,5,19,8,8,0,Toro Rosso,2015,8,2015-06-21,Austrian Grand Prix
+26216,933,1,4,9,9,0,McLaren,2015,8,2015-06-21,Austrian Grand Prix
+26217,933,208,29,6,6,0,Lotus F1,2015,8,2015-06-21,Austrian Grand Prix
+26218,933,209,0,10,10,0,Manor Marussia,2015,8,2015-06-21,Austrian Grand Prix
+26219,934,131,371,1,1,8,Mercedes,2015,9,2015-07-05,British Grand Prix
+26220,934,6,211,2,2,1,Ferrari,2015,9,2015-07-05,British Grand Prix
+26221,934,3,151,3,3,0,Williams,2015,9,2015-07-05,British Grand Prix
+26222,934,15,21,7,7,0,Sauber,2015,9,2015-07-05,British Grand Prix
+26223,934,9,63,4,4,0,Red Bull,2015,9,2015-07-05,British Grand Prix
+26224,934,10,39,5,5,0,Force India,2015,9,2015-07-05,British Grand Prix
+26225,934,5,19,8,8,0,Toro Rosso,2015,9,2015-07-05,British Grand Prix
+26226,934,1,5,9,9,0,McLaren,2015,9,2015-07-05,British Grand Prix
+26227,934,208,29,6,6,0,Lotus F1,2015,9,2015-07-05,British Grand Prix
+26228,934,209,0,10,10,0,Manor Marussia,2015,9,2015-07-05,British Grand Prix
+26229,936,131,383,1,1,8,Mercedes,2015,10,2015-07-26,Hungarian Grand Prix
+26230,936,6,236,2,2,2,Ferrari,2015,10,2015-07-26,Hungarian Grand Prix
+26231,936,3,151,3,3,0,Williams,2015,10,2015-07-26,Hungarian Grand Prix
+26232,936,15,22,8,8,0,Sauber,2015,10,2015-07-26,Hungarian Grand Prix
+26233,936,9,96,4,4,0,Red Bull,2015,10,2015-07-26,Hungarian Grand Prix
+26234,936,10,39,5,5,0,Force India,2015,10,2015-07-26,Hungarian Grand Prix
+26235,936,5,31,7,7,0,Toro Rosso,2015,10,2015-07-26,Hungarian Grand Prix
+26236,936,1,17,9,9,0,McLaren,2015,10,2015-07-26,Hungarian Grand Prix
+26237,936,208,35,6,6,0,Lotus F1,2015,10,2015-07-26,Hungarian Grand Prix
+26238,936,209,0,10,10,0,Manor Marussia,2015,10,2015-07-26,Hungarian Grand Prix
+26260,938,131,451,1,1,10,Mercedes,2015,12,2015-09-06,Italian Grand Prix
+26259,937,209,0,10,10,0,Manor Marussia,2015,11,2015-08-23,Belgian Grand Prix
+26257,937,1,17,9,9,0,McLaren,2015,11,2015-08-23,Belgian Grand Prix
+26256,937,5,35,7,7,0,Toro Rosso,2015,11,2015-08-23,Belgian Grand Prix
+26253,937,15,23,8,8,0,Sauber,2015,11,2015-08-23,Belgian Grand Prix
+26258,937,208,50,5,5,0,Lotus F1,2015,11,2015-08-23,Belgian Grand Prix
+26252,937,3,161,3,3,0,Williams,2015,11,2015-08-23,Belgian Grand Prix
+26255,937,10,49,6,6,0,Force India,2015,11,2015-08-23,Belgian Grand Prix
+26254,937,9,108,4,4,0,Red Bull,2015,11,2015-08-23,Belgian Grand Prix
+26251,937,6,242,2,2,2,Ferrari,2015,11,2015-08-23,Belgian Grand Prix
+26250,937,131,426,1,1,9,Mercedes,2015,11,2015-08-23,Belgian Grand Prix
+26261,938,6,270,2,2,2,Ferrari,2015,12,2015-09-06,Italian Grand Prix
+26262,938,3,188,3,3,0,Williams,2015,12,2015-09-06,Italian Grand Prix
+26263,938,15,25,8,8,0,Sauber,2015,12,2015-09-06,Italian Grand Prix
+26264,938,9,113,4,4,0,Red Bull,2015,12,2015-09-06,Italian Grand Prix
+26265,938,10,63,5,5,0,Force India,2015,12,2015-09-06,Italian Grand Prix
+26266,938,5,35,7,7,0,Toro Rosso,2015,12,2015-09-06,Italian Grand Prix
+26267,938,1,17,9,9,0,McLaren,2015,12,2015-09-06,Italian Grand Prix
+26268,938,208,50,6,6,0,Lotus F1,2015,12,2015-09-06,Italian Grand Prix
+26269,938,209,0,10,10,0,Manor Marussia,2015,12,2015-09-06,Italian Grand Prix
+26270,939,131,463,1,1,10,Mercedes,2015,13,2015-09-20,Singapore Grand Prix
+26271,939,6,310,2,2,3,Ferrari,2015,13,2015-09-20,Singapore Grand Prix
+26272,939,3,198,3,3,0,Williams,2015,13,2015-09-20,Singapore Grand Prix
+26273,939,15,26,8,8,0,Sauber,2015,13,2015-09-20,Singapore Grand Prix
+26274,939,9,139,4,4,0,Red Bull,2015,13,2015-09-20,Singapore Grand Prix
+26275,939,10,69,5,5,0,Force India,2015,13,2015-09-20,Singapore Grand Prix
+26276,939,5,41,7,7,0,Toro Rosso,2015,13,2015-09-20,Singapore Grand Prix
+26277,939,1,17,9,9,0,McLaren,2015,13,2015-09-20,Singapore Grand Prix
+26278,939,208,50,6,6,0,Lotus F1,2015,13,2015-09-20,Singapore Grand Prix
+26279,939,209,0,10,10,0,Manor Marussia,2015,13,2015-09-20,Singapore Grand Prix
+26297,940,1,17,9,9,0,McLaren,2015,14,2015-09-27,Japanese Grand Prix
+26294,940,9,139,4,4,0,Red Bull,2015,14,2015-09-27,Japanese Grand Prix
+26292,940,3,208,3,3,0,Williams,2015,14,2015-09-27,Japanese Grand Prix
+26299,940,209,0,10,10,0,Manor Marussia,2015,14,2015-09-27,Japanese Grand Prix
+26298,940,208,60,6,6,0,Lotus F1,2015,14,2015-09-27,Japanese Grand Prix
+26296,940,5,44,7,7,0,Toro Rosso,2015,14,2015-09-27,Japanese Grand Prix
+26295,940,10,77,5,5,0,Force India,2015,14,2015-09-27,Japanese Grand Prix
+26291,940,6,337,2,2,3,Ferrari,2015,14,2015-09-27,Japanese Grand Prix
+26293,940,15,26,8,8,0,Sauber,2015,14,2015-09-27,Japanese Grand Prix
+26290,940,131,506,1,1,11,Mercedes,2015,14,2015-09-27,Japanese Grand Prix
+26384,941,209,0,10,10,0,Manor Marussia,2015,15,2015-10-11,Russian Grand Prix
+26383,941,208,66,6,6,0,Lotus F1,2015,15,2015-10-11,Russian Grand Prix
+26382,941,1,19,9,9,0,McLaren,2015,15,2015-10-11,Russian Grand Prix
+26381,941,5,45,7,7,0,Toro Rosso,2015,15,2015-10-11,Russian Grand Prix
+26380,941,10,92,5,5,0,Force India,2015,15,2015-10-11,Russian Grand Prix
+26379,941,9,149,4,4,0,Red Bull,2015,15,2015-10-11,Russian Grand Prix
+26378,941,15,34,8,8,0,Sauber,2015,15,2015-10-11,Russian Grand Prix
+26377,941,3,220,3,3,0,Williams,2015,15,2015-10-11,Russian Grand Prix
+26376,941,6,359,2,2,3,Ferrari,2015,15,2015-10-11,Russian Grand Prix
+26394,942,209,0,10,10,0,Manor Marussia,2015,16,2015-10-25,United States Grand Prix
+26375,941,131,531,1,1,12,Mercedes,2015,15,2015-10-11,Russian Grand Prix
+26393,942,208,70,6,6,0,Lotus F1,2015,16,2015-10-25,United States Grand Prix
+26390,942,10,102,5,5,0,Force India,2015,16,2015-10-25,United States Grand Prix
+26388,942,15,36,8,8,0,Sauber,2015,16,2015-10-25,United States Grand Prix
+26392,942,1,27,9,9,0,McLaren,2015,16,2015-10-25,United States Grand Prix
+26391,942,5,63,7,7,0,Toro Rosso,2015,16,2015-10-25,United States Grand Prix
+26387,942,3,220,3,3,0,Williams,2015,16,2015-10-25,United States Grand Prix
+26389,942,9,150,4,4,0,Red Bull,2015,16,2015-10-25,United States Grand Prix
+26386,942,6,374,2,2,3,Ferrari,2015,16,2015-10-25,United States Grand Prix
+26385,942,131,574,1,1,13,Mercedes,2015,16,2015-10-25,United States Grand Prix
+26403,943,208,71,6,6,0,Lotus F1,2015,17,2015-11-01,Mexican Grand Prix
+26400,943,10,112,5,5,0,Force India,2015,17,2015-11-01,Mexican Grand Prix
+26398,943,15,36,8,8,0,Sauber,2015,17,2015-11-01,Mexican Grand Prix
+26404,943,209,0,10,10,0,Manor Marussia,2015,17,2015-11-01,Mexican Grand Prix
+26402,943,1,27,9,9,0,McLaren,2015,17,2015-11-01,Mexican Grand Prix
+26401,943,5,65,7,7,0,Toro Rosso,2015,17,2015-11-01,Mexican Grand Prix
+26397,943,3,243,3,3,0,Williams,2015,17,2015-11-01,Mexican Grand Prix
+26399,943,9,172,4,4,0,Red Bull,2015,17,2015-11-01,Mexican Grand Prix
+26396,943,6,374,2,2,3,Ferrari,2015,17,2015-11-01,Mexican Grand Prix
+26395,943,131,617,1,1,14,Mercedes,2015,17,2015-11-01,Mexican Grand Prix
+26413,944,208,76,6,6,0,Lotus F1,2015,18,2015-11-15,Brazilian Grand Prix
+26410,944,10,120,5,5,0,Force India,2015,18,2015-11-15,Brazilian Grand Prix
+26408,944,15,36,8,8,0,Sauber,2015,18,2015-11-15,Brazilian Grand Prix
+26414,944,209,0,10,10,0,Manor Marussia,2015,18,2015-11-15,Brazilian Grand Prix
+26412,944,1,27,9,9,0,McLaren,2015,18,2015-11-15,Brazilian Grand Prix
+26411,944,5,67,7,7,0,Toro Rosso,2015,18,2015-11-15,Brazilian Grand Prix
+26407,944,3,253,3,3,0,Williams,2015,18,2015-11-15,Brazilian Grand Prix
+26409,944,9,178,4,4,0,Red Bull,2015,18,2015-11-15,Brazilian Grand Prix
+26406,944,6,401,2,2,3,Ferrari,2015,18,2015-11-15,Brazilian Grand Prix
+26405,944,131,660,1,1,15,Mercedes,2015,18,2015-11-15,Brazilian Grand Prix
+26434,945,208,78,6,6,0,Lotus F1,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26431,945,10,136,5,5,0,Force India,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26429,945,15,36,8,8,0,Sauber,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26435,945,209,0,10,10,0,Manor Marussia,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26433,945,1,27,9,9,0,McLaren,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26432,945,5,67,7,7,0,Toro Rosso,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26428,945,3,257,3,3,0,Williams,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26430,945,9,187,4,4,0,Red Bull,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26427,945,6,428,2,2,3,Ferrari,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26426,945,131,703,1,1,16,Mercedes,2015,19,2015-11-29,Abu Dhabi Grand Prix
+26524,955,131,258,1,1,7,Mercedes,2016,8,2016-06-19,European Grand Prix
+26566,948,15,0,10,10,0,Sauber,2016,1,2016-03-20,Australian Grand Prix
+26567,948,209,0,11,11,0,Manor Marussia,2016,1,2016-03-20,Australian Grand Prix
+26557,948,131,43,1,1,1,Mercedes,2016,1,2016-03-20,Australian Grand Prix
+26565,948,1,0,9,9,0,McLaren,2016,1,2016-03-20,Australian Grand Prix
+26564,948,4,0,8,8,0,Renault,2016,1,2016-03-20,Australian Grand Prix
+26563,948,5,3,7,7,0,Toro Rosso,2016,1,2016-03-20,Australian Grand Prix
+26562,948,10,6,6,6,0,Force India,2016,1,2016-03-20,Australian Grand Prix
+26561,948,210,8,5,5,0,Haas F1 Team,2016,1,2016-03-20,Australian Grand Prix
+26560,948,3,14,3,3,0,Williams,2016,1,2016-03-20,Australian Grand Prix
+26559,948,9,12,4,4,0,Red Bull,2016,1,2016-03-20,Australian Grand Prix
+26558,948,6,15,2,2,0,Ferrari,2016,1,2016-03-20,Australian Grand Prix
+26447,949,131,83,1,1,2,Mercedes,2016,2,2016-04-03,Bahrain Grand Prix
+26448,949,6,33,2,2,0,Ferrari,2016,2,2016-04-03,Bahrain Grand Prix
+26449,949,9,30,3,3,0,Red Bull,2016,2,2016-04-03,Bahrain Grand Prix
+26450,949,3,20,4,4,0,Williams,2016,2,2016-04-03,Bahrain Grand Prix
+26451,949,210,18,5,5,0,Haas F1 Team,2016,2,2016-04-03,Bahrain Grand Prix
+26452,949,10,6,7,7,0,Force India,2016,2,2016-04-03,Bahrain Grand Prix
+26453,949,5,11,6,6,0,Toro Rosso,2016,2,2016-04-03,Bahrain Grand Prix
+26454,949,4,0,9,9,0,Renault,2016,2,2016-04-03,Bahrain Grand Prix
+26455,949,1,1,8,8,0,McLaren,2016,2,2016-04-03,Bahrain Grand Prix
+26456,949,15,0,10,10,0,Sauber,2016,2,2016-04-03,Bahrain Grand Prix
+26457,949,209,0,11,11,0,Manor Marussia,2016,2,2016-04-03,Bahrain Grand Prix
+26458,950,131,114,1,1,3,Mercedes,2016,3,2016-04-17,Chinese Grand Prix
+26459,950,6,61,2,2,0,Ferrari,2016,3,2016-04-17,Chinese Grand Prix
+26460,950,9,57,3,3,0,Red Bull,2016,3,2016-04-17,Chinese Grand Prix
+26461,950,3,29,4,4,0,Williams,2016,3,2016-04-17,Chinese Grand Prix
+26462,950,210,18,5,5,0,Haas F1 Team,2016,3,2016-04-17,Chinese Grand Prix
+26463,950,10,6,7,7,0,Force India,2016,3,2016-04-17,Chinese Grand Prix
+26464,950,5,17,6,6,0,Toro Rosso,2016,3,2016-04-17,Chinese Grand Prix
+26465,950,4,0,9,9,0,Renault,2016,3,2016-04-17,Chinese Grand Prix
+26466,950,1,1,8,8,0,McLaren,2016,3,2016-04-17,Chinese Grand Prix
+26467,950,15,0,10,10,0,Sauber,2016,3,2016-04-17,Chinese Grand Prix
+26468,950,209,0,11,11,0,Manor Marussia,2016,3,2016-04-17,Chinese Grand Prix
+26469,951,131,157,1,1,4,Mercedes,2016,4,2016-05-01,Russian Grand Prix
+26470,951,6,76,2,2,0,Ferrari,2016,4,2016-05-01,Russian Grand Prix
+26471,951,9,57,3,3,0,Red Bull,2016,4,2016-05-01,Russian Grand Prix
+26472,951,3,51,4,4,0,Williams,2016,4,2016-05-01,Russian Grand Prix
+26473,951,210,22,5,5,0,Haas F1 Team,2016,4,2016-05-01,Russian Grand Prix
+26474,951,10,8,8,8,0,Force India,2016,4,2016-05-01,Russian Grand Prix
+26475,951,5,17,6,6,0,Toro Rosso,2016,4,2016-05-01,Russian Grand Prix
+26476,951,4,6,9,9,0,Renault,2016,4,2016-05-01,Russian Grand Prix
+26477,951,1,10,7,7,0,McLaren,2016,4,2016-05-01,Russian Grand Prix
+26478,951,15,0,10,10,0,Sauber,2016,4,2016-05-01,Russian Grand Prix
+26479,951,209,0,11,11,0,Manor Marussia,2016,4,2016-05-01,Russian Grand Prix
+26480,952,131,157,1,1,4,Mercedes,2016,5,2016-05-15,Spanish Grand Prix
+26481,952,6,109,2,2,0,Ferrari,2016,5,2016-05-15,Spanish Grand Prix
+26482,952,9,94,3,3,1,Red Bull,2016,5,2016-05-15,Spanish Grand Prix
+26483,952,3,65,4,4,0,Williams,2016,5,2016-05-15,Spanish Grand Prix
+26484,952,210,22,6,6,0,Haas F1 Team,2016,5,2016-05-15,Spanish Grand Prix
+26485,952,10,14,7,7,0,Force India,2016,5,2016-05-15,Spanish Grand Prix
+26486,952,5,26,5,5,0,Toro Rosso,2016,5,2016-05-15,Spanish Grand Prix
+26487,952,4,6,9,9,0,Renault,2016,5,2016-05-15,Spanish Grand Prix
+26488,952,1,12,8,8,0,McLaren,2016,5,2016-05-15,Spanish Grand Prix
+26489,952,15,0,10,10,0,Sauber,2016,5,2016-05-15,Spanish Grand Prix
+26490,952,209,0,11,11,0,Manor Marussia,2016,5,2016-05-15,Spanish Grand Prix
+26491,953,131,188,1,1,5,Mercedes,2016,6,2016-05-29,Monaco Grand Prix
+26492,953,6,121,2,2,0,Ferrari,2016,6,2016-05-29,Monaco Grand Prix
+26493,953,9,112,3,3,1,Red Bull,2016,6,2016-05-29,Monaco Grand Prix
+26494,953,3,66,4,4,0,Williams,2016,6,2016-05-29,Monaco Grand Prix
+26495,953,210,22,8,8,0,Haas F1 Team,2016,6,2016-05-29,Monaco Grand Prix
+26496,953,10,37,5,5,0,Force India,2016,6,2016-05-29,Monaco Grand Prix
+26497,953,5,30,6,6,0,Toro Rosso,2016,6,2016-05-29,Monaco Grand Prix
+26498,953,4,6,9,9,0,Renault,2016,6,2016-05-29,Monaco Grand Prix
+26499,953,1,24,7,7,0,McLaren,2016,6,2016-05-29,Monaco Grand Prix
+26500,953,15,0,10,10,0,Sauber,2016,6,2016-05-29,Monaco Grand Prix
+26501,953,209,0,11,11,0,Manor Marussia,2016,6,2016-05-29,Monaco Grand Prix
+26502,954,131,223,1,1,6,Mercedes,2016,7,2016-06-12,Canadian Grand Prix
+26503,954,6,147,2,2,0,Ferrari,2016,7,2016-06-12,Canadian Grand Prix
+26504,954,9,130,3,3,1,Red Bull,2016,7,2016-06-12,Canadian Grand Prix
+26505,954,3,81,4,4,0,Williams,2016,7,2016-06-12,Canadian Grand Prix
+26506,954,210,22,8,8,0,Haas F1 Team,2016,7,2016-06-12,Canadian Grand Prix
+26507,954,10,42,5,5,0,Force India,2016,7,2016-06-12,Canadian Grand Prix
+26508,954,5,32,6,6,0,Toro Rosso,2016,7,2016-06-12,Canadian Grand Prix
+26509,954,4,6,9,9,0,Renault,2016,7,2016-06-12,Canadian Grand Prix
+26510,954,1,24,7,7,0,McLaren,2016,7,2016-06-12,Canadian Grand Prix
+26511,954,15,0,10,10,0,Sauber,2016,7,2016-06-12,Canadian Grand Prix
+26512,954,209,0,11,11,0,Manor Marussia,2016,7,2016-06-12,Canadian Grand Prix
+26525,955,6,177,2,2,0,Ferrari,2016,8,2016-06-19,European Grand Prix
+26526,955,9,140,3,3,1,Red Bull,2016,8,2016-06-19,European Grand Prix
+26527,955,3,90,4,4,0,Williams,2016,8,2016-06-19,European Grand Prix
+26528,955,210,22,8,8,0,Haas F1 Team,2016,8,2016-06-19,European Grand Prix
+26529,955,10,59,5,5,0,Force India,2016,8,2016-06-19,European Grand Prix
+26530,955,5,32,6,6,0,Toro Rosso,2016,8,2016-06-19,European Grand Prix
+26531,955,4,6,9,9,0,Renault,2016,8,2016-06-19,European Grand Prix
+26532,955,1,24,7,7,0,McLaren,2016,8,2016-06-19,European Grand Prix
+26533,955,15,0,10,10,0,Sauber,2016,8,2016-06-19,European Grand Prix
+26534,955,209,0,11,11,0,Manor Marussia,2016,8,2016-06-19,European Grand Prix
+26535,956,131,295,1,1,8,Mercedes,2016,9,2016-07-03,Austrian Grand Prix
+26536,956,6,192,2,2,0,Ferrari,2016,9,2016-07-03,Austrian Grand Prix
+26537,956,9,168,3,3,1,Red Bull,2016,9,2016-07-03,Austrian Grand Prix
+26538,956,3,92,4,4,0,Williams,2016,9,2016-07-03,Austrian Grand Prix
+26539,956,210,28,8,8,0,Haas F1 Team,2016,9,2016-07-03,Austrian Grand Prix
+26540,956,10,59,5,5,0,Force India,2016,9,2016-07-03,Austrian Grand Prix
+26541,956,5,36,6,6,0,Toro Rosso,2016,9,2016-07-03,Austrian Grand Prix
+26542,956,4,6,9,9,0,Renault,2016,9,2016-07-03,Austrian Grand Prix
+26543,956,1,32,7,7,0,McLaren,2016,9,2016-07-03,Austrian Grand Prix
+26544,956,15,0,11,11,0,Sauber,2016,9,2016-07-03,Austrian Grand Prix
+26545,956,209,1,10,10,0,Manor Marussia,2016,9,2016-07-03,Austrian Grand Prix
+26546,957,131,335,1,1,9,Mercedes,2016,10,2016-07-10,British Grand Prix
+26547,957,6,204,2,2,0,Ferrari,2016,10,2016-07-10,British Grand Prix
+26548,957,9,198,3,3,1,Red Bull,2016,10,2016-07-10,British Grand Prix
+26549,957,3,92,4,4,0,Williams,2016,10,2016-07-10,British Grand Prix
+26550,957,210,28,8,8,0,Haas F1 Team,2016,10,2016-07-10,British Grand Prix
+26551,957,10,73,5,5,0,Force India,2016,10,2016-07-10,British Grand Prix
+26552,957,5,41,6,6,0,Toro Rosso,2016,10,2016-07-10,British Grand Prix
+26553,957,4,6,9,9,0,Renault,2016,10,2016-07-10,British Grand Prix
+26554,957,1,32,7,7,0,McLaren,2016,10,2016-07-10,British Grand Prix
+26555,957,15,0,11,11,0,Sauber,2016,10,2016-07-10,British Grand Prix
+26556,957,209,1,10,10,0,Manor Marussia,2016,10,2016-07-10,British Grand Prix
+26568,958,131,378,1,1,10,Mercedes,2016,11,2016-07-24,Hungarian Grand Prix
+26569,958,6,224,2,2,0,Ferrari,2016,11,2016-07-24,Hungarian Grand Prix
+26570,958,9,223,3,3,1,Red Bull,2016,11,2016-07-24,Hungarian Grand Prix
+26571,958,3,94,4,4,0,Williams,2016,11,2016-07-24,Hungarian Grand Prix
+26572,958,210,28,8,8,0,Haas F1 Team,2016,11,2016-07-24,Hungarian Grand Prix
+26573,958,10,74,5,5,0,Force India,2016,11,2016-07-24,Hungarian Grand Prix
+26574,958,5,45,6,6,0,Toro Rosso,2016,11,2016-07-24,Hungarian Grand Prix
+26575,958,4,6,9,9,0,Renault,2016,11,2016-07-24,Hungarian Grand Prix
+26576,958,1,38,7,7,0,McLaren,2016,11,2016-07-24,Hungarian Grand Prix
+26577,958,15,0,11,11,0,Sauber,2016,11,2016-07-24,Hungarian Grand Prix
+26578,958,209,1,10,10,0,Manor Marussia,2016,11,2016-07-24,Hungarian Grand Prix
+26579,959,131,415,1,1,11,Mercedes,2016,12,2016-07-31,German Grand Prix
+26580,959,6,242,3,3,0,Ferrari,2016,12,2016-07-31,German Grand Prix
+26581,959,9,256,2,2,1,Red Bull,2016,12,2016-07-31,German Grand Prix
+26582,959,3,96,4,4,0,Williams,2016,12,2016-07-31,German Grand Prix
+26583,959,210,28,8,8,0,Haas F1 Team,2016,12,2016-07-31,German Grand Prix
+26584,959,10,81,5,5,0,Force India,2016,12,2016-07-31,German Grand Prix
+26585,959,5,45,6,6,0,Toro Rosso,2016,12,2016-07-31,German Grand Prix
+26586,959,4,6,9,9,0,Renault,2016,12,2016-07-31,German Grand Prix
+26587,959,1,42,7,7,0,McLaren,2016,12,2016-07-31,German Grand Prix
+26588,959,15,0,11,11,0,Sauber,2016,12,2016-07-31,German Grand Prix
+26589,959,209,1,10,10,0,Manor Marussia,2016,12,2016-07-31,German Grand Prix
+26590,960,131,455,1,1,12,Mercedes,2016,13,2016-08-28,Belgian Grand Prix
+26591,960,6,252,3,3,0,Ferrari,2016,13,2016-08-28,Belgian Grand Prix
+26592,960,9,274,2,2,1,Red Bull,2016,13,2016-08-28,Belgian Grand Prix
+26593,960,3,101,5,5,0,Williams,2016,13,2016-08-28,Belgian Grand Prix
+26594,960,210,28,8,8,0,Haas F1 Team,2016,13,2016-08-28,Belgian Grand Prix
+26595,960,10,103,4,4,0,Force India,2016,13,2016-08-28,Belgian Grand Prix
+26596,960,5,45,7,7,0,Toro Rosso,2016,13,2016-08-28,Belgian Grand Prix
+26597,960,4,6,9,9,0,Renault,2016,13,2016-08-28,Belgian Grand Prix
+26598,960,1,48,6,6,0,McLaren,2016,13,2016-08-28,Belgian Grand Prix
+26599,960,15,0,11,11,0,Sauber,2016,13,2016-08-28,Belgian Grand Prix
+26600,960,209,1,10,10,0,Manor Marussia,2016,13,2016-08-28,Belgian Grand Prix
+26601,961,131,498,1,1,13,Mercedes,2016,14,2016-09-04,Italian Grand Prix
+26602,961,6,279,3,3,0,Ferrari,2016,14,2016-09-04,Italian Grand Prix
+26603,961,9,290,2,2,1,Red Bull,2016,14,2016-09-04,Italian Grand Prix
+26604,961,3,111,4,4,0,Williams,2016,14,2016-09-04,Italian Grand Prix
+26605,961,210,28,8,8,0,Haas F1 Team,2016,14,2016-09-04,Italian Grand Prix
+26606,961,10,108,5,5,0,Force India,2016,14,2016-09-04,Italian Grand Prix
+26607,961,5,45,7,7,0,Toro Rosso,2016,14,2016-09-04,Italian Grand Prix
+26608,961,4,6,9,9,0,Renault,2016,14,2016-09-04,Italian Grand Prix
+26609,961,1,48,6,6,0,McLaren,2016,14,2016-09-04,Italian Grand Prix
+26610,961,15,0,11,11,0,Sauber,2016,14,2016-09-04,Italian Grand Prix
+26611,961,209,1,10,10,0,Manor Marussia,2016,14,2016-09-04,Italian Grand Prix
+26612,962,131,538,1,1,14,Mercedes,2016,15,2016-09-18,Singapore Grand Prix
+26613,962,6,301,3,3,0,Ferrari,2016,15,2016-09-18,Singapore Grand Prix
+26614,962,9,316,2,2,1,Red Bull,2016,15,2016-09-18,Singapore Grand Prix
+26615,962,3,111,5,5,0,Williams,2016,15,2016-09-18,Singapore Grand Prix
+26616,962,210,28,8,8,0,Haas F1 Team,2016,15,2016-09-18,Singapore Grand Prix
+26617,962,10,112,4,4,0,Force India,2016,15,2016-09-18,Singapore Grand Prix
+26618,962,5,47,7,7,0,Toro Rosso,2016,15,2016-09-18,Singapore Grand Prix
+26619,962,4,7,9,9,0,Renault,2016,15,2016-09-18,Singapore Grand Prix
+26620,962,1,54,6,6,0,McLaren,2016,15,2016-09-18,Singapore Grand Prix
+26621,962,15,0,11,11,0,Sauber,2016,15,2016-09-18,Singapore Grand Prix
+26622,962,209,1,10,10,0,Manor Marussia,2016,15,2016-09-18,Singapore Grand Prix
+26623,963,131,553,1,1,14,Mercedes,2016,16,2016-10-02,Malaysian Grand Prix
+26624,963,6,313,3,3,0,Ferrari,2016,16,2016-10-02,Malaysian Grand Prix
+26625,963,9,359,2,2,2,Red Bull,2016,16,2016-10-02,Malaysian Grand Prix
+26626,963,3,121,5,5,0,Williams,2016,16,2016-10-02,Malaysian Grand Prix
+26627,963,210,28,8,8,0,Haas F1 Team,2016,16,2016-10-02,Malaysian Grand Prix
+26628,963,10,124,4,4,0,Force India,2016,16,2016-10-02,Malaysian Grand Prix
+26629,963,5,47,7,7,0,Toro Rosso,2016,16,2016-10-02,Malaysian Grand Prix
+26630,963,4,8,9,9,0,Renault,2016,16,2016-10-02,Malaysian Grand Prix
+26631,963,1,62,6,6,0,McLaren,2016,16,2016-10-02,Malaysian Grand Prix
+26632,963,15,0,11,11,0,Sauber,2016,16,2016-10-02,Malaysian Grand Prix
+26633,963,209,1,10,10,0,Manor Marussia,2016,16,2016-10-02,Malaysian Grand Prix
+26634,964,131,593,1,1,15,Mercedes,2016,17,2016-10-09,Japanese Grand Prix
+26635,964,6,335,3,3,0,Ferrari,2016,17,2016-10-09,Japanese Grand Prix
+26636,964,9,385,2,2,2,Red Bull,2016,17,2016-10-09,Japanese Grand Prix
+26637,964,3,124,5,5,0,Williams,2016,17,2016-10-09,Japanese Grand Prix
+26638,964,210,28,8,8,0,Haas F1 Team,2016,17,2016-10-09,Japanese Grand Prix
+26639,964,10,134,4,4,0,Force India,2016,17,2016-10-09,Japanese Grand Prix
+26640,964,5,47,7,7,0,Toro Rosso,2016,17,2016-10-09,Japanese Grand Prix
+26641,964,4,8,9,9,0,Renault,2016,17,2016-10-09,Japanese Grand Prix
+26642,964,1,62,6,6,0,McLaren,2016,17,2016-10-09,Japanese Grand Prix
+26643,964,15,0,11,11,0,Sauber,2016,17,2016-10-09,Japanese Grand Prix
+26644,964,209,1,10,10,0,Manor Marussia,2016,17,2016-10-09,Japanese Grand Prix
+26712,967,6,375,3,3,0,Ferrari,2016,20,2016-11-13,Brazilian Grand Prix
+26697,965,1,74,6,6,0,McLaren,2016,18,2016-10-23,United States Grand Prix
+26711,967,131,722,1,1,18,Mercedes,2016,20,2016-11-13,Brazilian Grand Prix
+26698,965,15,0,11,11,0,Sauber,2016,18,2016-10-23,United States Grand Prix
+26690,965,6,347,3,3,0,Ferrari,2016,18,2016-10-23,United States Grand Prix
+26696,965,4,8,9,9,0,Renault,2016,18,2016-10-23,United States Grand Prix
+26695,965,5,55,7,7,0,Toro Rosso,2016,18,2016-10-23,United States Grand Prix
+26694,965,10,138,4,4,0,Force India,2016,18,2016-10-23,United States Grand Prix
+26692,965,3,130,5,5,0,Williams,2016,18,2016-10-23,United States Grand Prix
+26693,965,210,29,8,8,0,Haas F1 Team,2016,18,2016-10-23,United States Grand Prix
+26691,965,9,400,2,2,2,Red Bull,2016,18,2016-10-23,United States Grand Prix
+26689,965,131,636,1,1,16,Mercedes,2016,18,2016-10-23,United States Grand Prix
+26708,966,1,74,6,6,0,McLaren,2016,19,2016-10-30,Mexican Grand Prix
+26710,966,209,1,10,10,0,Manor Marussia,2016,19,2016-10-30,Mexican Grand Prix
+26709,966,15,0,11,11,0,Sauber,2016,19,2016-10-30,Mexican Grand Prix
+26701,966,6,365,3,3,0,Ferrari,2016,19,2016-10-30,Mexican Grand Prix
+26707,966,4,8,9,9,0,Renault,2016,19,2016-10-30,Mexican Grand Prix
+26706,966,5,55,7,7,0,Toro Rosso,2016,19,2016-10-30,Mexican Grand Prix
+26705,966,10,145,4,4,0,Force India,2016,19,2016-10-30,Mexican Grand Prix
+26703,966,3,136,5,5,0,Williams,2016,19,2016-10-30,Mexican Grand Prix
+26704,966,210,29,8,8,0,Haas F1 Team,2016,19,2016-10-30,Mexican Grand Prix
+26702,966,9,427,2,2,2,Red Bull,2016,19,2016-10-30,Mexican Grand Prix
+26700,966,131,679,1,1,17,Mercedes,2016,19,2016-10-30,Mexican Grand Prix
+26699,965,209,1,10,10,0,Manor Marussia,2016,18,2016-10-23,United States Grand Prix
+26713,967,9,446,2,2,2,Red Bull,2016,20,2016-11-13,Brazilian Grand Prix
+26714,967,3,136,5,5,0,Williams,2016,20,2016-11-13,Brazilian Grand Prix
+26715,967,210,29,8,8,0,Haas F1 Team,2016,20,2016-11-13,Brazilian Grand Prix
+26716,967,10,163,4,4,0,Force India,2016,20,2016-11-13,Brazilian Grand Prix
+26717,967,5,63,7,7,0,Toro Rosso,2016,20,2016-11-13,Brazilian Grand Prix
+26718,967,4,8,9,9,0,Renault,2016,20,2016-11-13,Brazilian Grand Prix
+26719,967,1,75,6,6,0,McLaren,2016,20,2016-11-13,Brazilian Grand Prix
+26720,967,15,2,10,10,0,Sauber,2016,20,2016-11-13,Brazilian Grand Prix
+26721,967,209,1,11,11,0,Manor Marussia,2016,20,2016-11-13,Brazilian Grand Prix
+26722,968,131,765,1,1,19,Mercedes,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26723,968,6,398,3,3,0,Ferrari,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26724,968,9,468,2,2,2,Red Bull,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26725,968,3,138,5,5,0,Williams,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26726,968,210,29,8,8,0,Haas F1 Team,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26727,968,10,173,4,4,0,Force India,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26728,968,5,63,7,7,0,Toro Rosso,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26729,968,4,8,9,9,0,Renault,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26730,968,1,76,6,6,0,McLaren,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26731,968,15,2,10,10,0,Sauber,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26732,968,209,1,11,11,0,Manor Marussia,2016,21,2016-11-27,Abu Dhabi Grand Prix
+26734,969,131,33,2,2,0,Mercedes,2017,1,2017-03-26,Australian Grand Prix
+26735,969,9,10,3,3,0,Red Bull,2017,1,2017-03-26,Australian Grand Prix
+26736,969,3,8,4,4,0,Williams,2017,1,2017-03-26,Australian Grand Prix
+26737,969,10,7,5,5,0,Force India,2017,1,2017-03-26,Australian Grand Prix
+26738,969,5,6,6,6,0,Toro Rosso,2017,1,2017-03-26,Australian Grand Prix
+26739,969,4,0,7,7,0,Renault,2017,1,2017-03-26,Australian Grand Prix
+26740,969,15,0,8,8,0,Sauber,2017,1,2017-03-26,Australian Grand Prix
+26741,969,1,0,9,9,0,McLaren,2017,1,2017-03-26,Australian Grand Prix
+26742,969,210,0,10,10,0,Haas F1 Team,2017,1,2017-03-26,Australian Grand Prix
+26743,970,6,65,2,2,1,Ferrari,2017,2,2017-04-09,Chinese Grand Prix
+26744,970,131,66,1,1,1,Mercedes,2017,2,2017-04-09,Chinese Grand Prix
+26745,970,9,37,3,3,0,Red Bull,2017,2,2017-04-09,Chinese Grand Prix
+26746,970,3,8,6,6,0,Williams,2017,2,2017-04-09,Chinese Grand Prix
+26747,970,10,10,5,5,0,Force India,2017,2,2017-04-09,Chinese Grand Prix
+26748,970,5,12,4,4,0,Toro Rosso,2017,2,2017-04-09,Chinese Grand Prix
+26749,970,4,0,8,8,0,Renault,2017,2,2017-04-09,Chinese Grand Prix
+26750,970,15,0,9,9,0,Sauber,2017,2,2017-04-09,Chinese Grand Prix
+26751,970,1,0,10,10,0,McLaren,2017,2,2017-04-09,Chinese Grand Prix
+26752,970,210,4,7,7,0,Haas F1 Team,2017,2,2017-04-09,Chinese Grand Prix
+26753,971,6,102,1,1,2,Ferrari,2017,3,2017-04-16,Bahrain Grand Prix
+26754,971,131,99,2,2,1,Mercedes,2017,3,2017-04-16,Bahrain Grand Prix
+26755,971,9,47,3,3,0,Red Bull,2017,3,2017-04-16,Bahrain Grand Prix
+26756,971,3,16,5,5,0,Williams,2017,3,2017-04-16,Bahrain Grand Prix
+26757,971,10,17,4,4,0,Force India,2017,3,2017-04-16,Bahrain Grand Prix
+26758,971,5,12,6,6,0,Toro Rosso,2017,3,2017-04-16,Bahrain Grand Prix
+26759,971,4,2,8,8,0,Renault,2017,3,2017-04-16,Bahrain Grand Prix
+26760,971,15,0,9,9,0,Sauber,2017,3,2017-04-16,Bahrain Grand Prix
+26761,971,1,0,10,10,0,McLaren,2017,3,2017-04-16,Bahrain Grand Prix
+26762,971,210,8,7,7,0,Haas F1 Team,2017,3,2017-04-16,Bahrain Grand Prix
+26763,972,6,135,2,2,2,Ferrari,2017,4,2017-04-30,Russian Grand Prix
+26764,972,131,136,1,1,2,Mercedes,2017,4,2017-04-30,Russian Grand Prix
+26765,972,9,57,3,3,0,Red Bull,2017,4,2017-04-30,Russian Grand Prix
+26766,972,3,18,5,5,0,Williams,2017,4,2017-04-30,Russian Grand Prix
+26767,972,10,31,4,4,0,Force India,2017,4,2017-04-30,Russian Grand Prix
+26768,972,5,13,6,6,0,Toro Rosso,2017,4,2017-04-30,Russian Grand Prix
+26769,972,4,6,8,8,0,Renault,2017,4,2017-04-30,Russian Grand Prix
+26770,972,15,0,9,9,0,Sauber,2017,4,2017-04-30,Russian Grand Prix
+26771,972,1,0,10,10,0,McLaren,2017,4,2017-04-30,Russian Grand Prix
+26772,972,210,8,7,7,0,Haas F1 Team,2017,4,2017-04-30,Russian Grand Prix
+26773,973,6,153,2,2,2,Ferrari,2017,5,2017-05-14,Spanish Grand Prix
+26774,973,131,161,1,1,3,Mercedes,2017,5,2017-05-14,Spanish Grand Prix
+26775,973,9,72,3,3,0,Red Bull,2017,5,2017-05-14,Spanish Grand Prix
+26776,973,3,18,6,6,0,Williams,2017,5,2017-05-14,Spanish Grand Prix
+26777,973,10,53,4,4,0,Force India,2017,5,2017-05-14,Spanish Grand Prix
+26778,973,5,21,5,5,0,Toro Rosso,2017,5,2017-05-14,Spanish Grand Prix
+26779,973,4,14,7,7,0,Renault,2017,5,2017-05-14,Spanish Grand Prix
+26780,973,15,4,9,9,0,Sauber,2017,5,2017-05-14,Spanish Grand Prix
+26781,973,1,0,10,10,0,McLaren,2017,5,2017-05-14,Spanish Grand Prix
+26782,973,210,9,8,8,0,Haas F1 Team,2017,5,2017-05-14,Spanish Grand Prix
+26783,974,6,196,1,1,3,Ferrari,2017,6,2017-05-28,Monaco Grand Prix
+26784,974,131,179,2,2,3,Mercedes,2017,6,2017-05-28,Monaco Grand Prix
+26785,974,9,97,3,3,0,Red Bull,2017,6,2017-05-28,Monaco Grand Prix
+26786,974,3,20,6,6,0,Williams,2017,6,2017-05-28,Monaco Grand Prix
+26787,974,10,53,4,4,0,Force India,2017,6,2017-05-28,Monaco Grand Prix
+26788,974,5,29,5,5,0,Toro Rosso,2017,6,2017-05-28,Monaco Grand Prix
+26789,974,4,14,7,7,0,Renault,2017,6,2017-05-28,Monaco Grand Prix
+26790,974,15,4,9,9,0,Sauber,2017,6,2017-05-28,Monaco Grand Prix
+26791,974,1,0,10,10,0,McLaren,2017,6,2017-05-28,Monaco Grand Prix
+26792,974,210,14,8,8,0,Haas F1 Team,2017,6,2017-05-28,Monaco Grand Prix
+26793,975,6,214,2,2,3,Ferrari,2017,7,2017-06-11,Canadian Grand Prix
+26794,975,131,222,1,1,4,Mercedes,2017,7,2017-06-11,Canadian Grand Prix
+26795,975,9,112,3,3,0,Red Bull,2017,7,2017-06-11,Canadian Grand Prix
+26796,975,3,22,6,6,0,Williams,2017,7,2017-06-11,Canadian Grand Prix
+26797,975,10,71,4,4,0,Force India,2017,7,2017-06-11,Canadian Grand Prix
+26798,975,5,29,5,5,0,Toro Rosso,2017,7,2017-06-11,Canadian Grand Prix
+26799,975,4,18,7,7,0,Renault,2017,7,2017-06-11,Canadian Grand Prix
+26800,975,15,4,9,9,0,Sauber,2017,7,2017-06-11,Canadian Grand Prix
+26801,975,1,0,10,10,0,McLaren,2017,7,2017-06-11,Canadian Grand Prix
+26802,975,210,15,8,8,0,Haas F1 Team,2017,7,2017-06-11,Canadian Grand Prix
+26803,976,6,226,2,2,3,Ferrari,2017,8,2017-06-25,Azerbaijan Grand Prix
+26804,976,131,250,1,1,4,Mercedes,2017,8,2017-06-25,Azerbaijan Grand Prix
+26805,976,9,137,3,3,1,Red Bull,2017,8,2017-06-25,Azerbaijan Grand Prix
+26806,976,3,37,5,5,0,Williams,2017,8,2017-06-25,Azerbaijan Grand Prix
+26807,976,10,79,4,4,0,Force India,2017,8,2017-06-25,Azerbaijan Grand Prix
+26808,976,5,33,6,6,0,Toro Rosso,2017,8,2017-06-25,Azerbaijan Grand Prix
+26809,976,4,18,8,8,0,Renault,2017,8,2017-06-25,Azerbaijan Grand Prix
+26810,976,15,5,9,9,0,Sauber,2017,8,2017-06-25,Azerbaijan Grand Prix
+26811,976,1,2,10,10,0,McLaren,2017,8,2017-06-25,Azerbaijan Grand Prix
+26812,976,210,21,7,7,0,Haas F1 Team,2017,8,2017-06-25,Azerbaijan Grand Prix
+26813,977,6,254,2,2,3,Ferrari,2017,9,2017-07-09,Austrian Grand Prix
+26814,977,131,287,1,1,5,Mercedes,2017,9,2017-07-09,Austrian Grand Prix
+26815,977,9,152,3,3,1,Red Bull,2017,9,2017-07-09,Austrian Grand Prix
+26816,977,3,40,5,5,0,Williams,2017,9,2017-07-09,Austrian Grand Prix
+26817,977,10,89,4,4,0,Force India,2017,9,2017-07-09,Austrian Grand Prix
+26818,977,5,33,6,6,0,Toro Rosso,2017,9,2017-07-09,Austrian Grand Prix
+26819,977,4,18,8,8,0,Renault,2017,9,2017-07-09,Austrian Grand Prix
+26820,977,15,5,9,9,0,Sauber,2017,9,2017-07-09,Austrian Grand Prix
+26821,977,1,2,10,10,0,McLaren,2017,9,2017-07-09,Austrian Grand Prix
+26822,977,210,29,7,7,0,Haas F1 Team,2017,9,2017-07-09,Austrian Grand Prix
+26823,978,6,275,2,2,3,Ferrari,2017,10,2017-07-16,British Grand Prix
+26824,978,131,330,1,1,6,Mercedes,2017,10,2017-07-16,British Grand Prix
+26825,978,9,174,3,3,1,Red Bull,2017,10,2017-07-16,British Grand Prix
+26826,978,3,41,5,5,0,Williams,2017,10,2017-07-16,British Grand Prix
+26827,978,10,95,4,4,0,Force India,2017,10,2017-07-16,British Grand Prix
+26828,978,5,33,6,6,0,Toro Rosso,2017,10,2017-07-16,British Grand Prix
+26829,978,4,26,8,8,0,Renault,2017,10,2017-07-16,British Grand Prix
+26830,978,15,5,9,9,0,Sauber,2017,10,2017-07-16,British Grand Prix
+26831,978,1,2,10,10,0,McLaren,2017,10,2017-07-16,British Grand Prix
+26832,978,210,29,7,7,0,Haas F1 Team,2017,10,2017-07-16,British Grand Prix
+26833,979,6,318,2,2,4,Ferrari,2017,11,2017-07-30,Hungarian Grand Prix
+26834,979,131,357,1,1,6,Mercedes,2017,11,2017-07-30,Hungarian Grand Prix
+26835,979,9,184,3,3,1,Red Bull,2017,11,2017-07-30,Hungarian Grand Prix
+26836,979,3,41,5,5,0,Williams,2017,11,2017-07-30,Hungarian Grand Prix
+26837,979,10,101,4,4,0,Force India,2017,11,2017-07-30,Hungarian Grand Prix
+26838,979,5,39,6,6,0,Toro Rosso,2017,11,2017-07-30,Hungarian Grand Prix
+26839,979,4,26,8,8,0,Renault,2017,11,2017-07-30,Hungarian Grand Prix
+26840,979,15,5,10,10,0,Sauber,2017,11,2017-07-30,Hungarian Grand Prix
+26841,979,1,11,9,9,0,McLaren,2017,11,2017-07-30,Hungarian Grand Prix
+26842,979,210,29,7,7,0,Haas F1 Team,2017,11,2017-07-30,Hungarian Grand Prix
+26843,980,6,348,2,2,4,Ferrari,2017,12,2017-08-27,Belgian Grand Prix
+26844,980,131,392,1,1,7,Mercedes,2017,12,2017-08-27,Belgian Grand Prix
+26845,980,9,199,3,3,1,Red Bull,2017,12,2017-08-27,Belgian Grand Prix
+26846,980,3,45,5,5,0,Williams,2017,12,2017-08-27,Belgian Grand Prix
+26847,980,10,103,4,4,0,Force India,2017,12,2017-08-27,Belgian Grand Prix
+26848,980,5,40,6,6,0,Toro Rosso,2017,12,2017-08-27,Belgian Grand Prix
+26849,980,4,34,8,8,0,Renault,2017,12,2017-08-27,Belgian Grand Prix
+26850,980,15,5,10,10,0,Sauber,2017,12,2017-08-27,Belgian Grand Prix
+26851,980,1,11,9,9,0,McLaren,2017,12,2017-08-27,Belgian Grand Prix
+26852,980,210,35,7,7,0,Haas F1 Team,2017,12,2017-08-27,Belgian Grand Prix
+26853,981,6,373,2,2,4,Ferrari,2017,13,2017-09-03,Italian Grand Prix
+26854,981,131,435,1,1,8,Mercedes,2017,13,2017-09-03,Italian Grand Prix
+26855,981,9,212,3,3,1,Red Bull,2017,13,2017-09-03,Italian Grand Prix
+26856,981,3,55,5,5,0,Williams,2017,13,2017-09-03,Italian Grand Prix
+26857,981,10,113,4,4,0,Force India,2017,13,2017-09-03,Italian Grand Prix
+26858,981,5,40,6,6,0,Toro Rosso,2017,13,2017-09-03,Italian Grand Prix
+26859,981,4,34,8,8,0,Renault,2017,13,2017-09-03,Italian Grand Prix
+26860,981,15,5,10,10,0,Sauber,2017,13,2017-09-03,Italian Grand Prix
+26861,981,1,11,9,9,0,McLaren,2017,13,2017-09-03,Italian Grand Prix
+26862,981,210,35,7,7,0,Haas F1 Team,2017,13,2017-09-03,Italian Grand Prix
+26863,982,6,373,2,2,4,Ferrari,2017,14,2017-09-17,Singapore Grand Prix
+26864,982,131,475,1,1,9,Mercedes,2017,14,2017-09-17,Singapore Grand Prix
+26865,982,9,230,3,3,1,Red Bull,2017,14,2017-09-17,Singapore Grand Prix
+26866,982,3,59,5,5,0,Williams,2017,14,2017-09-17,Singapore Grand Prix
+26867,982,10,124,4,4,0,Force India,2017,14,2017-09-17,Singapore Grand Prix
+26868,982,5,52,6,6,0,Toro Rosso,2017,14,2017-09-17,Singapore Grand Prix
+26869,982,4,42,7,7,0,Renault,2017,14,2017-09-17,Singapore Grand Prix
+26870,982,15,5,10,10,0,Sauber,2017,14,2017-09-17,Singapore Grand Prix
+26871,982,1,17,9,9,0,McLaren,2017,14,2017-09-17,Singapore Grand Prix
+26872,982,210,37,8,8,0,Haas F1 Team,2017,14,2017-09-17,Singapore Grand Prix
+26873,983,6,385,2,2,4,Ferrari,2017,15,2017-10-01,Malaysian Grand Prix
+26874,983,131,503,1,1,9,Mercedes,2017,15,2017-10-01,Malaysian Grand Prix
+26875,983,9,270,3,3,2,Red Bull,2017,15,2017-10-01,Malaysian Grand Prix
+26876,983,3,65,5,5,0,Williams,2017,15,2017-10-01,Malaysian Grand Prix
+26877,983,10,133,4,4,0,Force India,2017,15,2017-10-01,Malaysian Grand Prix
+26878,983,5,52,6,6,0,Toro Rosso,2017,15,2017-10-01,Malaysian Grand Prix
+26879,983,4,42,7,7,0,Renault,2017,15,2017-10-01,Malaysian Grand Prix
+26880,983,15,5,10,10,0,Sauber,2017,15,2017-10-01,Malaysian Grand Prix
+26881,983,1,23,9,9,0,McLaren,2017,15,2017-10-01,Malaysian Grand Prix
+26882,983,210,37,8,8,0,Haas F1 Team,2017,15,2017-10-01,Malaysian Grand Prix
+26883,984,6,395,2,2,4,Ferrari,2017,16,2017-10-08,Japanese Grand Prix
+26884,984,131,540,1,1,10,Mercedes,2017,16,2017-10-08,Japanese Grand Prix
+26885,984,9,303,3,3,2,Red Bull,2017,16,2017-10-08,Japanese Grand Prix
+26886,984,3,66,5,5,0,Williams,2017,16,2017-10-08,Japanese Grand Prix
+26887,984,10,147,4,4,0,Force India,2017,16,2017-10-08,Japanese Grand Prix
+26888,984,5,52,6,6,0,Toro Rosso,2017,16,2017-10-08,Japanese Grand Prix
+26889,984,4,42,8,8,0,Renault,2017,16,2017-10-08,Japanese Grand Prix
+26890,984,15,5,10,10,0,Sauber,2017,16,2017-10-08,Japanese Grand Prix
+26891,984,1,23,9,9,0,McLaren,2017,16,2017-10-08,Japanese Grand Prix
+26892,984,210,43,7,7,0,Haas F1 Team,2017,16,2017-10-08,Japanese Grand Prix
+26893,985,6,428,2,2,4,Ferrari,2017,17,2017-10-22,United States Grand Prix
+26894,985,131,575,1,1,11,Mercedes,2017,17,2017-10-22,United States Grand Prix
+26895,985,9,315,3,3,2,Red Bull,2017,17,2017-10-22,United States Grand Prix
+26896,985,3,68,5,5,0,Williams,2017,17,2017-10-22,United States Grand Prix
+26897,985,10,159,4,4,0,Force India,2017,17,2017-10-22,United States Grand Prix
+26898,985,5,53,6,6,0,Toro Rosso,2017,17,2017-10-22,United States Grand Prix
+26899,985,4,48,7,7,0,Renault,2017,17,2017-10-22,United States Grand Prix
+26900,985,15,5,10,10,0,Sauber,2017,17,2017-10-22,United States Grand Prix
+26901,985,1,23,9,9,0,McLaren,2017,17,2017-10-22,United States Grand Prix
+26902,985,210,43,8,8,0,Haas F1 Team,2017,17,2017-10-22,United States Grand Prix
+26903,986,6,455,2,2,4,Ferrari,2017,18,2017-10-29,Mexican Grand Prix
+26904,986,131,595,1,1,11,Mercedes,2017,18,2017-10-29,Mexican Grand Prix
+26905,986,9,340,3,3,3,Red Bull,2017,18,2017-10-29,Mexican Grand Prix
+26906,986,3,76,5,5,0,Williams,2017,18,2017-10-29,Mexican Grand Prix
+26907,986,10,175,4,4,0,Force India,2017,18,2017-10-29,Mexican Grand Prix
+26908,986,5,53,6,6,0,Toro Rosso,2017,18,2017-10-29,Mexican Grand Prix
+26909,986,4,48,7,7,0,Renault,2017,18,2017-10-29,Mexican Grand Prix
+26910,986,15,5,10,10,0,Sauber,2017,18,2017-10-29,Mexican Grand Prix
+26911,986,1,24,9,9,0,McLaren,2017,18,2017-10-29,Mexican Grand Prix
+26912,986,210,47,8,8,0,Haas F1 Team,2017,18,2017-10-29,Mexican Grand Prix
+26913,987,6,495,2,2,5,Ferrari,2017,19,2017-11-12,Brazilian Grand Prix
+26914,987,131,625,1,1,11,Mercedes,2017,19,2017-11-12,Brazilian Grand Prix
+26915,987,9,358,3,3,3,Red Bull,2017,19,2017-11-12,Brazilian Grand Prix
+26916,987,3,82,5,5,0,Williams,2017,19,2017-11-12,Brazilian Grand Prix
+26917,987,10,177,4,4,0,Force India,2017,19,2017-11-12,Brazilian Grand Prix
+26918,987,5,53,6,6,0,Toro Rosso,2017,19,2017-11-12,Brazilian Grand Prix
+26919,987,4,49,7,7,0,Renault,2017,19,2017-11-12,Brazilian Grand Prix
+26920,987,15,5,10,10,0,Sauber,2017,19,2017-11-12,Brazilian Grand Prix
+26921,987,1,28,9,9,0,McLaren,2017,19,2017-11-12,Brazilian Grand Prix
+26922,987,210,47,8,8,0,Haas F1 Team,2017,19,2017-11-12,Brazilian Grand Prix
+26923,988,6,522,2,2,5,Ferrari,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26924,988,131,668,1,1,12,Mercedes,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26925,988,9,368,3,3,3,Red Bull,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26926,988,3,83,5,5,0,Williams,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26927,988,10,187,4,4,0,Force India,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26928,988,5,53,7,7,0,Toro Rosso,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26929,988,4,57,6,6,0,Renault,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26930,988,15,5,10,10,0,Sauber,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26931,988,1,30,9,9,0,McLaren,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26932,988,210,47,8,8,0,Haas F1 Team,2017,20,2017-11-26,Abu Dhabi Grand Prix
+26933,989,6,40,1,1,1,Ferrari,2018,1,2018-03-25,Australian Grand Prix
+26934,989,131,22,2,2,0,Mercedes,2018,1,2018-03-25,Australian Grand Prix
+26935,989,9,20,3,3,0,Red Bull,2018,1,2018-03-25,Australian Grand Prix
+26936,989,1,12,4,4,0,McLaren,2018,1,2018-03-25,Australian Grand Prix
+26937,989,4,7,5,5,0,Renault,2018,1,2018-03-25,Australian Grand Prix
+26938,989,10,0,6,6,0,Force India,2018,1,2018-03-25,Australian Grand Prix
+26939,989,15,0,7,7,0,Sauber,2018,1,2018-03-25,Australian Grand Prix
+26940,989,3,0,8,8,0,Williams,2018,1,2018-03-25,Australian Grand Prix
+26941,989,5,0,9,9,0,Toro Rosso,2018,1,2018-03-25,Australian Grand Prix
+26942,989,210,0,10,10,0,Haas F1 Team,2018,1,2018-03-25,Australian Grand Prix
+26982,990,210,10,7,7,0,Haas F1 Team,2018,2,2018-04-08,Bahrain Grand Prix
+26979,990,15,2,8,8,0,Sauber,2018,2,2018-04-08,Bahrain Grand Prix
+26981,990,5,12,6,6,0,Toro Rosso,2018,2,2018-04-08,Bahrain Grand Prix
+26980,990,3,0,10,10,0,Williams,2018,2,2018-04-08,Bahrain Grand Prix
+26975,990,9,20,4,4,0,Red Bull,2018,2,2018-04-08,Bahrain Grand Prix
+26976,990,1,22,3,3,0,McLaren,2018,2,2018-04-08,Bahrain Grand Prix
+26977,990,4,15,5,5,0,Renault,2018,2,2018-04-08,Bahrain Grand Prix
+26978,990,10,1,9,9,0,Force India,2018,2,2018-04-08,Bahrain Grand Prix
+26974,990,131,55,2,2,0,Mercedes,2018,2,2018-04-08,Bahrain Grand Prix
+26973,990,6,65,1,1,2,Ferrari,2018,2,2018-04-08,Bahrain Grand Prix
+26963,991,6,84,2,2,2,Ferrari,2018,3,2018-04-15,Chinese Grand Prix
+26964,991,131,85,1,1,0,Mercedes,2018,3,2018-04-15,Chinese Grand Prix
+26965,991,9,55,3,3,1,Red Bull,2018,3,2018-04-15,Chinese Grand Prix
+26966,991,1,28,4,4,0,McLaren,2018,3,2018-04-15,Chinese Grand Prix
+26967,991,4,25,5,5,0,Renault,2018,3,2018-04-15,Chinese Grand Prix
+26968,991,10,1,9,9,0,Force India,2018,3,2018-04-15,Chinese Grand Prix
+26969,991,15,2,8,8,0,Sauber,2018,3,2018-04-15,Chinese Grand Prix
+26970,991,3,0,10,10,0,Williams,2018,3,2018-04-15,Chinese Grand Prix
+26971,991,5,12,6,6,0,Toro Rosso,2018,3,2018-04-15,Chinese Grand Prix
+26972,991,210,11,7,7,0,Haas F1 Team,2018,3,2018-04-15,Chinese Grand Prix
+26983,992,6,114,1,1,2,Ferrari,2018,4,2018-04-29,Azerbaijan Grand Prix
+26984,992,131,110,2,2,1,Mercedes,2018,4,2018-04-29,Azerbaijan Grand Prix
+26985,992,9,55,3,3,1,Red Bull,2018,4,2018-04-29,Azerbaijan Grand Prix
+26986,992,1,36,4,4,0,McLaren,2018,4,2018-04-29,Azerbaijan Grand Prix
+26987,992,4,35,5,5,0,Renault,2018,4,2018-04-29,Azerbaijan Grand Prix
+26988,992,10,16,6,6,0,Force India,2018,4,2018-04-29,Azerbaijan Grand Prix
+26989,992,15,10,9,9,0,Sauber,2018,4,2018-04-29,Azerbaijan Grand Prix
+26990,992,3,4,10,10,0,Williams,2018,4,2018-04-29,Azerbaijan Grand Prix
+26991,992,5,13,7,7,0,Toro Rosso,2018,4,2018-04-29,Azerbaijan Grand Prix
+26992,992,210,11,8,8,0,Haas F1 Team,2018,4,2018-04-29,Azerbaijan Grand Prix
+26993,993,6,126,2,2,2,Ferrari,2018,5,2018-05-13,Spanish Grand Prix
+26994,993,131,153,1,1,2,Mercedes,2018,5,2018-05-13,Spanish Grand Prix
+26995,993,9,80,3,3,1,Red Bull,2018,5,2018-05-13,Spanish Grand Prix
+26996,993,1,40,5,5,0,McLaren,2018,5,2018-05-13,Spanish Grand Prix
+26997,993,4,41,4,4,0,Renault,2018,5,2018-05-13,Spanish Grand Prix
+26998,993,10,18,7,7,0,Force India,2018,5,2018-05-13,Spanish Grand Prix
+26999,993,15,11,9,9,0,Sauber,2018,5,2018-05-13,Spanish Grand Prix
+27000,993,3,4,10,10,0,Williams,2018,5,2018-05-13,Spanish Grand Prix
+27001,993,5,13,8,8,0,Toro Rosso,2018,5,2018-05-13,Spanish Grand Prix
+27002,993,210,19,6,6,0,Haas F1 Team,2018,5,2018-05-13,Spanish Grand Prix
+27003,994,6,156,2,2,2,Ferrari,2018,6,2018-05-27,Monaco Grand Prix
+27004,994,131,178,1,1,2,Mercedes,2018,6,2018-05-27,Monaco Grand Prix
+27005,994,9,107,3,3,2,Red Bull,2018,6,2018-05-27,Monaco Grand Prix
+27006,994,1,40,5,5,0,McLaren,2018,6,2018-05-27,Monaco Grand Prix
+27007,994,4,46,4,4,0,Renault,2018,6,2018-05-27,Monaco Grand Prix
+27008,994,10,26,6,6,0,Force India,2018,6,2018-05-27,Monaco Grand Prix
+27009,994,15,11,9,9,0,Sauber,2018,6,2018-05-27,Monaco Grand Prix
+27010,994,3,4,10,10,0,Williams,2018,6,2018-05-27,Monaco Grand Prix
+27011,994,5,19,7,7,0,Toro Rosso,2018,6,2018-05-27,Monaco Grand Prix
+27012,994,210,19,8,8,0,Haas F1 Team,2018,6,2018-05-27,Monaco Grand Prix
+27013,995,6,189,2,2,3,Ferrari,2018,7,2018-06-10,Canadian Grand Prix
+27014,995,131,206,1,1,2,Mercedes,2018,7,2018-06-10,Canadian Grand Prix
+27015,995,9,134,3,3,2,Red Bull,2018,7,2018-06-10,Canadian Grand Prix
+27016,995,1,40,5,5,0,McLaren,2018,7,2018-06-10,Canadian Grand Prix
+27017,995,4,56,4,4,0,Renault,2018,7,2018-06-10,Canadian Grand Prix
+27018,995,10,28,6,6,0,Force India,2018,7,2018-06-10,Canadian Grand Prix
+27019,995,15,12,9,9,0,Sauber,2018,7,2018-06-10,Canadian Grand Prix
+27020,995,3,4,10,10,0,Williams,2018,7,2018-06-10,Canadian Grand Prix
+27021,995,5,19,7,7,0,Toro Rosso,2018,7,2018-06-10,Canadian Grand Prix
+27022,995,210,19,8,8,0,Haas F1 Team,2018,7,2018-06-10,Canadian Grand Prix
+27023,996,6,214,2,2,3,Ferrari,2018,8,2018-06-24,French Grand Prix
+27024,996,131,237,1,1,3,Mercedes,2018,8,2018-06-24,French Grand Prix
+27025,996,9,164,3,3,2,Red Bull,2018,8,2018-06-24,French Grand Prix
+27026,996,1,40,5,5,0,McLaren,2018,8,2018-06-24,French Grand Prix
+27027,996,4,62,4,4,0,Renault,2018,8,2018-06-24,French Grand Prix
+27028,996,10,28,6,6,0,Force India,2018,8,2018-06-24,French Grand Prix
+27029,996,15,13,9,9,0,Sauber,2018,8,2018-06-24,French Grand Prix
+27030,996,3,4,10,10,0,Williams,2018,8,2018-06-24,French Grand Prix
+27031,996,5,19,8,8,0,Toro Rosso,2018,8,2018-06-24,French Grand Prix
+27032,996,210,27,7,7,0,Haas F1 Team,2018,8,2018-06-24,French Grand Prix
+27033,997,6,247,1,1,3,Ferrari,2018,9,2018-07-01,Austrian Grand Prix
+27034,997,131,237,2,2,3,Mercedes,2018,9,2018-07-01,Austrian Grand Prix
+27035,997,9,189,3,3,3,Red Bull,2018,9,2018-07-01,Austrian Grand Prix
+27036,997,1,44,6,6,0,McLaren,2018,9,2018-07-01,Austrian Grand Prix
+27037,997,4,62,4,4,0,Renault,2018,9,2018-07-01,Austrian Grand Prix
+27038,997,10,42,7,7,0,Force India,2018,9,2018-07-01,Austrian Grand Prix
+27039,997,15,16,9,9,0,Sauber,2018,9,2018-07-01,Austrian Grand Prix
+27040,997,3,4,10,10,0,Williams,2018,9,2018-07-01,Austrian Grand Prix
+27041,997,5,19,8,8,0,Toro Rosso,2018,9,2018-07-01,Austrian Grand Prix
+27042,997,210,49,5,5,0,Haas F1 Team,2018,9,2018-07-01,Austrian Grand Prix
+27043,998,6,287,1,1,4,Ferrari,2018,10,2018-07-08,British Grand Prix
+27044,998,131,267,2,2,3,Mercedes,2018,10,2018-07-08,British Grand Prix
+27045,998,9,199,3,3,3,Red Bull,2018,10,2018-07-08,British Grand Prix
+27046,998,1,48,7,7,0,McLaren,2018,10,2018-07-08,British Grand Prix
+27047,998,4,70,4,4,0,Renault,2018,10,2018-07-08,British Grand Prix
+27048,998,10,49,6,6,0,Force India,2018,10,2018-07-08,British Grand Prix
+27049,998,15,16,9,9,0,Sauber,2018,10,2018-07-08,British Grand Prix
+27050,998,3,4,10,10,0,Williams,2018,10,2018-07-08,British Grand Prix
+27051,998,5,19,8,8,0,Toro Rosso,2018,10,2018-07-08,British Grand Prix
+27052,998,210,51,5,5,0,Haas F1 Team,2018,10,2018-07-08,British Grand Prix
+27053,999,6,302,2,2,4,Ferrari,2018,11,2018-07-22,German Grand Prix
+27054,999,131,310,1,1,4,Mercedes,2018,11,2018-07-22,German Grand Prix
+27055,999,9,211,3,3,3,Red Bull,2018,11,2018-07-22,German Grand Prix
+27056,999,1,48,7,7,0,McLaren,2018,11,2018-07-22,German Grand Prix
+27057,999,4,80,4,4,0,Renault,2018,11,2018-07-22,German Grand Prix
+27058,999,10,59,5,5,0,Force India,2018,11,2018-07-22,German Grand Prix
+27059,999,15,18,9,9,0,Sauber,2018,11,2018-07-22,German Grand Prix
+27060,999,3,4,10,10,0,Williams,2018,11,2018-07-22,German Grand Prix
+27061,999,5,20,8,8,0,Toro Rosso,2018,11,2018-07-22,German Grand Prix
+27062,999,210,59,6,6,0,Haas F1 Team,2018,11,2018-07-22,German Grand Prix
+27063,1000,6,335,2,2,4,Ferrari,2018,12,2018-07-29,Hungarian Grand Prix
+27064,1000,131,345,1,1,5,Mercedes,2018,12,2018-07-29,Hungarian Grand Prix
+27065,1000,9,223,3,3,3,Red Bull,2018,12,2018-07-29,Hungarian Grand Prix
+27066,1000,1,52,7,7,0,McLaren,2018,12,2018-07-29,Hungarian Grand Prix
+27067,1000,4,82,4,4,0,Renault,2018,12,2018-07-29,Hungarian Grand Prix
+27068,1000,10,59,6,6,0,Force India,2018,12,2018-07-29,Hungarian Grand Prix
+27069,1000,15,18,9,9,0,Sauber,2018,12,2018-07-29,Hungarian Grand Prix
+27070,1000,3,4,10,10,0,Williams,2018,12,2018-07-29,Hungarian Grand Prix
+27071,1000,5,28,8,8,0,Toro Rosso,2018,12,2018-07-29,Hungarian Grand Prix
+27072,1000,210,66,5,5,0,Haas F1 Team,2018,12,2018-07-29,Hungarian Grand Prix
+27073,1001,6,360,2,2,5,Ferrari,2018,13,2018-08-26,Belgian Grand Prix
+27074,1001,131,375,1,1,5,Mercedes,2018,13,2018-08-26,Belgian Grand Prix
+27075,1001,9,238,3,3,3,Red Bull,2018,13,2018-08-26,Belgian Grand Prix
+27076,1001,1,52,6,6,0,McLaren,2018,13,2018-08-26,Belgian Grand Prix
+27077,1001,4,82,4,4,0,Renault,2018,13,2018-08-26,Belgian Grand Prix
+27078,1001,10,18,9,9,0,Force India,2018,13,2018-08-26,Belgian Grand Prix
+27079,1001,15,19,8,8,0,Sauber,2018,13,2018-08-26,Belgian Grand Prix
+27080,1001,3,4,10,10,0,Williams,2018,13,2018-08-26,Belgian Grand Prix
+27081,1001,5,30,7,7,0,Toro Rosso,2018,13,2018-08-26,Belgian Grand Prix
+27082,1001,210,76,5,5,0,Haas F1 Team,2018,13,2018-08-26,Belgian Grand Prix
+27101,1002,5,30,8,8,0,Toro Rosso,2018,14,2018-09-02,Italian Grand Prix
+27100,1002,3,7,10,10,0,Williams,2018,14,2018-09-02,Italian Grand Prix
+27098,1002,10,32,7,7,0,Force India,2018,14,2018-09-02,Italian Grand Prix
+27096,1002,1,52,6,6,0,McLaren,2018,14,2018-09-02,Italian Grand Prix
+27094,1002,131,415,1,1,6,Mercedes,2018,14,2018-09-02,Italian Grand Prix
+27102,1002,210,76,5,5,0,Haas F1 Team,2018,14,2018-09-02,Italian Grand Prix
+27099,1002,15,19,9,9,0,Sauber,2018,14,2018-09-02,Italian Grand Prix
+27093,1002,6,390,2,2,5,Ferrari,2018,14,2018-09-02,Italian Grand Prix
+27095,1002,9,248,3,3,3,Red Bull,2018,14,2018-09-02,Italian Grand Prix
+27097,1002,4,86,4,4,0,Renault,2018,14,2018-09-02,Italian Grand Prix
+27103,1003,6,415,2,2,5,Ferrari,2018,15,2018-09-16,Singapore Grand Prix
+27104,1003,131,452,1,1,7,Mercedes,2018,15,2018-09-16,Singapore Grand Prix
+27105,1003,9,274,3,3,3,Red Bull,2018,15,2018-09-16,Singapore Grand Prix
+27106,1003,1,58,6,6,0,McLaren,2018,15,2018-09-16,Singapore Grand Prix
+27107,1003,4,91,4,4,0,Renault,2018,15,2018-09-16,Singapore Grand Prix
+27108,1003,10,32,7,7,0,Force India,2018,15,2018-09-16,Singapore Grand Prix
+27109,1003,15,21,9,9,0,Sauber,2018,15,2018-09-16,Singapore Grand Prix
+27110,1003,3,7,10,10,0,Williams,2018,15,2018-09-16,Singapore Grand Prix
+27111,1003,5,30,8,8,0,Toro Rosso,2018,15,2018-09-16,Singapore Grand Prix
+27112,1003,210,76,5,5,0,Haas F1 Team,2018,15,2018-09-16,Singapore Grand Prix
+27113,1004,6,442,2,2,5,Ferrari,2018,16,2018-09-30,Russian Grand Prix
+27114,1004,131,495,1,1,8,Mercedes,2018,16,2018-09-30,Russian Grand Prix
+27115,1004,9,292,3,3,3,Red Bull,2018,16,2018-09-30,Russian Grand Prix
+27116,1004,1,58,6,6,0,McLaren,2018,16,2018-09-30,Russian Grand Prix
+27117,1004,4,91,4,4,0,Renault,2018,16,2018-09-30,Russian Grand Prix
+27118,1004,10,35,7,7,0,Force India,2018,16,2018-09-30,Russian Grand Prix
+27119,1004,15,27,9,9,0,Sauber,2018,16,2018-09-30,Russian Grand Prix
+27120,1004,3,7,10,10,0,Williams,2018,16,2018-09-30,Russian Grand Prix
+27121,1004,5,30,8,8,0,Toro Rosso,2018,16,2018-09-30,Russian Grand Prix
+27122,1004,210,80,5,5,0,Haas F1 Team,2018,16,2018-09-30,Russian Grand Prix
+27123,1005,6,460,2,2,5,Ferrari,2018,17,2018-10-07,Japanese Grand Prix
+27124,1005,131,538,1,1,9,Mercedes,2018,17,2018-10-07,Japanese Grand Prix
+27125,1005,9,319,3,3,3,Red Bull,2018,17,2018-10-07,Japanese Grand Prix
+27126,1005,1,58,6,6,0,McLaren,2018,17,2018-10-07,Japanese Grand Prix
+27127,1005,4,92,4,4,0,Renault,2018,17,2018-10-07,Japanese Grand Prix
+27128,1005,10,43,7,7,0,Force India,2018,17,2018-10-07,Japanese Grand Prix
+27129,1005,15,27,9,9,0,Sauber,2018,17,2018-10-07,Japanese Grand Prix
+27130,1005,3,7,10,10,0,Williams,2018,17,2018-10-07,Japanese Grand Prix
+27131,1005,5,30,8,8,0,Toro Rosso,2018,17,2018-10-07,Japanese Grand Prix
+27132,1005,210,84,5,5,0,Haas F1 Team,2018,17,2018-10-07,Japanese Grand Prix
+27152,1006,210,84,5,5,0,Haas F1 Team,2018,18,2018-10-21,United States Grand Prix
+27151,1006,5,32,8,8,0,Toro Rosso,2018,18,2018-10-21,United States Grand Prix
+27150,1006,3,7,10,10,0,Williams,2018,18,2018-10-21,United States Grand Prix
+27148,1006,10,47,7,7,0,Force India,2018,18,2018-10-21,United States Grand Prix
+27146,1006,1,58,6,6,0,McLaren,2018,18,2018-10-21,United States Grand Prix
+27144,1006,131,563,1,1,9,Mercedes,2018,18,2018-10-21,United States Grand Prix
+27149,1006,15,28,9,9,0,Sauber,2018,18,2018-10-21,United States Grand Prix
+27143,1006,6,497,2,2,6,Ferrari,2018,18,2018-10-21,United States Grand Prix
+27145,1006,9,337,3,3,3,Red Bull,2018,18,2018-10-21,United States Grand Prix
+27147,1006,4,106,4,4,0,Renault,2018,18,2018-10-21,United States Grand Prix
+27153,1007,6,530,2,2,6,Ferrari,2018,19,2018-10-28,Mexican Grand Prix
+27154,1007,131,585,1,1,9,Mercedes,2018,19,2018-10-28,Mexican Grand Prix
+27155,1007,9,362,3,3,4,Red Bull,2018,19,2018-10-28,Mexican Grand Prix
+27156,1007,1,62,6,6,0,McLaren,2018,19,2018-10-28,Mexican Grand Prix
+27157,1007,4,114,4,4,0,Renault,2018,19,2018-10-28,Mexican Grand Prix
+27158,1007,10,47,7,7,0,Force India,2018,19,2018-10-28,Mexican Grand Prix
+27159,1007,15,36,8,8,0,Sauber,2018,19,2018-10-28,Mexican Grand Prix
+27160,1007,3,7,10,10,0,Williams,2018,19,2018-10-28,Mexican Grand Prix
+27161,1007,5,33,9,9,0,Toro Rosso,2018,19,2018-10-28,Mexican Grand Prix
+27162,1007,210,84,5,5,0,Haas F1 Team,2018,19,2018-10-28,Mexican Grand Prix
+27163,1008,6,553,2,2,6,Ferrari,2018,20,2018-11-11,Brazilian Grand Prix
+27164,1008,131,620,1,1,10,Mercedes,2018,20,2018-11-11,Brazilian Grand Prix
+27165,1008,9,392,3,3,4,Red Bull,2018,20,2018-11-11,Brazilian Grand Prix
+27166,1008,1,62,6,6,0,McLaren,2018,20,2018-11-11,Brazilian Grand Prix
+27167,1008,4,114,4,4,0,Renault,2018,20,2018-11-11,Brazilian Grand Prix
+27168,1008,10,48,7,7,0,Force India,2018,20,2018-11-11,Brazilian Grand Prix
+27169,1008,15,42,8,8,0,Sauber,2018,20,2018-11-11,Brazilian Grand Prix
+27170,1008,3,7,10,10,0,Williams,2018,20,2018-11-11,Brazilian Grand Prix
+27171,1008,5,33,9,9,0,Toro Rosso,2018,20,2018-11-11,Brazilian Grand Prix
+27172,1008,210,90,5,5,0,Haas F1 Team,2018,20,2018-11-11,Brazilian Grand Prix
+27173,1009,6,571,2,2,6,Ferrari,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27174,1009,131,655,1,1,11,Mercedes,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27175,1009,9,419,3,3,4,Red Bull,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27176,1009,1,62,6,6,0,McLaren,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27177,1009,4,122,4,4,0,Renault,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27178,1009,10,52,7,7,0,Force India,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27179,1009,15,48,8,8,0,Sauber,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27180,1009,3,7,10,10,0,Williams,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27181,1009,5,33,9,9,0,Toro Rosso,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27182,1009,210,93,5,5,0,Haas F1 Team,2018,21,2018-11-25,Abu Dhabi Grand Prix
+27197,1010,4,6,5,5,0,Renault,2019,1,2019-03-17,Australian Grand Prix
+27196,1010,210,8,4,4,0,Haas F1 Team,2019,1,2019-03-17,Australian Grand Prix
+27195,1010,6,22,2,2,0,Ferrari,2019,1,2019-03-17,Australian Grand Prix
+27194,1010,9,15,3,3,0,Red Bull,2019,1,2019-03-17,Australian Grand Prix
+27193,1010,131,44,1,1,1,Mercedes,2019,1,2019-03-17,Australian Grand Prix
+27198,1010,51,4,6,6,0,Alfa Romeo,2019,1,2019-03-17,Australian Grand Prix
+27199,1010,211,2,7,7,0,Racing Point,2019,1,2019-03-17,Australian Grand Prix
+27200,1010,5,1,8,8,0,Toro Rosso,2019,1,2019-03-17,Australian Grand Prix
+27201,1010,1,0,9,9,0,McLaren,2019,1,2019-03-17,Australian Grand Prix
+27202,1010,3,0,10,10,0,Williams,2019,1,2019-03-17,Australian Grand Prix
+27223,1012,131,130,1,1,3,Mercedes,2019,3,2019-04-14,Chinese Grand Prix
+27222,1011,3,0,10,10,0,Williams,2019,2,2019-03-31,Bahrain Grand Prix
+27220,1011,5,3,8,8,0,Toro Rosso,2019,2,2019-03-31,Bahrain Grand Prix
+27215,1011,6,48,2,2,0,Ferrari,2019,2,2019-03-31,Bahrain Grand Prix
+27221,1011,1,8,5,5,0,McLaren,2019,2,2019-03-31,Bahrain Grand Prix
+27218,1011,51,10,4,4,0,Alfa Romeo,2019,2,2019-03-31,Bahrain Grand Prix
+27214,1011,9,31,3,3,0,Red Bull,2019,2,2019-03-31,Bahrain Grand Prix
+27219,1011,211,3,9,9,0,Racing Point,2019,2,2019-03-31,Bahrain Grand Prix
+27217,1011,4,6,7,7,0,Renault,2019,2,2019-03-31,Bahrain Grand Prix
+27216,1011,210,8,6,6,0,Haas F1 Team,2019,2,2019-03-31,Bahrain Grand Prix
+27213,1011,131,87,1,1,2,Mercedes,2019,2,2019-03-31,Bahrain Grand Prix
+27224,1012,9,52,3,3,0,Red Bull,2019,3,2019-04-14,Chinese Grand Prix
+27225,1012,6,73,2,2,0,Ferrari,2019,3,2019-04-14,Chinese Grand Prix
+27226,1012,210,8,6,6,0,Haas F1 Team,2019,3,2019-04-14,Chinese Grand Prix
+27227,1012,4,12,4,4,0,Renault,2019,3,2019-04-14,Chinese Grand Prix
+27228,1012,51,12,5,5,0,Alfa Romeo,2019,3,2019-04-14,Chinese Grand Prix
+27229,1012,211,7,8,8,0,Racing Point,2019,3,2019-04-14,Chinese Grand Prix
+27230,1012,5,4,9,9,0,Toro Rosso,2019,3,2019-04-14,Chinese Grand Prix
+27231,1012,1,8,7,7,0,McLaren,2019,3,2019-04-14,Chinese Grand Prix
+27232,1012,3,0,10,10,0,Williams,2019,3,2019-04-14,Chinese Grand Prix
+27233,1013,131,173,1,1,4,Mercedes,2019,4,2019-04-28,Azerbaijan Grand Prix
+27234,1013,9,64,3,3,0,Red Bull,2019,4,2019-04-28,Azerbaijan Grand Prix
+27235,1013,6,99,2,2,0,Ferrari,2019,4,2019-04-28,Azerbaijan Grand Prix
+27236,1013,210,8,8,8,0,Haas F1 Team,2019,4,2019-04-28,Azerbaijan Grand Prix
+27237,1013,4,12,7,7,0,Renault,2019,4,2019-04-28,Azerbaijan Grand Prix
+27238,1013,51,13,6,6,0,Alfa Romeo,2019,4,2019-04-28,Azerbaijan Grand Prix
+27239,1013,211,17,5,5,0,Racing Point,2019,4,2019-04-28,Azerbaijan Grand Prix
+27240,1013,5,4,9,9,0,Toro Rosso,2019,4,2019-04-28,Azerbaijan Grand Prix
+27241,1013,1,18,4,4,0,McLaren,2019,4,2019-04-28,Azerbaijan Grand Prix
+27242,1013,3,0,10,10,0,Williams,2019,4,2019-04-28,Azerbaijan Grand Prix
+27243,1014,131,217,1,1,5,Mercedes,2019,5,2019-05-12,Spanish Grand Prix
+27244,1014,9,87,3,3,0,Red Bull,2019,5,2019-05-12,Spanish Grand Prix
+27245,1014,6,121,2,2,0,Ferrari,2019,5,2019-05-12,Spanish Grand Prix
+27246,1014,210,15,6,6,0,Haas F1 Team,2019,5,2019-05-12,Spanish Grand Prix
+27247,1014,4,12,8,8,0,Renault,2019,5,2019-05-12,Spanish Grand Prix
+27248,1014,51,13,7,7,0,Alfa Romeo,2019,5,2019-05-12,Spanish Grand Prix
+27249,1014,211,17,5,5,0,Racing Point,2019,5,2019-05-12,Spanish Grand Prix
+27250,1014,5,6,9,9,0,Toro Rosso,2019,5,2019-05-12,Spanish Grand Prix
+27251,1014,1,22,4,4,0,McLaren,2019,5,2019-05-12,Spanish Grand Prix
+27252,1014,3,0,10,10,0,Williams,2019,5,2019-05-12,Spanish Grand Prix
+27253,1015,131,257,1,1,6,Mercedes,2019,6,2019-05-26,Monaco Grand Prix
+27254,1015,9,110,3,3,0,Red Bull,2019,6,2019-05-26,Monaco Grand Prix
+27255,1015,6,139,2,2,0,Ferrari,2019,6,2019-05-26,Monaco Grand Prix
+27256,1015,210,16,6,6,0,Haas F1 Team,2019,6,2019-05-26,Monaco Grand Prix
+27257,1015,4,14,8,8,0,Renault,2019,6,2019-05-26,Monaco Grand Prix
+27258,1015,51,13,9,9,0,Alfa Romeo,2019,6,2019-05-26,Monaco Grand Prix
+27259,1015,211,17,5,5,0,Racing Point,2019,6,2019-05-26,Monaco Grand Prix
+27260,1015,5,16,7,7,0,Toro Rosso,2019,6,2019-05-26,Monaco Grand Prix
+27261,1015,1,30,4,4,0,McLaren,2019,6,2019-05-26,Monaco Grand Prix
+27262,1015,3,0,10,10,0,Williams,2019,6,2019-05-26,Monaco Grand Prix
+27263,1016,131,295,1,1,7,Mercedes,2019,7,2019-06-09,Canadian Grand Prix
+27264,1016,9,124,3,3,0,Red Bull,2019,7,2019-06-09,Canadian Grand Prix
+27265,1016,6,172,2,2,0,Ferrari,2019,7,2019-06-09,Canadian Grand Prix
+27266,1016,210,16,8,8,0,Haas F1 Team,2019,7,2019-06-09,Canadian Grand Prix
+27267,1016,4,28,5,5,0,Renault,2019,7,2019-06-09,Canadian Grand Prix
+27268,1016,51,13,9,9,0,Alfa Romeo,2019,7,2019-06-09,Canadian Grand Prix
+27269,1016,211,19,6,6,0,Racing Point,2019,7,2019-06-09,Canadian Grand Prix
+27270,1016,5,17,7,7,0,Toro Rosso,2019,7,2019-06-09,Canadian Grand Prix
+27271,1016,1,30,4,4,0,McLaren,2019,7,2019-06-09,Canadian Grand Prix
+27272,1016,3,0,10,10,0,Williams,2019,7,2019-06-09,Canadian Grand Prix
+27302,1017,3,0,10,10,0,Williams,2019,8,2019-06-23,French Grand Prix
+27300,1017,5,17,8,8,0,Toro Rosso,2019,8,2019-06-23,French Grand Prix
+27304,1018,9,169,3,3,1,Red Bull,2019,9,2019-06-30,Austrian Grand Prix
+27303,1018,131,363,1,1,8,Mercedes,2019,9,2019-06-30,Austrian Grand Prix
+27301,1017,1,40,4,4,0,McLaren,2019,8,2019-06-23,French Grand Prix
+27299,1017,211,19,6,6,0,Racing Point,2019,8,2019-06-23,French Grand Prix
+27297,1017,4,32,5,5,0,Renault,2019,8,2019-06-23,French Grand Prix
+27298,1017,51,19,7,7,0,Alfa Romeo,2019,8,2019-06-23,French Grand Prix
+27296,1017,210,16,9,9,0,Haas F1 Team,2019,8,2019-06-23,French Grand Prix
+27295,1017,6,198,2,2,0,Ferrari,2019,8,2019-06-23,French Grand Prix
+27294,1017,9,137,3,3,0,Red Bull,2019,8,2019-06-23,French Grand Prix
+27293,1017,131,338,1,1,8,Mercedes,2019,8,2019-06-23,French Grand Prix
+27305,1018,6,228,2,2,0,Ferrari,2019,9,2019-06-30,Austrian Grand Prix
+27306,1018,210,16,9,9,0,Haas F1 Team,2019,9,2019-06-30,Austrian Grand Prix
+27307,1018,4,32,5,5,0,Renault,2019,9,2019-06-30,Austrian Grand Prix
+27308,1018,51,22,6,6,0,Alfa Romeo,2019,9,2019-06-30,Austrian Grand Prix
+27309,1018,211,19,7,7,0,Racing Point,2019,9,2019-06-30,Austrian Grand Prix
+27310,1018,5,17,8,8,0,Toro Rosso,2019,9,2019-06-30,Austrian Grand Prix
+27311,1018,1,52,4,4,0,McLaren,2019,9,2019-06-30,Austrian Grand Prix
+27312,1018,3,0,10,10,0,Williams,2019,9,2019-06-30,Austrian Grand Prix
+27313,1019,131,407,1,1,9,Mercedes,2019,10,2019-07-14,British Grand Prix
+27314,1019,9,191,3,3,1,Red Bull,2019,10,2019-07-14,British Grand Prix
+27315,1019,6,243,2,2,0,Ferrari,2019,10,2019-07-14,British Grand Prix
+27316,1019,210,16,9,9,0,Haas F1 Team,2019,10,2019-07-14,British Grand Prix
+27317,1019,4,39,5,5,0,Renault,2019,10,2019-07-14,British Grand Prix
+27318,1019,51,26,6,6,0,Alfa Romeo,2019,10,2019-07-14,British Grand Prix
+27319,1019,211,19,7,7,0,Racing Point,2019,10,2019-07-14,British Grand Prix
+27320,1019,5,19,8,8,0,Toro Rosso,2019,10,2019-07-14,British Grand Prix
+27321,1019,1,60,4,4,0,McLaren,2019,10,2019-07-14,British Grand Prix
+27322,1019,3,0,10,10,0,Williams,2019,10,2019-07-14,British Grand Prix
+27341,1020,1,70,4,4,0,McLaren,2019,11,2019-07-28,German Grand Prix
+27340,1020,5,42,5,5,0,Toro Rosso,2019,11,2019-07-28,German Grand Prix
+27338,1020,51,26,9,9,0,Alfa Romeo,2019,11,2019-07-28,German Grand Prix
+27336,1020,210,26,8,8,0,Haas F1 Team,2019,11,2019-07-28,German Grand Prix
+27335,1020,6,261,2,2,0,Ferrari,2019,11,2019-07-28,German Grand Prix
+27342,1020,3,1,10,10,0,Williams,2019,11,2019-07-28,German Grand Prix
+27334,1020,9,217,3,3,2,Red Bull,2019,11,2019-07-28,German Grand Prix
+27339,1020,211,31,7,7,0,Racing Point,2019,11,2019-07-28,German Grand Prix
+27337,1020,4,39,6,6,0,Renault,2019,11,2019-07-28,German Grand Prix
+27333,1020,131,409,1,1,9,Mercedes,2019,11,2019-07-28,German Grand Prix
+27343,1021,131,438,1,1,10,Mercedes,2019,12,2019-08-04,Hungarian Grand Prix
+27344,1021,9,244,3,3,2,Red Bull,2019,12,2019-08-04,Hungarian Grand Prix
+27345,1021,6,288,2,2,0,Ferrari,2019,12,2019-08-04,Hungarian Grand Prix
+27346,1021,210,26,9,9,0,Haas F1 Team,2019,12,2019-08-04,Hungarian Grand Prix
+27347,1021,4,39,6,6,0,Renault,2019,12,2019-08-04,Hungarian Grand Prix
+27348,1021,51,32,7,7,0,Alfa Romeo,2019,12,2019-08-04,Hungarian Grand Prix
+27349,1021,211,31,8,8,0,Racing Point,2019,12,2019-08-04,Hungarian Grand Prix
+27350,1021,5,43,5,5,0,Toro Rosso,2019,12,2019-08-04,Hungarian Grand Prix
+27351,1021,1,82,4,4,0,McLaren,2019,12,2019-08-04,Hungarian Grand Prix
+27352,1021,3,1,10,10,0,Williams,2019,12,2019-08-04,Hungarian Grand Prix
+27353,1022,131,471,1,1,10,Mercedes,2019,13,2019-09-01,Belgian Grand Prix
+27354,1022,9,254,3,3,2,Red Bull,2019,13,2019-09-01,Belgian Grand Prix
+27355,1022,6,326,2,2,1,Ferrari,2019,13,2019-09-01,Belgian Grand Prix
+27356,1022,210,26,9,9,0,Haas F1 Team,2019,13,2019-09-01,Belgian Grand Prix
+27357,1022,4,43,6,6,0,Renault,2019,13,2019-09-01,Belgian Grand Prix
+27358,1022,51,32,8,8,0,Alfa Romeo,2019,13,2019-09-01,Belgian Grand Prix
+27359,1022,211,40,7,7,0,Racing Point,2019,13,2019-09-01,Belgian Grand Prix
+27360,1022,5,51,5,5,0,Toro Rosso,2019,13,2019-09-01,Belgian Grand Prix
+27361,1022,1,82,4,4,0,McLaren,2019,13,2019-09-01,Belgian Grand Prix
+27362,1022,3,1,10,10,0,Williams,2019,13,2019-09-01,Belgian Grand Prix
+27363,1023,131,505,1,1,10,Mercedes,2019,14,2019-09-08,Italian Grand Prix
+27364,1023,9,266,3,3,2,Red Bull,2019,14,2019-09-08,Italian Grand Prix
+27365,1023,6,351,2,2,2,Ferrari,2019,14,2019-09-08,Italian Grand Prix
+27366,1023,210,26,9,9,0,Haas F1 Team,2019,14,2019-09-08,Italian Grand Prix
+27367,1023,4,65,5,5,0,Renault,2019,14,2019-09-08,Italian Grand Prix
+27368,1023,51,34,8,8,0,Alfa Romeo,2019,14,2019-09-08,Italian Grand Prix
+27369,1023,211,46,7,7,0,Racing Point,2019,14,2019-09-08,Italian Grand Prix
+27370,1023,5,51,6,6,0,Toro Rosso,2019,14,2019-09-08,Italian Grand Prix
+27371,1023,1,83,4,4,0,McLaren,2019,14,2019-09-08,Italian Grand Prix
+27372,1023,3,1,10,10,0,Williams,2019,14,2019-09-08,Italian Grand Prix
+27373,1024,131,527,1,1,10,Mercedes,2019,15,2019-09-22,Singapore Grand Prix
+27374,1024,9,289,3,3,2,Red Bull,2019,15,2019-09-22,Singapore Grand Prix
+27375,1024,6,394,2,2,3,Ferrari,2019,15,2019-09-22,Singapore Grand Prix
+27376,1024,210,26,9,9,0,Haas F1 Team,2019,15,2019-09-22,Singapore Grand Prix
+27377,1024,4,67,5,5,0,Renault,2019,15,2019-09-22,Singapore Grand Prix
+27378,1024,51,35,8,8,0,Alfa Romeo,2019,15,2019-09-22,Singapore Grand Prix
+27379,1024,211,46,7,7,0,Racing Point,2019,15,2019-09-22,Singapore Grand Prix
+27380,1024,5,55,6,6,0,Toro Rosso,2019,15,2019-09-22,Singapore Grand Prix
+27381,1024,1,89,4,4,0,McLaren,2019,15,2019-09-22,Singapore Grand Prix
+27382,1024,3,1,10,10,0,Williams,2019,15,2019-09-22,Singapore Grand Prix
+27383,1025,131,571,1,1,11,Mercedes,2019,16,2019-09-29,Russian Grand Prix
+27384,1025,9,311,3,3,2,Red Bull,2019,16,2019-09-29,Russian Grand Prix
+27385,1025,6,409,2,2,3,Ferrari,2019,16,2019-09-29,Russian Grand Prix
+27386,1025,210,28,9,9,0,Haas F1 Team,2019,16,2019-09-29,Russian Grand Prix
+27387,1025,4,68,5,5,0,Renault,2019,16,2019-09-29,Russian Grand Prix
+27388,1025,51,35,8,8,0,Alfa Romeo,2019,16,2019-09-29,Russian Grand Prix
+27389,1025,211,52,7,7,0,Racing Point,2019,16,2019-09-29,Russian Grand Prix
+27390,1025,5,55,6,6,0,Toro Rosso,2019,16,2019-09-29,Russian Grand Prix
+27391,1025,1,101,4,4,0,McLaren,2019,16,2019-09-29,Russian Grand Prix
+27392,1025,3,1,10,10,0,Williams,2019,16,2019-09-29,Russian Grand Prix
+27422,1026,3,1,10,10,0,Williams,2019,17,2019-10-13,Japanese Grand Prix
+27421,1026,1,111,4,4,0,McLaren,2019,17,2019-10-13,Japanese Grand Prix
+27420,1026,5,62,6,6,0,Toro Rosso,2019,17,2019-10-13,Japanese Grand Prix
+27419,1026,211,58,7,7,0,Racing Point,2019,17,2019-10-13,Japanese Grand Prix
+27418,1026,51,35,8,8,0,Alfa Romeo,2019,17,2019-10-13,Japanese Grand Prix
+27415,1026,6,435,2,2,3,Ferrari,2019,17,2019-10-13,Japanese Grand Prix
+27414,1026,9,323,3,3,2,Red Bull,2019,17,2019-10-13,Japanese Grand Prix
+27416,1026,210,28,9,9,0,Haas F1 Team,2019,17,2019-10-13,Japanese Grand Prix
+27417,1026,4,68,5,5,0,Renault,2019,17,2019-10-13,Japanese Grand Prix
+27413,1026,131,612,1,1,12,Mercedes,2019,17,2019-10-13,Japanese Grand Prix
+27432,1027,3,1,10,10,0,Williams,2019,18,2019-10-27,Mexican Grand Prix
+27431,1027,1,111,4,4,0,McLaren,2019,18,2019-10-27,Mexican Grand Prix
+27430,1027,5,64,6,6,0,Toro Rosso,2019,18,2019-10-27,Mexican Grand Prix
+27429,1027,211,64,7,7,0,Racing Point,2019,18,2019-10-27,Mexican Grand Prix
+27428,1027,51,35,8,8,0,Alfa Romeo,2019,18,2019-10-27,Mexican Grand Prix
+27425,1027,6,466,2,2,3,Ferrari,2019,18,2019-10-27,Mexican Grand Prix
+27424,1027,9,341,3,3,2,Red Bull,2019,18,2019-10-27,Mexican Grand Prix
+27426,1027,210,28,9,9,0,Haas F1 Team,2019,18,2019-10-27,Mexican Grand Prix
+27427,1027,4,73,5,5,0,Renault,2019,18,2019-10-27,Mexican Grand Prix
+27423,1027,131,652,1,1,13,Mercedes,2019,18,2019-10-27,Mexican Grand Prix
+27433,1028,131,695,1,1,14,Mercedes,2019,19,2019-11-03,United States Grand Prix
+27434,1028,9,366,3,3,2,Red Bull,2019,19,2019-11-03,United States Grand Prix
+27435,1028,6,479,2,2,3,Ferrari,2019,19,2019-11-03,United States Grand Prix
+27436,1028,210,28,9,9,0,Haas F1 Team,2019,19,2019-11-03,United States Grand Prix
+27437,1028,4,83,5,5,0,Renault,2019,19,2019-11-03,United States Grand Prix
+27438,1028,51,35,8,8,0,Alfa Romeo,2019,19,2019-11-03,United States Grand Prix
+27439,1028,211,65,6,6,0,Racing Point,2019,19,2019-11-03,United States Grand Prix
+27440,1028,5,64,7,7,0,Toro Rosso,2019,19,2019-11-03,United States Grand Prix
+27441,1028,1,121,4,4,0,McLaren,2019,19,2019-11-03,United States Grand Prix
+27442,1028,3,1,10,10,0,Williams,2019,19,2019-11-03,United States Grand Prix
+27443,1029,131,701,1,1,14,Mercedes,2019,20,2019-11-17,Brazilian Grand Prix
+27444,1029,9,391,3,3,3,Red Bull,2019,20,2019-11-17,Brazilian Grand Prix
+27445,1029,6,479,2,2,3,Ferrari,2019,20,2019-11-17,Brazilian Grand Prix
+27446,1029,210,28,9,9,0,Haas F1 Team,2019,20,2019-11-17,Brazilian Grand Prix
+27447,1029,4,91,5,5,0,Renault,2019,20,2019-11-17,Brazilian Grand Prix
+27448,1029,51,57,8,8,0,Alfa Romeo,2019,20,2019-11-17,Brazilian Grand Prix
+27449,1029,211,67,7,7,0,Racing Point,2019,20,2019-11-17,Brazilian Grand Prix
+27450,1029,5,83,6,6,0,Toro Rosso,2019,20,2019-11-17,Brazilian Grand Prix
+27451,1029,1,140,4,4,0,McLaren,2019,20,2019-11-17,Brazilian Grand Prix
+27452,1029,3,1,10,10,0,Williams,2019,20,2019-11-17,Brazilian Grand Prix
+27453,1030,131,739,1,1,15,Mercedes,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27454,1030,9,417,3,3,3,Red Bull,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27455,1030,6,504,2,2,3,Ferrari,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27456,1030,210,28,9,9,0,Haas F1 Team,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27457,1030,4,91,5,5,0,Renault,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27458,1030,51,57,8,8,0,Alfa Romeo,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27459,1030,211,73,7,7,0,Racing Point,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27460,1030,5,85,6,6,0,Toro Rosso,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27461,1030,1,145,4,4,0,McLaren,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27462,1030,3,1,10,10,0,Williams,2019,21,2019-12-01,Abu Dhabi Grand Prix
+27522,1034,210,1,9,9,0,Haas F1 Team,2020,4,2020-08-02,British Grand Prix
+27521,1034,9,78,2,2,0,Red Bull,2020,4,2020-08-02,British Grand Prix
+27520,1034,3,0,10,10,0,Williams,2020,4,2020-08-02,British Grand Prix
+27519,1034,51,2,8,8,0,Alfa Romeo,2020,4,2020-08-02,British Grand Prix
+27518,1034,4,32,6,6,0,Renault,2020,4,2020-08-02,British Grand Prix
+27517,1034,213,13,7,7,0,AlphaTauri,2020,4,2020-08-02,British Grand Prix
+27516,1034,211,42,5,5,0,Racing Point,2020,4,2020-08-02,British Grand Prix
+27515,1034,1,51,3,3,0,McLaren,2020,4,2020-08-02,British Grand Prix
+27514,1034,6,43,4,4,0,Ferrari,2020,4,2020-08-02,British Grand Prix
+27513,1034,131,146,1,1,4,Mercedes,2020,4,2020-08-02,British Grand Prix
+27583,1040,131,366,1,1,8,Mercedes,2020,10,2020-09-27,Russian Grand Prix
+27582,1031,210,0,10,10,0,Haas F1 Team,2020,1,2020-07-05,Austrian Grand Prix
+27581,1031,9,0,9,9,0,Red Bull,2020,1,2020-07-05,Austrian Grand Prix
+27580,1031,3,0,8,8,0,Williams,2020,1,2020-07-05,Austrian Grand Prix
+27579,1031,51,2,7,7,0,Alfa Romeo,2020,1,2020-07-05,Austrian Grand Prix
+27578,1031,4,4,6,6,0,Renault,2020,1,2020-07-05,Austrian Grand Prix
+27577,1031,213,6,5,5,0,AlphaTauri,2020,1,2020-07-05,Austrian Grand Prix
+27576,1031,211,8,4,4,0,Racing Point,2020,1,2020-07-05,Austrian Grand Prix
+27575,1031,1,26,2,2,0,McLaren,2020,1,2020-07-05,Austrian Grand Prix
+27574,1031,6,19,3,3,0,Ferrari,2020,1,2020-07-05,Austrian Grand Prix
+27573,1031,131,37,1,1,1,Mercedes,2020,1,2020-07-05,Austrian Grand Prix
+27483,1032,131,80,1,1,2,Mercedes,2020,2,2020-07-12,Styrian Grand Prix
+27484,1032,6,19,5,5,0,Ferrari,2020,2,2020-07-12,Styrian Grand Prix
+27485,1032,1,39,2,2,0,McLaren,2020,2,2020-07-12,Styrian Grand Prix
+27486,1032,211,22,4,4,0,Racing Point,2020,2,2020-07-12,Styrian Grand Prix
+27487,1032,213,7,7,7,0,AlphaTauri,2020,2,2020-07-12,Styrian Grand Prix
+27488,1032,4,8,6,6,0,Renault,2020,2,2020-07-12,Styrian Grand Prix
+27489,1032,51,2,8,8,0,Alfa Romeo,2020,2,2020-07-12,Styrian Grand Prix
+27490,1032,3,0,9,9,0,Williams,2020,2,2020-07-12,Styrian Grand Prix
+27491,1032,9,27,3,3,0,Red Bull,2020,2,2020-07-12,Styrian Grand Prix
+27492,1032,210,0,10,10,0,Haas F1 Team,2020,2,2020-07-12,Styrian Grand Prix
+27511,1033,9,55,2,2,0,Red Bull,2020,3,2020-07-19,Hungarian Grand Prix
+27510,1033,3,0,10,10,0,Williams,2020,3,2020-07-19,Hungarian Grand Prix
+27508,1033,4,12,6,6,0,Renault,2020,3,2020-07-19,Hungarian Grand Prix
+27507,1033,213,7,7,7,0,AlphaTauri,2020,3,2020-07-19,Hungarian Grand Prix
+27506,1033,211,40,4,4,0,Racing Point,2020,3,2020-07-19,Hungarian Grand Prix
+27504,1033,6,27,5,5,0,Ferrari,2020,3,2020-07-19,Hungarian Grand Prix
+27505,1033,1,41,3,3,0,McLaren,2020,3,2020-07-19,Hungarian Grand Prix
+27512,1033,210,1,9,9,0,Haas F1 Team,2020,3,2020-07-19,Hungarian Grand Prix
+27509,1033,51,2,8,8,0,Alfa Romeo,2020,3,2020-07-19,Hungarian Grand Prix
+27503,1033,131,121,1,1,3,Mercedes,2020,3,2020-07-19,Hungarian Grand Prix
+27523,1035,131,180,1,1,4,Mercedes,2020,5,2020-08-09,70th Anniversary Grand Prix
+27524,1035,6,55,3,3,0,Ferrari,2020,5,2020-08-09,70th Anniversary Grand Prix
+27525,1035,1,53,4,4,0,McLaren,2020,5,2020-08-09,70th Anniversary Grand Prix
+27526,1035,211,41,5,5,0,Racing Point,2020,5,2020-08-09,70th Anniversary Grand Prix
+27527,1035,213,14,7,7,0,AlphaTauri,2020,5,2020-08-09,70th Anniversary Grand Prix
+27528,1035,4,36,6,6,0,Renault,2020,5,2020-08-09,70th Anniversary Grand Prix
+27529,1035,51,2,8,8,0,Alfa Romeo,2020,5,2020-08-09,70th Anniversary Grand Prix
+27530,1035,3,0,10,10,0,Williams,2020,5,2020-08-09,70th Anniversary Grand Prix
+27531,1035,9,113,2,2,1,Red Bull,2020,5,2020-08-09,70th Anniversary Grand Prix
+27532,1035,210,1,9,9,0,Haas F1 Team,2020,5,2020-08-09,70th Anniversary Grand Prix
+27533,1036,131,221,1,1,5,Mercedes,2020,6,2020-08-16,Spanish Grand Prix
+27534,1036,6,61,5,5,0,Ferrari,2020,6,2020-08-16,Spanish Grand Prix
+27535,1036,1,62,4,4,0,McLaren,2020,6,2020-08-16,Spanish Grand Prix
+27536,1036,211,63,3,3,0,Racing Point,2020,6,2020-08-16,Spanish Grand Prix
+27537,1036,213,16,7,7,0,AlphaTauri,2020,6,2020-08-16,Spanish Grand Prix
+27538,1036,4,36,6,6,0,Renault,2020,6,2020-08-16,Spanish Grand Prix
+27539,1036,51,2,8,8,0,Alfa Romeo,2020,6,2020-08-16,Spanish Grand Prix
+27540,1036,3,0,10,10,0,Williams,2020,6,2020-08-16,Spanish Grand Prix
+27541,1036,9,135,2,2,1,Red Bull,2020,6,2020-08-16,Spanish Grand Prix
+27542,1036,210,1,9,9,0,Haas F1 Team,2020,6,2020-08-16,Spanish Grand Prix
+27543,1037,131,264,1,1,6,Mercedes,2020,7,2020-08-30,Belgian Grand Prix
+27544,1037,6,61,5,5,0,Ferrari,2020,7,2020-08-30,Belgian Grand Prix
+27545,1037,1,68,3,3,0,McLaren,2020,7,2020-08-30,Belgian Grand Prix
+27546,1037,211,66,4,4,0,Racing Point,2020,7,2020-08-30,Belgian Grand Prix
+27547,1037,213,20,7,7,0,AlphaTauri,2020,7,2020-08-30,Belgian Grand Prix
+27548,1037,4,59,6,6,0,Renault,2020,7,2020-08-30,Belgian Grand Prix
+27549,1037,51,2,8,8,0,Alfa Romeo,2020,7,2020-08-30,Belgian Grand Prix
+27550,1037,3,0,10,10,0,Williams,2020,7,2020-08-30,Belgian Grand Prix
+27551,1037,9,158,2,2,1,Red Bull,2020,7,2020-08-30,Belgian Grand Prix
+27552,1037,210,1,9,9,0,Haas F1 Team,2020,7,2020-08-30,Belgian Grand Prix
+27553,1038,131,281,1,1,6,Mercedes,2020,8,2020-09-06,Italian Grand Prix
+27554,1038,6,61,6,6,0,Ferrari,2020,8,2020-09-06,Italian Grand Prix
+27555,1038,1,98,3,3,0,McLaren,2020,8,2020-09-06,Italian Grand Prix
+27556,1038,211,82,4,4,0,Racing Point,2020,8,2020-09-06,Italian Grand Prix
+27557,1038,213,47,7,7,1,AlphaTauri,2020,8,2020-09-06,Italian Grand Prix
+27558,1038,4,71,5,5,0,Renault,2020,8,2020-09-06,Italian Grand Prix
+27559,1038,51,2,8,8,0,Alfa Romeo,2020,8,2020-09-06,Italian Grand Prix
+27560,1038,3,0,10,10,0,Williams,2020,8,2020-09-06,Italian Grand Prix
+27561,1038,9,158,2,2,1,Red Bull,2020,8,2020-09-06,Italian Grand Prix
+27562,1038,210,1,9,9,0,Haas F1 Team,2020,8,2020-09-06,Italian Grand Prix
+27563,1039,131,325,1,1,7,Mercedes,2020,9,2020-09-13,Tuscan Grand Prix
+27564,1039,6,66,6,6,0,Ferrari,2020,9,2020-09-13,Tuscan Grand Prix
+27565,1039,1,106,3,3,0,McLaren,2020,9,2020-09-13,Tuscan Grand Prix
+27566,1039,211,92,4,4,0,Racing Point,2020,9,2020-09-13,Tuscan Grand Prix
+27567,1039,213,53,7,7,1,AlphaTauri,2020,9,2020-09-13,Tuscan Grand Prix
+27568,1039,4,83,5,5,0,Renault,2020,9,2020-09-13,Tuscan Grand Prix
+27569,1039,51,4,8,8,0,Alfa Romeo,2020,9,2020-09-13,Tuscan Grand Prix
+27570,1039,3,0,10,10,0,Williams,2020,9,2020-09-13,Tuscan Grand Prix
+27571,1039,9,173,2,2,1,Red Bull,2020,9,2020-09-13,Tuscan Grand Prix
+27572,1039,210,1,9,9,0,Haas F1 Team,2020,9,2020-09-13,Tuscan Grand Prix
+27584,1040,6,74,6,6,0,Ferrari,2020,10,2020-09-27,Russian Grand Prix
+27585,1040,1,106,3,3,0,McLaren,2020,10,2020-09-27,Russian Grand Prix
+27586,1040,211,104,4,4,0,Racing Point,2020,10,2020-09-27,Russian Grand Prix
+27587,1040,213,59,7,7,1,AlphaTauri,2020,10,2020-09-27,Russian Grand Prix
+27588,1040,4,99,5,5,0,Renault,2020,10,2020-09-27,Russian Grand Prix
+27589,1040,51,4,8,8,0,Alfa Romeo,2020,10,2020-09-27,Russian Grand Prix
+27590,1040,3,0,10,10,0,Williams,2020,10,2020-09-27,Russian Grand Prix
+27591,1040,9,192,2,2,1,Red Bull,2020,10,2020-09-27,Russian Grand Prix
+27592,1040,210,1,9,9,0,Haas F1 Team,2020,10,2020-09-27,Russian Grand Prix
+27593,1041,131,391,1,1,9,Mercedes,2020,11,2020-10-11,Eifel Grand Prix
+27594,1041,6,80,6,6,0,Ferrari,2020,11,2020-10-11,Eifel Grand Prix
+27595,1041,1,116,4,4,0,McLaren,2020,11,2020-10-11,Eifel Grand Prix
+27596,1041,211,120,3,3,0,Racing Point,2020,11,2020-10-11,Eifel Grand Prix
+27597,1041,213,67,7,7,1,AlphaTauri,2020,11,2020-10-11,Eifel Grand Prix
+27598,1041,4,114,5,5,0,Renault,2020,11,2020-10-11,Eifel Grand Prix
+27599,1041,51,5,8,8,0,Alfa Romeo,2020,11,2020-10-11,Eifel Grand Prix
+27600,1041,3,0,10,10,0,Williams,2020,11,2020-10-11,Eifel Grand Prix
+27601,1041,9,211,2,2,1,Red Bull,2020,11,2020-10-11,Eifel Grand Prix
+27602,1041,210,3,9,9,0,Haas F1 Team,2020,11,2020-10-11,Eifel Grand Prix
+27603,1042,131,435,1,1,10,Mercedes,2020,12,2020-10-25,Portuguese Grand Prix
+27604,1042,6,93,6,6,0,Ferrari,2020,12,2020-10-25,Portuguese Grand Prix
+27605,1042,1,124,4,4,0,McLaren,2020,12,2020-10-25,Portuguese Grand Prix
+27606,1042,211,126,3,3,0,Racing Point,2020,12,2020-10-25,Portuguese Grand Prix
+27607,1042,213,77,7,7,1,AlphaTauri,2020,12,2020-10-25,Portuguese Grand Prix
+27608,1042,4,120,5,5,0,Renault,2020,12,2020-10-25,Portuguese Grand Prix
+27609,1042,51,5,8,8,0,Alfa Romeo,2020,12,2020-10-25,Portuguese Grand Prix
+27610,1042,3,0,10,10,0,Williams,2020,12,2020-10-25,Portuguese Grand Prix
+27611,1042,9,226,2,2,1,Red Bull,2020,12,2020-10-25,Portuguese Grand Prix
+27612,1042,210,3,9,9,0,Haas F1 Team,2020,12,2020-10-25,Portuguese Grand Prix
+27613,1043,131,479,1,1,11,Mercedes,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27614,1043,6,103,6,6,0,Ferrari,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27615,1043,1,134,4,4,0,McLaren,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27616,1043,211,134,5,5,0,Racing Point,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27617,1043,213,89,7,7,1,AlphaTauri,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27618,1043,4,135,3,3,0,Renault,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27619,1043,51,8,8,8,0,Alfa Romeo,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27620,1043,3,0,10,10,0,Williams,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27621,1043,9,226,2,2,1,Red Bull,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27622,1043,210,3,9,9,0,Haas F1 Team,2020,13,2020-11-01,Emilia Romagna Grand Prix
+27623,1044,131,504,1,1,12,Mercedes,2020,14,2020-11-15,Turkish Grand Prix
+27624,1044,6,130,6,6,0,Ferrari,2020,14,2020-11-15,Turkish Grand Prix
+27625,1044,1,149,4,4,0,McLaren,2020,14,2020-11-15,Turkish Grand Prix
+27626,1044,211,154,3,3,0,Racing Point,2020,14,2020-11-15,Turkish Grand Prix
+27627,1044,213,89,7,7,1,AlphaTauri,2020,14,2020-11-15,Turkish Grand Prix
+27628,1044,4,136,5,5,0,Renault,2020,14,2020-11-15,Turkish Grand Prix
+27629,1044,51,8,8,8,0,Alfa Romeo,2020,14,2020-11-15,Turkish Grand Prix
+27630,1044,3,0,10,10,0,Williams,2020,14,2020-11-15,Turkish Grand Prix
+27631,1044,9,240,2,2,1,Red Bull,2020,14,2020-11-15,Turkish Grand Prix
+27632,1044,210,3,9,9,0,Haas F1 Team,2020,14,2020-11-15,Turkish Grand Prix
+27633,1045,131,533,1,1,13,Mercedes,2020,15,2020-11-29,Bahrain Grand Prix
+27634,1045,6,131,6,6,0,Ferrari,2020,15,2020-11-29,Bahrain Grand Prix
+27635,1045,1,171,3,3,0,McLaren,2020,15,2020-11-29,Bahrain Grand Prix
+27636,1045,211,154,4,4,0,Racing Point,2020,15,2020-11-29,Bahrain Grand Prix
+27637,1045,213,97,7,7,1,AlphaTauri,2020,15,2020-11-29,Bahrain Grand Prix
+27638,1045,4,144,5,5,0,Renault,2020,15,2020-11-29,Bahrain Grand Prix
+27639,1045,51,8,8,8,0,Alfa Romeo,2020,15,2020-11-29,Bahrain Grand Prix
+27640,1045,3,0,10,10,0,Williams,2020,15,2020-11-29,Bahrain Grand Prix
+27641,1045,9,274,2,2,1,Red Bull,2020,15,2020-11-29,Bahrain Grand Prix
+27642,1045,210,3,9,9,0,Haas F1 Team,2020,15,2020-11-29,Bahrain Grand Prix
+27643,1046,131,540,1,1,13,Mercedes,2020,16,2020-12-06,Sakhir Grand Prix
+27644,1046,6,131,6,6,0,Ferrari,2020,16,2020-12-06,Sakhir Grand Prix
+27645,1046,1,184,4,4,0,McLaren,2020,16,2020-12-06,Sakhir Grand Prix
+27646,1046,211,194,3,3,1,Racing Point,2020,16,2020-12-06,Sakhir Grand Prix
+27647,1046,213,103,7,7,1,AlphaTauri,2020,16,2020-12-06,Sakhir Grand Prix
+27648,1046,4,172,5,5,0,Renault,2020,16,2020-12-06,Sakhir Grand Prix
+27649,1046,51,8,8,8,0,Alfa Romeo,2020,16,2020-12-06,Sakhir Grand Prix
+27650,1046,3,0,10,10,0,Williams,2020,16,2020-12-06,Sakhir Grand Prix
+27651,1046,9,282,2,2,1,Red Bull,2020,16,2020-12-06,Sakhir Grand Prix
+27652,1046,210,3,9,9,0,Haas F1 Team,2020,16,2020-12-06,Sakhir Grand Prix
+27653,1047,131,573,1,1,13,Mercedes,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27654,1047,6,131,6,6,0,Ferrari,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27655,1047,1,202,3,3,0,McLaren,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27656,1047,211,195,4,4,1,Racing Point,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27657,1047,213,107,7,7,1,AlphaTauri,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27658,1047,4,181,5,5,0,Renault,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27659,1047,51,8,8,8,0,Alfa Romeo,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27660,1047,3,0,10,10,0,Williams,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27661,1047,9,319,2,2,2,Red Bull,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27662,1047,210,3,9,9,0,Haas F1 Team,2020,17,2020-12-13,Abu Dhabi Grand Prix
+27663,1051,51,0,1,-,0,Alfa Romeo,2021,21,2021-11-21,Australian Grand Prix
+27664,1051,214,0,2,-,0,Alpine F1 Team,2021,21,2021-11-21,Australian Grand Prix
+27665,1051,117,0,3,-,0,Aston Martin,2021,21,2021-11-21,Australian Grand Prix
+27666,1051,6,0,4,-,0,Ferrari,2021,21,2021-11-21,Australian Grand Prix
+27667,1051,210,0,5,-,0,Haas F1 Team,2021,21,2021-11-21,Australian Grand Prix
+27668,1051,1,0,6,-,0,McLaren,2021,21,2021-11-21,Australian Grand Prix
+27669,1051,131,0,7,-,0,Mercedes,2021,21,2021-11-21,Australian Grand Prix
+27670,1051,9,0,8,-,0,Red Bull,2021,21,2021-11-21,Australian Grand Prix
+27671,1051,213,0,9,-,0,AlphaTauri,2021,21,2021-11-21,Australian Grand Prix
+27672,1051,3,0,10,-,0,Williams,2021,21,2021-11-21,Australian Grand Prix
+27673,1052,131,41,1,1,1,Mercedes,2021,1,2021-03-28,Bahrain Grand Prix
+27674,1052,9,28,2,2,0,Red Bull,2021,1,2021-03-28,Bahrain Grand Prix
+27675,1052,1,18,3,3,0,McLaren,2021,1,2021-03-28,Bahrain Grand Prix
+27676,1052,6,12,4,4,0,Ferrari,2021,1,2021-03-28,Bahrain Grand Prix
+27677,1052,213,2,5,5,0,AlphaTauri,2021,1,2021-03-28,Bahrain Grand Prix
+27678,1052,117,1,6,6,0,Aston Martin,2021,1,2021-03-28,Bahrain Grand Prix
+27679,1052,51,0,7,7,0,Alfa Romeo,2021,1,2021-03-28,Bahrain Grand Prix
+27680,1052,214,0,8,8,0,Alpine F1 Team,2021,1,2021-03-28,Bahrain Grand Prix
+27681,1052,3,0,9,9,0,Williams,2021,1,2021-03-28,Bahrain Grand Prix
+27682,1052,210,0,10,10,0,Haas F1 Team,2021,1,2021-03-28,Bahrain Grand Prix
+27711,1053,3,0,9,9,0,Williams,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27709,1053,51,0,8,8,0,Alfa Romeo,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27712,1053,210,0,10,10,0,Haas F1 Team,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27704,1053,9,53,2,2,1,Red Bull,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27705,1053,1,41,3,3,0,McLaren,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27710,1053,214,3,7,7,0,Alpine F1 Team,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27708,1053,117,5,6,6,0,Aston Martin,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27707,1053,213,8,5,5,0,AlphaTauri,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27706,1053,6,34,4,4,0,Ferrari,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27703,1053,131,60,1,1,1,Mercedes,2021,2,2021-04-18,Emilia Romagna Grand Prix
+27713,1054,131,101,1,1,2,Mercedes,2021,3,2021-05-02,Portuguese Grand Prix
+27714,1054,9,83,2,2,1,Red Bull,2021,3,2021-05-02,Portuguese Grand Prix
+27715,1054,1,53,3,3,0,McLaren,2021,3,2021-05-02,Portuguese Grand Prix
+27716,1054,6,42,4,4,0,Ferrari,2021,3,2021-05-02,Portuguese Grand Prix
+27717,1054,213,9,6,6,0,AlphaTauri,2021,3,2021-05-02,Portuguese Grand Prix
+27718,1054,117,5,7,7,0,Aston Martin,2021,3,2021-05-02,Portuguese Grand Prix
+27719,1054,51,0,8,8,0,Alfa Romeo,2021,3,2021-05-02,Portuguese Grand Prix
+27720,1054,214,13,5,5,0,Alpine F1 Team,2021,3,2021-05-02,Portuguese Grand Prix
+27721,1054,3,0,9,9,0,Williams,2021,3,2021-05-02,Portuguese Grand Prix
+27722,1054,210,0,10,10,0,Haas F1 Team,2021,3,2021-05-02,Portuguese Grand Prix
+27723,1055,131,141,1,1,3,Mercedes,2021,4,2021-05-09,Spanish Grand Prix
+27724,1055,9,112,2,2,1,Red Bull,2021,4,2021-05-09,Spanish Grand Prix
+27725,1055,1,65,3,3,0,McLaren,2021,4,2021-05-09,Spanish Grand Prix
+27726,1055,6,60,4,4,0,Ferrari,2021,4,2021-05-09,Spanish Grand Prix
+27727,1055,213,10,6,6,0,AlphaTauri,2021,4,2021-05-09,Spanish Grand Prix
+27728,1055,117,5,7,7,0,Aston Martin,2021,4,2021-05-09,Spanish Grand Prix
+27729,1055,51,0,8,8,0,Alfa Romeo,2021,4,2021-05-09,Spanish Grand Prix
+27730,1055,214,15,5,5,0,Alpine F1 Team,2021,4,2021-05-09,Spanish Grand Prix
+27731,1055,3,0,9,9,0,Williams,2021,4,2021-05-09,Spanish Grand Prix
+27732,1055,210,0,10,10,0,Haas F1 Team,2021,4,2021-05-09,Spanish Grand Prix
