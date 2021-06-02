@@ -190,7 +190,7 @@ penguins <- filter(penguins, !is.na(body_mass_g))
 
 ```{r pipe-3, eval = FALSE}
 big_penguins <- penguins %>% 
-  mutate(penguins, big_penguin = 
+  mutate(big_penguin = 
            ifelse(body_mass_g >= 5000, "yes", "no")) %>% 
   filter(!is.na(body_mass_g))
 ```

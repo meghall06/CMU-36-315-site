@@ -1,0 +1,1843 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec5</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 5
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 2, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Graphing distributions]
+&lt;br&gt;
+.medium[Various techniques and considerations]
+
+&lt;br&gt;
+
+.large[Histograms and box plots]
+&lt;br&gt;
+.medium[And density plots and violin plots]
+
+---
+
+# Updates
+
+.large[Homework]
+&lt;br&gt;
+.medium[solution posted]
+&lt;br&gt;
+.medium[how to "describe" a graph]
+
+--
+
+&lt;img src="figs/Lec5/homework-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `object not found`
+
+&lt;br&gt;
+
+.large[The consequence of `group_by` and `summarize`]
+&lt;br&gt;
+.medium[Only grouping variables are available]
+
+
+```r
+mpg %&gt;% 
+  group_by(drv) %&gt;% 
+  summarize(mean_hwy_mpg = mean(hwy))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; drv &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean_hwy_mpg &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.17476 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; f &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.16038 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; r &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21.00000 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `object not found`
+
+&lt;br&gt;
+
+.large[The consequence of `group_by` and `summarize`]
+&lt;br&gt;
+.medium[Only grouping variables are available]
+
+&lt;br&gt;
+
+.large[Search for missing `%&gt;%` and `+`]
+
+
+```r
+mpg %&gt;%
+  filter(year == 2008) %&gt;%
+  group_by(manufacturer)
+  summarize(median_size = median(cty, na.rm = TRUE)) 
+```
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Line graphs]
+&lt;br&gt;
+.medium[Various techniques and considerations]
+
+&lt;br&gt;
+
+.large[Working with time]
+&lt;br&gt;
+.medium[`lubridate` package]
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. **the basics of line graphs**
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+# When to use a line graph
+
+&lt;br&gt;
+.large[Most commonly: when looking at values over time]
+&lt;br&gt;
+.medium[can also be used with ordered categorical data (e.g., month)]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[`y`: values of whatever we're measuring]
+&lt;br&gt;
+.large[`x`: when the measurement was taken]
+&lt;br&gt;
+.medium[most often chronologically, or time via a different variable]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Most important: meaningful relationship between successive points on the x]
+
+---
+
+# Axis of a line graph
+
+&lt;br&gt;
+
+.large[The axis of a bar graph **must** start at zero]
+&lt;br&gt;
+.medium[encoding data by the bars and comparing by length]
+&lt;br&gt;
+.medium[otherwise can be misleading]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+&lt;br&gt;
+.large[But what about a line graph?]
+&lt;br&gt;
+.medium[encoding data by position, not length]
+&lt;br&gt;
+.medium[include zero if it makes sense]
+
+---
+
+# Axis of a line graph
+
+&lt;br&gt;
+
+.huge[*Don't* start the axis at zero if:]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[the range of data is small but the distance from the bottom of the range to zero is large]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Axis of a line graph
+
+&lt;img src="figs/Lec5/stock-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Axis of a line graph
+
+&lt;img src="figs/Lec5/stock-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Axis of a line graph
+
+&lt;br&gt;
+
+.huge[*Don't* start the axis at zero if:]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[the range of data is small but the distance from the bottom of the range to zero is large]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[the relationship to zero is insignificant]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Axis of a line graph
+
+&lt;img src="figs/Lec5/fever-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Axis of a line graph
+
+&lt;img src="figs/Lec5/fever-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Today's data
+
+.center[![F1](figs/Lec5/F1.png)]
+&lt;br&gt;
+&lt;br&gt;
+.center[`constructor_pts`]&lt;br&gt;
+.center[`BritishGP`]&lt;br&gt;
+.center[`driver_pts`]&lt;br&gt;
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`constructor_pts`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; round &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-07-05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-07-12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 80 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-07-19 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 121 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-08-02 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 146 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-08-09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 180 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-08-16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 221 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-08-30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 264 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-09-06 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 281 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-09-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 325 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2020-09-27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 366 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Line graph basics
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020 &amp; name == "McLaren") %&gt;% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line()
+```
+
+&lt;img src="figs/Lec5/basic-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Line graph basics
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020 &amp; name == "McLaren") %&gt;% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_area(fill = "#E0610E")
+```
+
+&lt;img src="figs/Lec5/basic-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Line graph basics
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020 &amp; name == "McLaren") %&gt;% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line(color = "#E0610E", size = 1.5, linetype = "dotted")
+```
+
+&lt;img src="figs/Lec5/basic-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Line graph basics
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020 &amp; name == "McLaren") %&gt;% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line(color = "#E0610E", size = 1.5) +
+  geom_point(alpha = 0.5, color = "black", size = 2)
+```
+
+&lt;img src="figs/Lec5/basic-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Line graph basics
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020 &amp; name == "McLaren") %&gt;% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line() +
+* scale_x_continuous(breaks = seq(1, 17, 1))
+```
+
+&lt;img src="figs/Lec5/basic-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. the basics of line graphs
+
+2. **using multiple groups, avoiding "spaghetti graphs"**
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  ggplot(aes(x = round, y = points, color = name)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1))
+```
+
+&lt;img src="figs/Lec5/multi-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+**one way to reorder a legend**
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  ggplot(aes(x = round, y = points, color = reorder(name, -points))) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(color = "")
+```
+
+&lt;img src="figs/Lec5/multi-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+* mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %&gt;%
+  ggplot(aes(x = round, y = points, color = mclaren)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1))
+```
+
+--
+
+&lt;img src="figs/Lec5/multi-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+**when color doesn't distinguish all lines, need group**
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+* mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %&gt;%
+  ggplot(aes(x = round, y = points, color = mclaren, group = name)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+* scale_color_manual(values = c("#E0610E", "black"))
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+**further distinguish highlighted group with size and alpha**
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %&gt;% 
+  ggplot(aes(x = round, y = points, color = mclaren, group = name, 
+*            size = mclaren, alpha = mclaren)) +
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E", "dark grey")) +
+* scale_size_manual(values = c(1.5, 0.75)) +
+* scale_alpha_manual(values = c(1, 0.3))
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %&gt;% 
+  ggplot(aes(x = round, y = points, color = mclaren, group = name, 
+             size = mclaren, alpha = mclaren)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E", "dark grey")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+* labs(title = "Accumulated points by McLaren during the 2020 season",
+*      x = "Race Round",
+*      y = "Accumulated Points") +
+* theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+* mutate(third = ifelse(name %in%
+*             c("McLaren","Renault","Racing Point"), name, "z")) %&gt;%
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#FFF500",
+                                "#F596C8","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points")
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z")) %&gt;% 
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+* geom_text(aes(label = name), size = 4) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z"),
+*        label = if_else(round == max(round) &amp;
+*                          third != "z", name, NA_character_)) %&gt;%
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+* geom_text(aes(label = label), size = 4) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Multiple groups
+
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) &amp; 
+                           third != "z", name, NA_character_)) %&gt;% 
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+* geom_label_repel(aes(label = label), size = 4) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+&lt;img src="figs/Lec5/multi-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. **working with `lubridate`**
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`BritishGP`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; race_name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; surname &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; round &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; q1 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; q2 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; q3 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hamilton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.900 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.347 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:24.303 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bottas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.801 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:24.616 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Verstappen &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Red Bull &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.115 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.144 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.325 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Ferrari &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.550 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.203 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.427 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Norris &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; McLaren &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.855 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.420 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.782 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Stroll &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Racing Point &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.243 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.501 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.839 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sainz &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; McLaren &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.715 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.149 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.965 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Ricciardo &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Renault &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.677 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.339 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Ocon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Renault &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.396 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.252 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.209 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Vettel &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Ferrari &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2020 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.469 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.455 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:26.339 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+
+```r
+BritishGP %&gt;% 
+  filter(q3 != "\\N") %&gt;% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround")
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; race_name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; surname &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; qround &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; time &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hamilton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.900 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hamilton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.347 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Hamilton &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:24.303 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bottas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.801 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bottas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:25.015 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; British Grand Prix &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Bottas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; q3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1:24.616 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+
+```r
+BritishGP %&gt;% 
+  filter(q3 != "\\N") %&gt;% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %&gt;% 
+* ggplot(aes(x = qround, y = time, color = name, group = surname)) +
+  geom_line()
+```
+
+--
+
+&lt;img src="figs/Lec5/lubridate-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Working with `lubridate`
+
+
+```r
+class(BritishGP$q1)
+```
+
+```
+## [1] "character"
+```
+
+--
+
+.center[![lubridate](figs/Lec5/lubridate.png)]
+&lt;br&gt;
+.center[.medium[working with dates &amp; times in R:]]
+&lt;br&gt;
+.center[[https://lubridate.tidyverse.org/](https://lubridate.tidyverse.org/)]
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+
+```r
+BritishGP %&gt;% 
+  filter(q3 != "\\N") %&gt;% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %&gt;% 
+* mutate(time_format = ms(time),
+*        seconds = seconds(time_format),
+*        duration = as.duration(time_format))
+```
+
+--
+
+
+```
+## # A tibble: 5 x 6
+##   surname  qround time     time_format seconds  duration               
+##   &lt;chr&gt;    &lt;chr&gt;  &lt;chr&gt;    &lt;Period&gt;    &lt;Period&gt; &lt;Duration&gt;             
+## 1 Hamilton q1     1:25.900 1M 25.9S    85.9S    85.9s (~1.43 minutes)  
+## 2 Hamilton q2     1:25.347 1M 25.347S  85.347S  85.347s (~1.42 minutes)
+## 3 Hamilton q3     1:24.303 1M 24.303S  84.303S  84.303s (~1.41 minutes)
+## 4 Bottas   q1     1:25.801 1M 25.801S  85.801S  85.801s (~1.43 minutes)
+## 5 Bottas   q2     1:25.015 1M 25.015S  85.015S  85.015s (~1.42 minutes)
+```
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+
+```r
+BritishGP %&gt;% 
+  filter(q3 != "\\N") %&gt;% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %&gt;% 
+  mutate(time_format = ms(time),
+         seconds = seconds(time_format), 
+         duration = as.duration(time_format)) %&gt;% 
+* ggplot(aes(x = qround, y = duration, group = surname)) +
+  geom_line() 
+```
+
+---
+
+# Working with `lubridate`
+
+&lt;img src="figs/Lec5/lubridate-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+
+```r
+BritishGP %&gt;% 
+  filter(q3 != "\\N") %&gt;% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %&gt;% 
+  mutate(time_format = ms(time),
+      seconds = seconds(time_format), 
+      duration = as.duration(time_format),
+*     mercedes = ifelse(name == "Mercedes","highlight","normal")) %&gt;%
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) +
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() 
+```
+
+---
+
+# Working with `lubridate`
+
+&lt;img src="figs/Lec5/lubridate-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Working with `lubridate`
+
+
+```r
+BritishGP %&gt;% 
+  filter(q3 != "\\N") %&gt;% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %&gt;% 
+  mutate(time_format = ms(time),
+      seconds = seconds(time_format), 
+      duration = as.duration(time_format),
+      mercedes = ifelse(name == "Mercedes","highlight","normal"),
+*     qround = fct_recode(qround, "Qualifying 1" = "q1",
+*                 "Qualifying 2" = "q2", "Qualifying 3" = "q3"),
+*     label = ifelse(surname == "Hamilton" &amp; qround == "Qualifying 3",
+*                       name, NA_character_)) %&gt;%
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) +
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() +
+* geom_label_repel(aes(label = label), size = 4) +
+  theme(legend.position = "none")
+```
+
+---
+
+# Working with `lubridate`
+
+&lt;img src="figs/Lec5/lubridate-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Working with `lubridate`
+
+
+
+
+```r
+*BritishGP_cleaned %&gt;%
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) + 
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) + 
+* scale_y_continuous(trans = "reverse", breaks = seq(84, 87, 0.5),
+*                    labels = c("1:24.0","1:24.5","1:25.0","1:25.5",
+*                               "1:26.0","1:26.5","1:27.0")) +
+  labs(y = "Lap Time (sec)",
+       x = "",
+       title = "Qualifying Times in the 2020 British Grand Prix") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Working with `lubridate`
+
+&lt;img src="figs/Lec5/lubridate-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Working with `lubridate`
+
+**a preview of annotations**
+
+
+```r
+BritishGP_cleaned %&gt;%
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) + 
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) + 
+  scale_y_continuous(trans = "reverse", breaks = seq(84, 87, 0.5), 
+                     labels = c("1:24.0","1:24.5","1:25.0","1:25.5",
+                                "1:26.0","1:26.5","1:27.0")) +
+  labs(y = "Lap Time (sec)", x = "",
+       title = "Qualifying Times in the 2020 British Grand Prix") +
+  theme(legend.position = "none") +
+* annotate("text", x = 0.65, y = 84.2, label = "Faster",
+*          size = 3.5, fontface = 3) +
+* annotate("segment", x = 0.65, xend = 0.65, y = 84.7, yend = 84.3,
+*     color = "black", size = 1, arrow = arrow(length = unit(2, "mm")))
+```
+
+---
+
+# Working with `lubridate`
+
+&lt;img src="figs/Lec5/lubridate-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. **the line graph debate**
+
+5. slope graphs
+
+]
+
+---
+
+# When to use a line graph
+
+&lt;br&gt;
+.large[Your graph can be thought of as a function (e.g., temperature as a function of time)]&lt;br&gt;
+.medium[the line can be reliably used to estimate data between points]
+
+---
+
+# When to use a line graph
+
+&lt;img src="figs/Lec5/fever-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# When to use a line graph
+
+&lt;br&gt;
+.large[Your graph can be thought of as a function (e.g., temperature as a function of time)]&lt;br&gt;
+.medium[the line can be reliably used to estimate data between points]&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[You're at the most discrete level of data and are looking for a trend]&lt;br&gt;
+.medium[the line is mostly a guide for the eye]&lt;br&gt;
+.medium[there isn't really a clearer way to display this]
+
+---
+
+# When to use a line graph
+
+&lt;img src="figs/Lec5/multi-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# When to use a line graph
+
+&lt;img src="figs/Lec5/lubridate-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# What about this?
+
+&lt;img src="figs/Lec5/unnamed-chunk-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# The line graph debate
+
+**how to view the number of total points for two constructors, 2015 to 2020?**
+
+
+```r
+constructor_pts %&gt;% 
+  filter(name %in% c("Mercedes","Red Bull") &amp; year != 2021) %&gt;% 
+  group_by(year, name) %&gt;% 
+  summarize(points = max(points), 
+            rounds = max(round))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rounds &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 703 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2015 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Red Bull &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 187 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2016 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 765 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2016 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Red Bull &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 468 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2017 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mercedes &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 668 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2017 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Red Bull &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 368 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# The line graph debate
+
+**how to view the number of total points for two constructors, 2015 to 2020?**
+
+
+```r
+constructor_pts %&gt;% 
+  filter(name %in% c("Mercedes","Red Bull") &amp; year != 2021) %&gt;% 
+  group_by(year, name) %&gt;% 
+  summarize(points = max(points), 
+            rounds = max(round)) %&gt;% 
+* mutate(axis = paste0(year, "\n", rounds, " races"),
+*        label = ifelse(year == 2015, name, NA_character_)) %&gt;%
+  ggplot(aes(x = axis, y = points, color = name, group = name)) +
+  geom_line() +
+  scale_color_manual(values = c("#00D2BE","#1E41FF")) +
+* geom_label_repel(aes(label = label)) +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Accumulated Points",
+       title = "Total points for Mercedes &amp; Red Bull, 2015 to 2020")
+```
+
+---
+
+# The line graph debate
+
+&lt;img src="figs/Lec5/debate-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# The line graph debate
+
+&lt;br&gt;
+.large[A line between two points implies the presence of data—is this a problem?]&lt;br&gt;
+.medium[Does the data need to be measured nearly continuously for the lines to be logical interpretations?]&lt;br&gt;
+.medium[Or are we used to lines representing time?]&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[My view (only one opinion!)]&lt;br&gt;
+.medium[Be very careful as to what your lines are representing]&lt;br&gt;
+.medium[Consider the time between measurements and the total # of measurements]&lt;br&gt;
+.medium[If each value "fills up from zero" at each interval, consider a bar chart instead]&lt;br&gt;
+
+---
+
+# The line graph debate
+
+**how to view the number of total points for two constructors, 2015 to 2020?**
+
+
+```r
+constructor_pts %&gt;% 
+  filter(name %in% c("Mercedes","Red Bull") &amp; year != 2021) %&gt;% 
+  group_by(year, name) %&gt;% 
+  summarize(points = max(points), 
+            rounds = max(round)) %&gt;% 
+  mutate(axis = paste0(year, "\n", rounds, " races"), 
+         label = ifelse(year == 2015, name, NA_character_)) %&gt;% 
+  ggplot(aes(x = axis, y = points, fill = name)) +
+* geom_bar(position = "dodge", stat = "identity") +
+  scale_fill_manual(values = c("#00D2BE","#1E41FF")) +
+  geom_label_repel(aes(label = label)) +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Accumulated Points")
+```
+
+---
+
+# The line graph debate
+
+&lt;img src="figs/Lec5/debate-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. **slope graphs**
+
+]
+
+---
+
+# Slope graphs
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Another option to compare groups over time]&lt;br&gt;
+.medium[(only two points in time, though)]
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`driver_pts`]&lt;br&gt;
+.center[**how did points change for drivers who switched teams from 2018 to 2019?**]
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; surname &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; round &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-03-17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-03-31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-04-14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-04-28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-05-12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-05-26 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-06-09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-06-23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-06-30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 105 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-07-14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 120 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Date to year
+
+
+```r
+driver_pts %&gt;% 
+  mutate(year = lubridate::year(date))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; surname &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; round &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-03-17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-03-31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 26 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-04-14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-04-28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-05-12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-05-26 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 57 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-06-09 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-06-23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-06-30 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 105 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Leclerc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2019-07-14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2019 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 120 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+
+```r
+driver_pts %&gt;% 
+  mutate(year = lubridate::year(date)) %&gt;% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %&gt;% 
+  group_by(year, surname) %&gt;% 
+  summarize(points = max(points)) %&gt;% 
+* ggplot(aes(x = year, y = points, group = surname)) +
+* geom_line(aes(color = surname), size = 2) +
+* geom_point(aes(color = surname), size = 4)
+```
+
+---
+
+# Slope graphs
+
+&lt;img src="figs/Lec5/slope-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+
+```r
+driver_pts %&gt;% 
+  mutate(year = lubridate::year(date)) %&gt;% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %&gt;% 
+  group_by(year, surname) %&gt;% 
+  summarize(points = max(points)) %&gt;% 
+* ggplot(aes(x = as.character(year), y = points, group = surname)) +
+  geom_line(aes(color = surname), size = 2) + 
+  geom_point(aes(color = surname), size = 4) +
+* scale_y_continuous(breaks = seq(25, 300, 25))
+```
+
+---
+
+# Slope graphs
+
+&lt;img src="figs/Lec5/slope-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+
+```r
+driver_pts %&gt;% 
+  mutate(year = lubridate::year(date)) %&gt;% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %&gt;% 
+  group_by(year, surname) %&gt;% 
+  summarize(points = max(points)) %&gt;% 
+* mutate(label = ifelse(year == 2019, surname, NA_character_)) %&gt;%
+  ggplot(aes(x = as.character(year), y = points, group = surname)) + 
+  geom_line(aes(color = surname), size = 2) + 
+  geom_point(aes(color = surname), size = 4) +
+  scale_y_continuous(breaks = seq(25, 300, 25)) +
+* geom_label_repel(aes(label = label), size = 4) +
+* theme(legend.position = "none")
+```
+
+---
+
+# Slope graphs
+
+&lt;img src="figs/Lec5/slope-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+
+```r
+driver_pts %&gt;% 
+  mutate(year = lubridate::year(date)) %&gt;% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %&gt;% 
+  group_by(year, surname) %&gt;% 
+  summarize(points = max(points)) %&gt;% 
+  mutate(label = ifelse(year == 2019, surname, NA_character_)) %&gt;% 
+  ggplot(aes(x = as.character(year), y = points, group = surname)) + 
+  geom_line(aes(color = surname), size = 2) + 
+  geom_point(aes(color = surname), size = 4) +
+  scale_y_continuous(breaks = seq(25, 300, 25)) +
+  geom_label_repel(aes(label = label), size = 4) + 
+  theme(legend.position = "none") +
+  labs(y = "Total Points",  x = "",
+       title = "Change in points, drivers who switched teams in 2019")
+```
+
+---
+
+# Slope graphs
+
+&lt;img src="figs/Lec5/slope-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Graphic critique due before midterm]
+&lt;br&gt;
+.medium[Details on syllabus]
+
+&lt;br&gt;
+
+.large[Lab 4 on Thursday June 3]
+
+&lt;br&gt;
+
+.large[Lecture 6 on Friday June 4]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"highlightSpans": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

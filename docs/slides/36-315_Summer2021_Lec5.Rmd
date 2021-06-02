@@ -1,0 +1,1464 @@
+---
+title: "36-315-Lec5"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(showtext)
+library(scales)
+library(ggrepel)
+library(lubridate)
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec5/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+fever <- tribble(
+  ~"time", ~"temp",
+  #--|--|----
+  "Thurs\nmorning", 98.5,
+  "Thurs\nmidday", 98.9,
+  "Thurs\nevening", 98.7,
+  "Fri\nmorning", 98.7,
+  "Fri\nmidday", 98.5,
+  "Fri\nevening", 99.5,
+  "Sat\nmorning", 97.9
+)
+
+stock <- tribble(
+  ~"date", ~"open",
+  #--|--|----
+  "May 24", 34394,
+  "May 25", 34312,
+  "May 26", 34323,
+  "May 27", 34465,
+  "May 28", 34529,
+)
+
+BritishGP <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/BritishGP.csv',
+                      col_types = cols(.default = "?", q1 = "c"))
+constructor_pts <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/constructor_pts.csv')
+driver_pts <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/driver_pts.csv')
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 5
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 2, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# From last time
+
+<br>
+
+.large[Graphing distributions]
+<br>
+.medium[Various techniques and considerations]
+
+<br>
+
+.large[Histograms and box plots]
+<br>
+.medium[And density plots and violin plots]
+
+---
+
+# Updates
+
+.large[Homework]
+<br>
+.medium[solution posted]
+<br>
+.medium[how to "describe" a graph]
+
+--
+
+```{r homework, echo = FALSE, fig.align = "center", fig.height = 4.5}
+mpg %>% 
+  filter(year == 2008 & class == "suv") %>% 
+  group_by(manufacturer) %>% 
+  summarize(median = median(cty)) %>% 
+  ggplot(aes(x = reorder(manufacturer, -median), y = median)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Median city mpg by manufacturer, SUVs in 2008",
+       x = "Manufacturer",
+       y = "Median city mpg")
+```
+
+---
+
+# `object not found`
+
+<br>
+
+.large[The consequence of `group_by` and `summarize`]
+<br>
+.medium[Only grouping variables are available]
+
+```{r error-1, eval = FALSE}
+mpg %>% 
+  group_by(drv) %>% 
+  summarize(mean_hwy_mpg = mean(hwy))
+```
+
+--
+
+```{r error-2, echo = FALSE}
+mpg %>% 
+  group_by(drv) %>% 
+  summarize(mean_hwy_mpg = mean(hwy)) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# `object not found`
+
+<br>
+
+.large[The consequence of `group_by` and `summarize`]
+<br>
+.medium[Only grouping variables are available]
+
+<br>
+
+.large[Search for missing `%>%` and `+`]
+
+```{r, eval = FALSE}
+mpg %>%
+  filter(year == 2008) %>%
+  group_by(manufacturer)
+  summarize(median_size = median(cty, na.rm = TRUE)) 
+```
+
+---
+
+# Today
+
+<br>
+
+.large[Line graphs]
+<br>
+.medium[Various techniques and considerations]
+
+<br>
+
+.large[Working with time]
+<br>
+.medium[`lubridate` package]
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. **the basics of line graphs**
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+# When to use a line graph
+
+<br>
+.large[Most commonly: when looking at values over time]
+<br>
+.medium[can also be used with ordered categorical data (e.g., month)]
+<br>
+<br>
+--
+<br>
+.large[`y`: values of whatever we're measuring]
+<br>
+.large[`x`: when the measurement was taken]
+<br>
+.medium[most often chronologically, or time via a different variable]
+<br>
+<br>
+--
+<br>
+.large[Most important: meaningful relationship between successive points on the x]
+
+---
+
+# Axis of a line graph
+
+<br>
+
+.large[The axis of a bar graph **must** start at zero]
+<br>
+.medium[encoding data by the bars and comparing by length]
+<br>
+.medium[otherwise can be misleading]
+<br>
+<br>
+--
+<br>
+<br>
+.large[But what about a line graph?]
+<br>
+.medium[encoding data by position, not length]
+<br>
+.medium[include zero if it makes sense]
+
+---
+
+# Axis of a line graph
+
+<br>
+
+.huge[*Don't* start the axis at zero if:]
+<br>
+<br>
+<br>
+<br>
+.large[the range of data is small but the distance from the bottom of the range to zero is large]
+<br>
+<br>
+<br>
+
+---
+
+# Axis of a line graph
+
+```{r stock-1, echo = FALSE, fig.align = "center", fig.height = 6.5}
+stock %>% 
+  ggplot(aes(x = date, y = open, group = 1)) +
+  geom_line() + 
+  scale_y_continuous(labels = comma,
+                     limits = c(0, 35000)) +
+  cmu_theme() +
+  theme(panel.grid.major.x = element_blank()) +
+  labs(x = "",
+       y = "",
+       title = "Dow Opening")
+```
+
+---
+
+# Axis of a line graph
+
+```{r stock-2, echo = FALSE, fig.align = "center", fig.height = 6.5}
+stock %>% 
+  ggplot(aes(x = date, y = open, group = 1)) +
+  geom_line() + 
+  scale_y_continuous(labels = comma) +
+  cmu_theme() +
+  theme(panel.grid.major.x = element_blank()) +
+  labs(x = "",
+       y = "",
+       title = "Dow Opening")
+```
+
+---
+
+# Axis of a line graph
+
+<br>
+
+.huge[*Don't* start the axis at zero if:]
+<br>
+<br>
+<br>
+<br>
+.large[the range of data is small but the distance from the bottom of the range to zero is large]
+<br>
+<br>
+<br>
+.large[the relationship to zero is insignificant]
+<br>
+<br>
+
+---
+
+# Axis of a line graph
+
+```{r fever-1, echo = FALSE, fig.align = "center", fig.height = 6.5}
+fever %>% 
+  mutate(time = fct_relevel(time, c("Thurs\nmorning",
+                                   "Thurs\nmidday", 
+                                   "Thurs\nevening",
+                                   "Fri\nmorning", 
+                                   "Fri\nmidday",
+                                   "Fri\nevening",
+                                   "Sat\nmorning"))) %>% 
+  ggplot(aes(x = time, y = temp, group = 1)) +
+  geom_line() + 
+  scale_y_continuous(limits = c(0, 100)) +
+  geom_hline(yintercept = 98.6, color = "#bb0000", linetype = "dashed") +
+  cmu_theme() +
+  theme(panel.grid.major.x = element_blank()) +
+  labs(x = "",
+       y = "Temperature (F)",
+       title = "My temperature in October 2020",
+       subtitle = "Red dashed line at 98.6")
+```
+
+---
+
+# Axis of a line graph
+
+```{r fever-2, echo = FALSE, fig.align = "center", fig.height = 6.5}
+fever %>% 
+  mutate(time = fct_relevel(time, c("Thurs\nmorning",
+                                   "Thurs\nmidday", 
+                                   "Thurs\nevening",
+                                   "Fri\nmorning", 
+                                   "Fri\nmidday",
+                                   "Fri\nevening",
+                                   "Sat\nmorning"))) %>% 
+  ggplot(aes(x = time, y = temp, group = 1)) +
+  geom_line() + 
+#  scale_y_continuous(limits = c(0, 100)) +
+  geom_hline(yintercept = 98.6, color = "#bb0000", linetype = "dashed") +
+  cmu_theme() +
+  theme(panel.grid.major.x = element_blank()) +
+  labs(x = "",
+       y = "Temperature (F)",
+       title = "My temperature in October 2020",
+       subtitle = "Red dashed line at 98.6")
+```
+
+---
+
+# Today's data
+
+.center[![F1](figs/Lec5/F1.png)]
+<br>
+<br>
+.center[`constructor_pts`]<br>
+.center[`BritishGP`]<br>
+.center[`driver_pts`]<br>
+
+---
+
+# Today's data
+
+<br>
+.center[`constructor_pts`]<br>
+
+```{r head-1, echo = FALSE}
+constructor_pts %>% 
+  filter(name == "Mercedes" & year == 2020) %>% 
+  arrange(round) %>% 
+  select(name, year, date, round, points) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Line graph basics
+
+```{r basic-1, fig.align = "center", fig.height = 4.75}
+constructor_pts %>% 
+  filter(year == 2020 & name == "McLaren") %>% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line()
+```
+
+---
+
+# Line graph basics
+
+```{r basic-2, fig.align = "center", fig.height = 4.75}
+constructor_pts %>% 
+  filter(year == 2020 & name == "McLaren") %>% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_area(fill = "#E0610E")
+```
+
+---
+
+# Line graph basics
+
+```{r basic-3, fig.align = "center", fig.height = 4.75}
+constructor_pts %>% 
+  filter(year == 2020 & name == "McLaren") %>% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line(color = "#E0610E", size = 1.5, linetype = "dotted")
+```
+
+---
+
+# Line graph basics
+
+```{r basic-4, fig.align = "center", fig.height = 4.5}
+constructor_pts %>% 
+  filter(year == 2020 & name == "McLaren") %>% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line(color = "#E0610E", size = 1.5) +
+  geom_point(alpha = 0.5, color = "black", size = 2)
+```
+
+---
+
+# Line graph basics
+
+```{r basic-5, fig.align = "center", fig.height = 4.5}
+constructor_pts %>% 
+  filter(year == 2020 & name == "McLaren") %>% 
+  ggplot(aes(x = round, y = points)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) #<<
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. the basics of line graphs
+
+2. **using multiple groups, avoiding "spaghetti graphs"**
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+# Multiple groups
+
+```{r multi-1, fig.align = "center", fig.height = 4.5}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  ggplot(aes(x = round, y = points, color = name)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1))
+```
+
+---
+
+# Multiple groups
+
+**one way to reorder a legend**
+
+```{r multi-2, fig.align = "center", fig.height = 3.75}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  ggplot(aes(x = round, y = points, color = reorder(name, -points))) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(color = "")
+```
+
+---
+
+# Multiple groups
+
+```{r multi-3, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %>% #<<
+  ggplot(aes(x = round, y = points, color = mclaren)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1))
+```
+
+--
+
+```{r multi-3, echo = FALSE, fig.align = "center", fig.height = 4}
+```
+
+---
+
+# Multiple groups
+
+**when color doesn't distinguish all lines, need group**
+
+```{r multi-4, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %>% #<<
+  ggplot(aes(x = round, y = points, color = mclaren, group = name)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E", "black")) #<<
+```
+
+---
+
+# Multiple groups
+
+```{r multi-4, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Multiple groups
+
+**further distinguish highlighted group with size and alpha**
+
+```{r multi-5, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %>% 
+  ggplot(aes(x = round, y = points, color = mclaren, group = name, 
+             size = mclaren, alpha = mclaren)) + #<<
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E", "dark grey")) +
+  scale_size_manual(values = c(1.5, 0.75)) + #<<
+  scale_alpha_manual(values = c(1, 0.3)) #<<
+```
+
+---
+
+# Multiple groups
+
+```{r multi-5, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Multiple groups
+
+```{r multi-6, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(mclaren = ifelse(name == "McLaren","highlight","normal")) %>% 
+  ggplot(aes(x = round, y = points, color = mclaren, group = name, 
+             size = mclaren, alpha = mclaren)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E", "dark grey")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  labs(title = "Accumulated points by McLaren during the 2020 season", #<<
+       x = "Race Round", #<<
+       y = "Accumulated Points") + #<<
+  theme(legend.position = "none") #<<
+```
+
+---
+
+# Multiple groups
+
+```{r multi-6, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Multiple groups
+
+```{r multi-7, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% #<<
+              c("McLaren","Renault","Racing Point"), name, "z")) %>% #<<
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#FFF500",
+                                "#F596C8","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points")
+```
+
+---
+
+# Multiple groups
+
+```{r multi-7, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Multiple groups
+
+```{r multi-8, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z")) %>% 
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_text(aes(label = name), size = 4) + #<<
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+```{r multi-8, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Multiple groups
+
+```{r multi-9, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) & #<<
+                           third != "z", name, NA_character_)) %>% #<<
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_text(aes(label = label), size = 4) + #<<
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+```{r multi-9, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Multiple groups
+
+```{r multi-10, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) & 
+                           third != "z", name, NA_character_)) %>% 
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) + #<<
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Multiple groups
+
+```{r multi-10, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. **working with `lubridate`**
+
+4. the line graph debate
+
+5. slope graphs
+
+]
+
+---
+
+# Today's data
+
+<br>
+.center[`BritishGP`]<br>
+
+```{r head-2, echo = FALSE}
+BritishGP %>% 
+  filter(position <= 10) %>% 
+  arrange(round) %>% 
+  select(race_name, surname, name, year, round, q1:q3) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+```{r pivot-1, eval = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround")
+```
+
+--
+
+```{r pivot-2, echo = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  select(race_name, surname, name, qround, time) %>% 
+  head(6) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+```{r lubridate-1, eval = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  ggplot(aes(x = qround, y = time, color = name, group = surname)) + #<<
+  geom_line()
+```
+
+--
+
+```{r lubridate-1, echo = FALSE, fig.align = "center", fig.height = 4}
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-2}
+class(BritishGP$q1)
+```
+
+--
+
+.center[![lubridate](figs/Lec5/lubridate.png)]
+<br>
+.center[.medium[working with dates & times in R:]]
+<br>
+.center[[https://lubridate.tidyverse.org/](https://lubridate.tidyverse.org/)]
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+```{r lubridate-3, eval = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  mutate(time_format = ms(time), #<<
+         seconds = seconds(time_format), #<<
+         duration = as.duration(time_format)) #<<
+```
+
+--
+
+```{r lubridate-4, echo = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  mutate(time_format = ms(time),
+         seconds = seconds(time_format),
+         duration = as.duration(time_format)) %>% 
+  select(surname, qround, time, time_format, seconds, duration) %>% 
+  head(5)
+```
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+```{r lubridate-5, eval = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  mutate(time_format = ms(time),
+         seconds = seconds(time_format), 
+         duration = as.duration(time_format)) %>% 
+  ggplot(aes(x = qround, y = duration, group = surname)) + #<<
+  geom_line() 
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-5, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Working with `lubridate`
+
+**how do lap times change through qualifying?**
+
+```{r lubridate-6, eval = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  mutate(time_format = ms(time),
+      seconds = seconds(time_format), 
+      duration = as.duration(time_format),
+      mercedes = ifelse(name == "Mercedes","highlight","normal")) %>% #<<
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) +
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() 
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-6, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-7, eval = FALSE}
+BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  mutate(time_format = ms(time),
+      seconds = seconds(time_format), 
+      duration = as.duration(time_format),
+      mercedes = ifelse(name == "Mercedes","highlight","normal"),
+      qround = fct_recode(qround, "Qualifying 1" = "q1", #<<
+                  "Qualifying 2" = "q2", "Qualifying 3" = "q3"), #<<
+      label = ifelse(surname == "Hamilton" & qround == "Qualifying 3", #<<
+                        name, NA_character_)) %>% #<<
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) +
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) + #<<
+  theme(legend.position = "none")
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-7, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Working with `lubridate`
+
+```{r cleaning, echo = FALSE}
+BritishGP_cleaned <- BritishGP %>% 
+  filter(q3 != "\\N") %>% 
+  pivot_longer(q1:q3, values_to = "time", names_to = "qround") %>% 
+  mutate(time_format = ms(time),
+         seconds = seconds(time_format), 
+         duration = as.duration(time_format),
+         mercedes = ifelse(name == "Mercedes","highlight","normal"),
+         qround = fct_recode(qround, "Qualifying 1" = "q1", 
+                      "Qualifying 2" = "q2", "Qualifying 3" = "q3"), 
+         label = ifelse(surname == "Hamilton" & qround == "Qualifying 3", 
+                        name, NA_character_))
+```
+
+```{r lubridate-8, eval = FALSE}
+BritishGP_cleaned %>% #<<
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) + 
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) + 
+  scale_y_continuous(trans = "reverse", breaks = seq(84, 87, 0.5), #<<
+                     labels = c("1:24.0","1:24.5","1:25.0","1:25.5", #<<
+                                "1:26.0","1:26.5","1:27.0")) + #<<
+  labs(y = "Lap Time (sec)",
+       x = "",
+       title = "Qualifying Times in the 2020 British Grand Prix") +
+  theme(legend.position = "none")
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-8, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Working with `lubridate`
+
+**a preview of annotations**
+
+```{r lubridate-9, eval = FALSE}
+BritishGP_cleaned %>%
+  ggplot(aes(x = qround, y = duration, group = surname,
+             size = mercedes, alpha = mercedes, color = mercedes)) + 
+  scale_color_manual(values = c("#00D2BE","black")) +
+  scale_size_manual(values = c(1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 0.3)) +
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) + 
+  scale_y_continuous(trans = "reverse", breaks = seq(84, 87, 0.5), 
+                     labels = c("1:24.0","1:24.5","1:25.0","1:25.5",
+                                "1:26.0","1:26.5","1:27.0")) +
+  labs(y = "Lap Time (sec)", x = "",
+       title = "Qualifying Times in the 2020 British Grand Prix") +
+  theme(legend.position = "none") +
+  annotate("text", x = 0.65, y = 84.2, label = "Faster", #<<
+           size = 3.5, fontface = 3) + #<<
+  annotate("segment", x = 0.65, xend = 0.65, y = 84.7, yend = 84.3, #<<
+      color = "black", size = 1, arrow = arrow(length = unit(2, "mm"))) #<<
+```
+
+---
+
+# Working with `lubridate`
+
+```{r lubridate-9, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. **the line graph debate**
+
+5. slope graphs
+
+]
+
+---
+
+# When to use a line graph
+
+<br>
+.large[Your graph can be thought of as a function (e.g., temperature as a function of time)]<br>
+.medium[the line can be reliably used to estimate data between points]
+
+---
+
+# When to use a line graph
+
+```{r fever-2, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# When to use a line graph
+
+<br>
+.large[Your graph can be thought of as a function (e.g., temperature as a function of time)]<br>
+.medium[the line can be reliably used to estimate data between points]<br>
+<br>
+<br>
+.large[You're at the most discrete level of data and are looking for a trend]<br>
+.medium[the line is mostly a guide for the eye]<br>
+.medium[there isn't really a clearer way to display this]
+
+---
+
+# When to use a line graph
+
+```{r multi-10, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# When to use a line graph
+
+```{r lubridate-9, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# What about this?
+
+```{r, echo = FALSE, fig.align = "center", fig.height = 6.5}
+constructor_pts %>% 
+  filter(name %in% c("Mercedes","Red Bull") & year != 2021) %>% 
+  group_by(year, name) %>% 
+  summarize(points = max(points), 
+            rounds = max(round)) %>% 
+  mutate(axis = paste0(year, "\n", rounds, " races"), #<<
+         label = ifelse(year == 2015, name, NA_character_)) %>% #<<
+  ggplot(aes(x = axis, y = points, color = name, group = name)) +
+  geom_line() +
+  scale_color_manual(values = c("#00D2BE","#1E41FF")) +
+  geom_label_repel(aes(label = label)) + #<<
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Accumulated Points",
+       title = "Total points for Mercedes & Red Bull, 2015 to 2020")
+```
+
+---
+
+# The line graph debate
+
+**how to view the number of total points for two constructors, 2015 to 2020?**
+
+```{r debate-1, eval = FALSE}
+constructor_pts %>% 
+  filter(name %in% c("Mercedes","Red Bull") & year != 2021) %>% 
+  group_by(year, name) %>% 
+  summarize(points = max(points), 
+            rounds = max(round))
+```
+
+--
+
+```{r debate-2, echo = FALSE}
+constructor_pts %>% 
+  filter(name %in% c("Mercedes","Red Bull") & year != 2021) %>% 
+  group_by(year, name) %>% 
+  summarize(points = max(points), 
+            rounds = max(round)) %>% 
+  head(6) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# The line graph debate
+
+**how to view the number of total points for two constructors, 2015 to 2020?**
+
+```{r debate-3, eval = FALSE}
+constructor_pts %>% 
+  filter(name %in% c("Mercedes","Red Bull") & year != 2021) %>% 
+  group_by(year, name) %>% 
+  summarize(points = max(points), 
+            rounds = max(round)) %>% 
+  mutate(axis = paste0(year, "\n", rounds, " races"), #<<
+         label = ifelse(year == 2015, name, NA_character_)) %>% #<<
+  ggplot(aes(x = axis, y = points, color = name, group = name)) +
+  geom_line() +
+  scale_color_manual(values = c("#00D2BE","#1E41FF")) +
+  geom_label_repel(aes(label = label)) + #<<
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Accumulated Points",
+       title = "Total points for Mercedes & Red Bull, 2015 to 2020")
+```
+
+---
+
+# The line graph debate
+
+```{r debate-3, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# The line graph debate
+
+<br>
+.large[A line between two points implies the presence of data—is this a problem?]<br>
+.medium[Does the data need to be measured nearly continuously for the lines to be logical interpretations?]<br>
+.medium[Or are we used to lines representing time?]<br>
+<br>
+--
+<br>
+.large[My view (only one opinion!)]<br>
+.medium[Be very careful as to what your lines are representing]<br>
+.medium[Consider the time between measurements and the total # of measurements]<br>
+.medium[If each value "fills up from zero" at each interval, consider a bar chart instead]<br>
+
+---
+
+# The line graph debate
+
+**how to view the number of total points for two constructors, 2015 to 2020?**
+
+```{r debate-4, eval = FALSE}
+constructor_pts %>% 
+  filter(name %in% c("Mercedes","Red Bull") & year != 2021) %>% 
+  group_by(year, name) %>% 
+  summarize(points = max(points), 
+            rounds = max(round)) %>% 
+  mutate(axis = paste0(year, "\n", rounds, " races"), 
+         label = ifelse(year == 2015, name, NA_character_)) %>% 
+  ggplot(aes(x = axis, y = points, fill = name)) +
+  geom_bar(position = "dodge", stat = "identity") + #<<
+  scale_fill_manual(values = c("#00D2BE","#1E41FF")) +
+  geom_label_repel(aes(label = label)) +
+  theme(legend.position = "none") +
+  labs(x = "",
+       y = "Accumulated Points")
+```
+
+---
+
+# The line graph debate
+
+```{r debate-4, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+class: left
+
+# Today's agenda
+
+<br>
+
+.large[
+
+1. the basics of line graphs
+
+2. using multiple groups, avoiding "spaghetti graphs"
+
+3. working with `lubridate`
+
+4. the line graph debate
+
+5. **slope graphs**
+
+]
+
+---
+
+# Slope graphs
+
+<br>
+<br>
+.large[Another option to compare groups over time]<br>
+.medium[(only two points in time, though)]
+
+---
+
+# Today's data
+
+<br>
+.center[`driver_pts`]<br>
+.center[**how did points change for drivers who switched teams from 2018 to 2019?**]
+
+```{r head-3, echo = FALSE}
+driver_pts %>% 
+  filter(surname == "Leclerc" & year(date) == 2019) %>% 
+  arrange(round) %>% 
+  select(surname, date, round, points) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Date to year
+
+```{r date-1, eval = FALSE}
+driver_pts %>% 
+  mutate(year = lubridate::year(date))
+```
+
+--
+
+```{r date-2, echo = FALSE}
+driver_pts %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  filter(surname == "Leclerc" & year == 2019) %>% 
+  arrange(round) %>% 
+  select(surname, date, year, round, points) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+```{r slope-1, eval = FALSE}
+driver_pts %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %>% 
+  group_by(year, surname) %>% 
+  summarize(points = max(points)) %>% 
+  ggplot(aes(x = year, y = points, group = surname)) + #<<
+  geom_line(aes(color = surname), size = 2) + #<<
+  geom_point(aes(color = surname), size = 4) #<<
+```
+
+---
+
+# Slope graphs
+
+```{r slope-1, echo = FALSE, fig.align = "center", fig.height = 6}
+```
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+```{r slope-2, eval = FALSE}
+driver_pts %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %>% 
+  group_by(year, surname) %>% 
+  summarize(points = max(points)) %>% 
+  ggplot(aes(x = as.character(year), y = points, group = surname)) + #<<
+  geom_line(aes(color = surname), size = 2) + 
+  geom_point(aes(color = surname), size = 4) +
+  scale_y_continuous(breaks = seq(25, 300, 25)) #<<
+```
+
+---
+
+# Slope graphs
+
+```{r slope-2, echo = FALSE, fig.align = "center", fig.height = 6}
+```
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+```{r slope-3, eval = FALSE}
+driver_pts %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %>% 
+  group_by(year, surname) %>% 
+  summarize(points = max(points)) %>% 
+  mutate(label = ifelse(year == 2019, surname, NA_character_)) %>% #<<
+  ggplot(aes(x = as.character(year), y = points, group = surname)) + 
+  geom_line(aes(color = surname), size = 2) + 
+  geom_point(aes(color = surname), size = 4) +
+  scale_y_continuous(breaks = seq(25, 300, 25)) +
+  geom_label_repel(aes(label = label), size = 4) + #<<
+  theme(legend.position = "none") #<<
+```
+
+---
+
+# Slope graphs
+
+```{r slope-3, echo = FALSE, fig.align = "center", fig.height = 6}
+```
+
+---
+
+# Slope graphs
+
+**how did points change for drivers who switched teams?**
+
+```{r slope-4, eval = FALSE}
+driver_pts %>% 
+  mutate(year = lubridate::year(date)) %>% 
+  filter(surname %in% c("Sainz","Gasly","Leclerc","Ricciardo"))  %>% 
+  group_by(year, surname) %>% 
+  summarize(points = max(points)) %>% 
+  mutate(label = ifelse(year == 2019, surname, NA_character_)) %>% 
+  ggplot(aes(x = as.character(year), y = points, group = surname)) + 
+  geom_line(aes(color = surname), size = 2) + 
+  geom_point(aes(color = surname), size = 4) +
+  scale_y_continuous(breaks = seq(25, 300, 25)) +
+  geom_label_repel(aes(label = label), size = 4) + 
+  theme(legend.position = "none") +
+  labs(y = "Total Points",  x = "",
+       title = "Change in points, drivers who switched teams in 2019")
+```
+
+---
+
+# Slope graphs
+
+```{r slope-4, echo = FALSE, fig.align = "center", fig.height = 6}
+```
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Graphic critique due before midterm]
+<br>
+.medium[Details on syllabus]
+
+<br>
+
+.large[Lab 4 on Thursday June 3]
+
+<br>
+
+.large[Lecture 6 on Friday June 4]
+
