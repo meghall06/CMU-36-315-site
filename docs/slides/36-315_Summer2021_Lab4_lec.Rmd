@@ -1,0 +1,232 @@
+---
+title: "36-315-Lab4"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(lubridate)
+library(showtext)
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lab1/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lab 4
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 3, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# Today
+
+<br>
+
+.large[Creating line graphs]
+<br>
+.medium[pivoting data]
+<br>
+.medium[labeling with `ggrepel`]
+<br>
+.medium[using functions from `lubridate`]
+<br>
+<br>
+.large[Instructions]
+<br>
+.medium[HW: describe the graphs]
+<br>
+.medium[HW/labs: add plot title and relevant axis titles (include units!)]
+
+---
+
+# `pivot_longer`
+
+**need to pivot when your data is at a different observation level than necessary for analysis/visualization**<br>
+data here is by track, we need observations per week
+
+```{r pivot-1, echo = FALSE}
+billboard %>% 
+  filter(artist == "Dixie Chicks, The") %>% 
+  select(artist, track, wk1:wk3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# `pivot_longer`
+
+**need to pivot when your data is at a different observation level than necessary for analysis/visualization**<br>
+data here is by track, we need observations per week
+
+```{r pivot-2, eval = FALSE}
+billboard %>% 
+  filter(artist == "Dixie Chicks, The") %>% 
+  select(artist, track, wk1:wk3) %>% 
+  pivot_longer(wk1:wk3, names_to = "week", values_to = "ranking") #<<
+```
+
+--
+
+```{r pivot-3, echo = FALSE}
+billboard %>% 
+  filter(artist == "Dixie Chicks, The") %>% 
+  select(artist, track, wk1:wk3) %>% 
+  pivot_longer(wk1:wk3, names_to = "week", values_to = "ranking") %>% 
+  head(6) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Options for relabeling
+
+**`fct_recode` is useful when you have a factor and ordering is important**
+
+```{r recode-1, eval = FALSE}
+# from Wednesday's lecture
+mutate(qround = fct_recode(qround, "Qualifying 1" = "q1",
+                           "Qualifying 2" = "q2", 
+                           "Qualifying 3" = "q3")
+```
+
+--
+
+**`case_when` is generally easier when you have a standard categorical variable**
+
+```{r recode-2, eval = FALSE}
+# example from mpg data set
+mutate(drv = case_when(drv == "f" ~ "front-wheel drive",
+                       drv == "r" ~ "rear-wheel drive",
+                       drv == "4" ~ "four-wheel drive"))
+```
+
+---
+
+# Dealing with dates
+
+**functions from `lubridate`**
+
+```{r date-1, eval = FALSE}
+# from Wednesday's lecture
+mutate(time_format = ms(time),
+       seconds = seconds(time_format))
+
+# from today's lab
+mutate(date = ym(paste(year, month)))
+```
+
+--
+
+**special scale when axis is a date**
+
+```{r date-2, eval = FALSE}
+scale_x_date(date_breaks = "1 year",
+             date_labels = "%m-%Y")
+```
+
+--
+
+```{r date-3, echo = FALSE, fig.align = "center", fig.height = 2}
+txhousing %>% 
+  filter(year >= 2010) %>% 
+  mutate(date = ym(paste(year, month))) %>% 
+  ggplot(aes(x = date)) +
+  scale_x_date(date_breaks = "1 year",
+               date_labels = "%m-%Y")
+```
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Lab assignment due 11:30am EDT Friday!]
+<br>
+.medium[Ask questions on Piazza if they don't get answered here]
+
+<br>
+
+.large[Lecture 6 on Friday June 3]
+<br>
+.medium[Scatter plots]
+
+<br>
+
+.large[Homework 2 due 11:30am EDT Tuesday]
+<br>
+.medium[Posted now]
