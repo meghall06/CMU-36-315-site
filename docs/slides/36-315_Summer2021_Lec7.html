@@ -1,0 +1,2312 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec7</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 7
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 7, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Scatter plots]
+&lt;br&gt;
+.medium[Considerations, overplotting, line of best fit]
+
+&lt;br&gt;
+
+.large[Relational data]
+&lt;br&gt;
+.medium[Practicing joins with `dplyr`]
+
+---
+
+# Updates
+
+&lt;br&gt;
+.large[Homework]
+&lt;br&gt;
+.medium[due tomorrow!]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Lab 5 tomorrow]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Schedule going forward]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Grab bag!]
+&lt;br&gt;
+.medium[maps, pie charts, heat maps]
+
+&lt;br&gt;
+
+.large[Data manipulation]
+&lt;br&gt;
+.medium[aggregating, joining, pivoting]
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. heat maps
+
+2. dot plots
+
+3. pie charts &amp; parts of a whole
+
+4. maps
+
+]
+
+---
+
+# Today's data
+
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.center[`tx_housing`]&lt;br&gt;
+.center[`lincoln_weather`]&lt;br&gt;
+.center[`storms`]&lt;br&gt;
+.center[`penguins`]&lt;br&gt;
+.center[`tx_data`]&lt;br&gt;
+.center[`us_rent_income`]&lt;br&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. **heat maps**
+
+2. dot plots
+
+3. pie charts &amp; parts of a whole
+
+4. maps
+
+]
+
+---
+
+# Heat maps
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Mapping data values onto color]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Can be difficult to determine exact values]
+&lt;br&gt;
+.medium[but very useful for identifying broader trends]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Order data in a way that's useful for your data/question]
+&lt;br&gt;
+.medium[if ordering is appropriate]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Can also be used for chronological/time series data]
+
+---
+
+# Heat maps
+
+&lt;img src="figs/Lec7/laptop-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`txhousing`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; month &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sales &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; volume &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; median &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; listings &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; inventory &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5380000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 701 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6505000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58700 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 746 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.083 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9285000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 784 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.167 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9730000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 785 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.250 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 141 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10590000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 67300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 794 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**how has the median listing price changed over time in Texas cities?**]
+
+---
+
+# Aggregating data
+
+**two methods, depending on needs**
+
+
+```r
+txhousing %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(mean_price = mean(median, na.rm = TRUE))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean_price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66600.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2001 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 70975.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2002 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68600.00 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2003 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71933.33 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2004 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 74866.67 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Aggregating data
+
+**two methods, depending on needs**
+
+
+```r
+txhousing %&gt;% 
+  group_by(city, year) %&gt;% 
+  mutate(mean_price = mean(median, na.rm = TRUE))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; month &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sales &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; volume &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; median &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; listings &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; inventory &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean_price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5380000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 701 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66600 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6505000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58700 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 746 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.083 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66600 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9285000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 784 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.167 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66600 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9730000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 785 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.250 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66600 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 141 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10590000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 67300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 794 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 66600 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Heat maps
+
+
+
+
+```r
+txhousing_plot %&gt;% 
+  ggplot(aes(x = year, y = city, fill = mean_price)) +
+  geom_tile()
+```
+
+--
+
+&lt;img src="figs/Lec7/heat-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Heat maps
+
+
+```r
+txhousing_plot %&gt;% 
+* ggplot(aes(x = year, y = reorder(city, rank_2015),
+             fill = mean_price)) +
+  geom_tile() +
+* scale_fill_gradient(low = "#fafafa", high = "#191970",
+*                     labels = dollar, name = "")
+```
+
+--
+
+&lt;img src="figs/Lec7/heat-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Heat maps
+
+
+```r
+txhousing_plot %&gt;% 
+  ggplot(aes(x = year, y = reorder(city, rank_2015), 
+             fill = mean_price)) +
+  geom_tile() +
+  scale_fill_gradient(low = "#fafafa", high = "#191970",
+                      labels = dollar, name = "") +
+* coord_cartesian(expand = FALSE) +
+  labs(title = "Listings Price in Texas Cities") +
+  theme(axis.ticks = element_blank(),
+        axis.title = element_blank()) 
+```
+
+---
+
+# Heat maps
+
+&lt;img src="figs/Lec7/heat-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`lincoln_weather`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; CST &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Max Temperature [F] &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**how did the max temperature change by day and month?**]
+
+---
+
+# Practice with `lubridate`
+
+
+```r
+lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+         month = month(date), 
+         day = day(date))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; CST &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; temp &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; month &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; day &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2016-01-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2016-01-02 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 37 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2016-01-03 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2016-01-04 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2016-1-5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 38 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2016-01-05 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Heat maps
+
+
+```r
+lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+         month = month(date), 
+         day = day(date)) %&gt;% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+* geom_tile(color = "white")
+```
+
+---
+
+# Heat maps
+
+&lt;img src="figs/Lec7/heat-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Heat maps
+
+
+```r
+lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+         month = month(date), 
+         day = day(date)) %&gt;% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+  geom_tile(color = "white") +
+* scale_y_continuous(trans = "reverse",
+*                    breaks = seq(1, 31, 5)) +
+* scale_x_continuous(breaks = seq(1, 12, 1))
+```
+
+---
+
+# Heat maps
+
+&lt;img src="figs/Lec7/heat-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Heat maps
+
+
+```r
+lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+         month = month(date), 
+         day = day(date)) %&gt;% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+  geom_tile(color = "white") +
+  scale_y_continuous(trans = "reverse", 
+                     breaks = seq(1, 31, 5)) + 
+  scale_x_continuous(breaks = seq(1, 12, 1)) +
+* labs(title = "Max Temp in Lincoln, NE in 2016") +
+* scale_fill_gradient(low = "blue", high = "yellow",
+*                     breaks = seq(20, 90, 10),
+*                     name = " °F") +
+* theme(axis.ticks = element_blank()) +
+* coord_cartesian(expand = FALSE)
+```
+
+---
+
+# Heat maps
+
+&lt;img src="figs/Lec7/heat-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. heat maps
+
+2. **dot plots**
+
+3. pie charts &amp; parts of a whole
+
+4. maps
+
+]
+
+---
+
+# Dot plots
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Combines the advantages of a **lollipop chart**]
+&lt;br&gt;
+.medium[narrow profile means you can show a variable with many values]
+&lt;br&gt;
+.medium[dots draw the eye to the end point, making for useful comparisons]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[With the benefits of encoding data by position]
+&lt;br&gt;
+.medium[axis doesn't need to start at zero]
+&lt;br&gt;
+.medium[useful when zero isn't particularly relevant to your data]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Values must be ordered for this to be effective]
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`storms`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; month &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; day &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; hour &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; lat &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; long &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; status &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; category &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; wind &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; pressure &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -79.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tropical depression &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1013 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -79.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tropical depression &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1013 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -79.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tropical depression &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1013 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 30.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -79.0 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tropical depression &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1013 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1975 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; -78.8 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; tropical depression &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; -1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1012 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**what's the max wind speed of each hurricane from 2011 onward?**]
+
+---
+
+# Dot plots
+
+
+```r
+storms_agg &lt;- storms %&gt;% 
+  filter(status == "hurricane" &amp; year &gt;= 2011) %&gt;% 
+  group_by(name, year) %&gt;% 
+  summarize(max_wind = max(wind))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; max_wind &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arthur &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 85 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chris &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2012 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cristobal &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Danny &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 110 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Edouard &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 105 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Dot plots
+
+
+```r
+storms_agg &lt;- storms %&gt;% 
+  filter(status == "hurricane" &amp; year &gt;= 2011) %&gt;% 
+  group_by(name, year) %&gt;% 
+  summarize(max_wind = max(wind)) %&gt;% 
+* mutate(name_date = paste0(name, " (", year, ")"),
+*        wind_mph = max_wind * 1.151)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; max_wind &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; name_date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; wind_mph &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arthur &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 85 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arthur (2014) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 97.835 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chris &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2012 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chris (2012) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 86.325 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cristobal &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 75 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cristobal (2014) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 86.325 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Danny &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 110 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Danny (2015) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 126.610 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Edouard &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2014 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 105 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Edouard (2014) &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 120.855 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Dot plots
+
+
+```r
+storms_agg %&gt;% 
+* ggplot(aes(x = wind_mph, y = reorder(name_date, wind_mph))) +
+  geom_point(color = "dark blue", size = 2) +
+  labs(x = "Max Wind Speed (mph)", y = "",
+       title = "Max wind speed of hurricanes, 2011 to 2015")
+```
+
+--
+
+&lt;img src="figs/Lec7/dot-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. heat maps
+
+2. dot plots
+
+3. **pie charts &amp; parts of a whole**
+
+4. maps
+
+]
+
+---
+
+# Parts of a whole
+
+.center[![chart](figs/Lec7/table.png)]
+.right[*Fundamentals of Data Visualization*, Claus Wilke]
+
+---
+
+# Pie charts
+
+&lt;br&gt;
+.large[Use with caution!]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[**Only when parts add up to 100%**]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Only when number of categories is small]
+&lt;br&gt;
+.medium[otherwise too difficult to determine differences]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Never show multiple pie charts over time]
+&lt;br&gt;
+.medium[generally another viz type would be better]
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`penguins`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; island &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bill_length_mm &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bill_depth_mm &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; flipper_length_mm &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; body_mass_g &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 181 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3750 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 186 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3800 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 195 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3250 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 193 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3450 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**how many penguin species are represented in this data?**]
+
+---
+
+# Pie charts
+
+
+```r
+penguins %&gt;% 
+  count(species) %&gt;% 
+  ggplot(aes(x="", y = n, fill = species)) +
+* geom_bar(stat = "identity", width = 1, color = "black") +
+* coord_polar("y", start = 0)
+```
+
+--
+
+&lt;img src="figs/Lec7/pie-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Pie charts
+
+
+```r
+penguins %&gt;% 
+  count(species) %&gt;% 
+  ggplot(aes(x="", y = n, fill = species)) +
+  geom_bar(stat = "identity", width = 1, color = "black") + 
+  coord_polar("y", start = 0) +
+* theme_void()
+```
+
+--
+
+&lt;img src="figs/Lec7/pie-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Pie charts
+
+
+```r
+penguins %&gt;% 
+  count(species) %&gt;% 
+* mutate(label = paste0(species, "\nn = ", n)) %&gt;%
+  ggplot(aes(x="", y = n, fill = species)) +
+  geom_bar(stat = "identity", width = 1, color = "black") + 
+  coord_polar("y", start = 0) +
+  geom_text(aes(label = label), 
+            position = position_stack(vjust = 0.5)) + 
+  theme_void() 
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; label &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 152 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie
+n = 152 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap
+n = 68 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 124 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo
+n = 124 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Pie charts
+
+
+```r
+penguins %&gt;% 
+  count(species) %&gt;% 
+* mutate(label = paste0(species, "\nn = ", n)) %&gt;%
+  ggplot(aes(x="", y = n, fill = species)) +
+  geom_bar(stat = "identity", width = 1, color = "black") + 
+  coord_polar("y", start = 0) +
+* geom_text(aes(label = label),
+*           position = position_stack(vjust = 0.5)) +
+  theme_void() 
+```
+
+---
+
+# Pie charts
+
+&lt;img src="figs/Lec7/pie-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Pie charts
+
+
+```r
+penguins %&gt;% 
+  count(species) %&gt;% 
+  mutate(label = paste0(species, "\nn = ", n)) %&gt;% 
+  ggplot(aes(x="", y = n, fill = species)) +
+  geom_bar(stat = "identity", width = 1, color = "black") + 
+  coord_polar("y", start = 0) +
+* scale_fill_manual(values = c("#496185","#965641","#D7B377")) +
+  geom_text(aes(label = label), 
+            position = position_stack(vjust = 0.5)) + 
+* labs(title = "The distribution of penguin species") +
+  theme_void() +
+* theme(legend.position = "none",
+*       plot.title = element_text(hjust = 0.5))
+```
+
+---
+
+# Pie charts
+
+&lt;img src="figs/Lec7/pie-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`penguins`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; island &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bill_length_mm &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bill_depth_mm &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; flipper_length_mm &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; body_mass_g &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 181 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3750 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; male &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 39.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 186 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3800 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 40.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 195 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3250 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Torgersen &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 193 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3450 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; female &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2007 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**how does the distribution of body mass differ by penguin?**]
+
+---
+
+# Comparing dist. to a whole
+
+**standard distribution with `geom_density`**
+
+&lt;img src="figs/Lec7/dist-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing dist. to a whole
+
+**distribution comparison with `facet_wrap`**
+
+&lt;img src="figs/Lec7/dist-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing dist. to a whole
+
+**distribution comparison with `geom_density`**
+
+&lt;img src="figs/Lec7/dist-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing dist. to a whole
+
+**distribution comparison with `ggridges`**
+
+&lt;img src="figs/Lec7/dist-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing dist. to a whole
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+* geom_density_line(data = select(penguins, -species),
+*               aes(fill = "all penguins"), color = "transparent")
+```
+
+--
+
+&lt;img src="figs/Lec7/dist-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing dist. to a whole
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                aes(fill = "all penguins"), color = "transparent") +
+* geom_density_line(aes(fill = "species"), color = "transparent") +
+* facet_wrap(~species, nrow = 1)
+```
+
+--
+
+&lt;img src="figs/Lec7/dist-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing dist. to a whole
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                aes(fill = "all penguins"), color = "transparent") +
+  geom_density_line(aes(fill = "species"), color = "transparent") +
+  facet_wrap(~species, nrow = 1) +
+* scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+*                   guide = guide_legend(direction = "horizontal")) +
+* labs(x = "Body Mass (g)") +
+* theme(legend.position = "top")
+```
+
+---
+
+# Comparing dist. to a whole
+
+&lt;img src="figs/Lec7/dist-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. heat maps
+
+2. dot plots
+
+3. pie charts &amp; parts of a whole
+
+4. **maps**
+
+]
+
+---
+
+# Maps
+
+&lt;br&gt;
+.large[Various methods to make maps with R/`ggplot2`]
+&lt;br&gt;
+.medium[an easy option is the `maps` package]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Choropleths &amp; cartograms]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Be careful with continuous vs. discrete color scales]
+&lt;br&gt;
+.medium[continuous allows for more nuance but makes it hard to mark a specific value]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[For choropleth maps, watch out for areas drawing disproportionate attention due to their size]
+&lt;br&gt;
+.medium[counts are almost never appropriate]
+
+---
+
+# Choropleth maps
+
+**use `map_data` from the `maps` package**
+
+
+```r
+tx_map &lt;- 
+  map_data("county", region = "texas")
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; long &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; lat &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; order &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; region &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; subregion &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.75271 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.53560 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.76989 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.55852 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.76416 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.58143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.72979 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.58143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.74698 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.61008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Choropleth maps
+
+
+```r
+tx_map %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group)) +
+  geom_polygon(fill = "gray", color = "white") +
+  theme_void()
+```
+
+--
+
+&lt;img src="figs/Lec7/map-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`tx_data`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; County &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Age &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Total &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Total_Male &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Total_Female &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Hispanic_Total &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; All Ages &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 59025 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36468 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22557 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10708 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt; 1 Year &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 703 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 356 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 347 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 161 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1 Years &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 666 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 159 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2 Years &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 584 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 290 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 294 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 134 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 3 Years &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 569 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 293 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 276 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 134 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**how does the share of Hispanic people vary by county?**]
+
+---
+
+# Choropleth map
+
+
+```r
+tx_data_agg &lt;- tx_data %&gt;% 
+  filter(Age == "All Ages" &amp; County != "STATE OF TEXAS") %&gt;% 
+  mutate(hispanic_perc = Hispanic_Total / Total) %&gt;% 
+  select(County, hispanic_perc) %&gt;% 
+* mutate(county_lower = str_replace_all(County, " COUNTY", ""),
+*        county_lower = str_to_lower(county_lower))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; County &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; hispanic_perc &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; county_lower &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANDREWS COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6212459 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; andrews &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ANGELINA COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2261372 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; angelina &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ARANSAS COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2967524 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; aransas &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ARCHER COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1045730 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; archer &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Choropleth map
+
+
+```r
+tx_map &lt;- tx_map %&gt;%  
+  left_join(tx_data_agg, by = c("subregion" = "county_lower"))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; long &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; lat &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; order &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; region &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; subregion &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; County &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; hispanic_perc &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.75271 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.53560 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.76989 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.55852 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.76416 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.58143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.72979 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.58143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.74698 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.61008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Choropleth map
+
+
+```r
+tx_map %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = hispanic_perc)) +
+  geom_polygon(color = "white")
+```
+
+--
+
+&lt;img src="figs/Lec7/map-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Choropleth map
+
+
+```r
+tx_map %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = hispanic_perc)) +
+  geom_polygon(color = "white") +
+  scale_fill_gradient(low = "#fafafa", high = "#191970", 
+                      breaks = seq(0, 0.75, 0.25),
+                      name = NULL, labels = percent)
+```
+
+--
+
+&lt;img src="figs/Lec7/map-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Choropleth map
+
+
+```r
+tx_map %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = hispanic_perc)) +
+  geom_polygon(color = "white") +
+  scale_fill_gradient(low = "#fafafa", high = "#191970", 
+                      breaks = seq(0, 0.75, 0.25),
+                      name = NULL, labels = percent) +
+  labs(title = "Percentage of Hispanic people by county in Texas", 
+       subtitle = "2019 population estimate") +
+  theme_void() +
+  theme(legend.position = c(0.2, 0.8))
+```
+
+---
+
+# Choropleth map
+
+&lt;img src="figs/Lec7/map-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Choropleth map
+
+**binning data for a discrete scale**
+
+
+```r
+tx_map %&gt;% 
+  mutate(perc_bin = case_when(hispanic_perc &gt;= 0.8 ~ "80-100%",
+                              hispanic_perc &gt;= 0.6 ~ "60-80%",
+                              hispanic_perc &gt;= 0.4 ~ "40-60%",
+                              hispanic_perc &gt;= 0.2 ~ "20-40%",
+                              TRUE ~ "0-20%"))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; long &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; lat &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; group &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; order &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; region &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; subregion &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; County &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; hispanic_perc &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; perc_bin &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.75271 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.53560 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0-20% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.76989 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.55852 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0-20% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.76416 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.58143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0-20% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.72979 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.58143 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0-20% &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; -95.74698 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31.61008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; texas &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; anderson &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ANDERSON COUNTY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1814147 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 0-20% &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Choropleth map
+
+
+```r
+tx_map %&gt;% 
+  mutate(perc_bin = case_when(hispanic_perc &gt;= 0.8 ~ "80-100%",
+                              hispanic_perc &gt;= 0.6 ~ "60-80%",
+                              hispanic_perc &gt;= 0.4 ~ "40-60%",
+                              hispanic_perc &gt;= 0.2 ~ "20-40%",
+                              TRUE ~ "0-20%")) %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = perc_bin)) +
+  geom_polygon(color = "white") +
+* scale_fill_manual(values = c("#EEEEFB","#BDBDEF","#8C8CE3",
+*                              "#4A4AD3","#191970"),
+*                   name = NULL) +
+  labs(title = "Percentage of Hispanic people by county in Texas",
+       subtitle = "2019 population estimate") +
+  theme_void() +
+  theme(legend.position = c(0.17, 0.8))
+```
+
+---
+
+# Choropleth map
+
+&lt;img src="figs/Lec7/map-13-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Cartogram
+
+&lt;br&gt;
+.large[By definition:]
+&lt;br&gt;
+.medium[a map in which geographic size is altered to be directly proportional to a selected variable]
+&lt;br&gt;
+.medium[can be tricky to interpret]
+&lt;br&gt;
+&lt;br&gt;
+--
+.center[![cartogram](figs/Lec7/cartogram.png)]
+.center[*data-to-viz.com*]
+
+---
+
+# Cartogram
+
+&lt;br&gt;
+.large[By definition:]
+&lt;br&gt;
+.medium[a map in which geographic size is altered to be directly proportional to a selected variable]
+&lt;br&gt;
+.medium[can be tricky to interpret]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Cartogram heatmap is a popular variation]
+&lt;br&gt;
+.medium[shows each state as a colored square]
+&lt;br&gt;
+.medium[doesn't weigh states by shape or size, though it equalizes population]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Use the `statebins` package]
+
+---
+
+# Today's data
+
+&lt;br&gt;
+.center[`us_rent_income`]&lt;br&gt;
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GEOID &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; NAME &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variable &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; estimate &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; moe &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alabama &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; income &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 136 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alabama &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; rent &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 747 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alaska &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; income &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32940 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 508 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alaska &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; rent &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1200 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arizona &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; income &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27517 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 148 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+&lt;br&gt;
+&lt;br&gt;
+.center[**how does the mean rent price vary by state?**]
+
+---
+
+# Cartogram
+
+
+```r
+us_rent_income %&gt;% 
+  select(-c(moe)) %&gt;% 
+  pivot_wider(names_from = variable, values_from = estimate)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GEOID &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; NAME &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; income &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rent &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alabama &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 747 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alaska &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32940 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1200 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arizona &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27517 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 972 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arkansas &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23789 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 709 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 06 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; California &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29454 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1358 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Cartogram
+
+
+```r
+us_rent_income %&gt;% 
+  select(-c(moe)) %&gt;% 
+  pivot_wider(names_from = variable, values_from = estimate) %&gt;% 
+  mutate(rent_bin = cut(rent, breaks = c(-Inf, 800, 1000, 1200, Inf), 
+                        labels = c("&lt; $800","$800 - $1000",
+                                   "$1000 - $1200","1200+")))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GEOID &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; NAME &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; income &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rent &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rent_bin &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alabama &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 747 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt; $800 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alaska &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32940 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1200 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $1000 - $1200 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arizona &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27517 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 972 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $800 - $1000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arkansas &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23789 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 709 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt; $800 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 06 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; California &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29454 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1358 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1200+ &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Cartogram
+
+
+```r
+us_rent_income %&gt;% 
+  select(-c(moe)) %&gt;% 
+  pivot_wider(names_from = variable, values_from = estimate) %&gt;% 
+  mutate(rent_bin = cut(rent, breaks = c(-Inf, 800, 1000, 1200, Inf), 
+                        labels = c("&lt; $800","$800 - $1000",
+                                   "$1000 - $1200","1200+"))) %&gt;% 
+  rename(state = NAME)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GEOID &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; state &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; income &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rent &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rent_bin &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 01 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alabama &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 747 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt; $800 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 02 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Alaska &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 32940 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1200 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $1000 - $1200 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 04 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arizona &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27517 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 972 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $800 - $1000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 05 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Arkansas &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23789 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 709 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; &amp;lt; $800 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 06 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; California &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29454 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1358 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1200+ &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Cartogram
+
+
+```r
+us_rent_income %&gt;% 
+  select(-c(moe)) %&gt;% 
+  pivot_wider(names_from = variable, values_from = estimate) %&gt;% 
+  mutate(rent_bin = cut(rent, breaks = c(-Inf, 800, 1000, 1200, Inf), 
+                        labels = c("&lt; $800","$800 - $1000",
+                                   "$1000 - $1200","1200+"))) %&gt;% 
+  rename(state = NAME) %&gt;% 
+* statebins(value_col = "rent_bin", name = "Average Rent",
+*           round = TRUE, # creates a square w/ rounded edges
+*           ggplot2_scale_function = scale_fill_manual,
+*           values = c("#EEEEFB","#BDBDEF","#4A4AD3","#191970")) +
+  labs(title = "Average Rent Per State (2017)") +
+  theme_statebins()
+```
+
+---
+
+# Cartogram
+
+&lt;img src="figs/Lec7/cart-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Homework 2 due Tuesday June 8]
+
+&lt;br&gt;
+
+.large[Lab 5 due Wednesday June 8]
+
+&lt;br&gt;
+
+.large[Lecture 8 on Wednesday June 9]
+
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

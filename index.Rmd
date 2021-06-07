@@ -36,6 +36,7 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 + [Lecture 4](slides/36-315_Summer2021_Lec4.html): visualizing distributions
 + [Lecture 5](slides/36-315_Summer2021_Lec5.html): line graphs & working with time
 + [Lecture 6](slides/36-315_Summer2021_Lec6.html): scatter plots & relational data
++ [Lecture 7](slides/36-315_Summer2021_Lec7.html): grab bag (pie charts, heat maps, maps)
 
 ## Labs
 
