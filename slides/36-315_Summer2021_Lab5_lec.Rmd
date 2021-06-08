@@ -117,7 +117,7 @@ layout: true
 ```{r group-1, eval = FALSE}
 penguins %>% 
   group_by(species) %>% 
-  summarize(mean_weight = max(body_mass_g, na.rm = TRUE))
+  summarize(max_weight = max(body_mass_g, na.rm = TRUE))
 ```
 
 --
@@ -125,7 +125,7 @@ penguins %>%
 ```{r group-2, echo = FALSE}
 penguins %>% 
   group_by(species) %>% 
-  summarize(mean_weight = max(body_mass_g, na.rm = TRUE)) %>% 
+  summarize(max_weight = max(body_mass_g, na.rm = TRUE)) %>% 
   kable("html") %>%
   kable_styling(font_size = 16, position = "center", full_width = F) %>%
   row_spec(0, bold = T, color = "white", background = "#bb0000")

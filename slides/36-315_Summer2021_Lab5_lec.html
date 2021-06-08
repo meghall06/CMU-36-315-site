@@ -58,7 +58,7 @@ layout: true
 ```r
 penguins %&gt;% 
   group_by(species) %&gt;% 
-  summarize(mean_weight = max(body_mass_g, na.rm = TRUE))
+  summarize(max_weight = max(body_mass_g, na.rm = TRUE))
 ```
 
 --
@@ -67,7 +67,7 @@ penguins %&gt;%
  &lt;thead&gt;
   &lt;tr&gt;
    &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; species &lt;/th&gt;
-   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean_weight &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; max_weight &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
