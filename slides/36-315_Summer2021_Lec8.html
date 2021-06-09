@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec8</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 8
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 9, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Grab bag!]
+&lt;br&gt;
+.medium[maps, pie charts, heat maps]
+
+&lt;br&gt;
+
+.large[Data manipulation]
+&lt;br&gt;
+.medium[aggregating, joining, pivoting]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Taking plots to the next level]
+&lt;br&gt;
+.medium[effective *and* elegant]
+
+&lt;br&gt;
+
+.large[Redoing plots we've seen before]
+&lt;br&gt;
+.medium[get familiar with the syntax and the options]
+
+---
+
+# Intro
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Previously: exploratory data viz]
+&lt;br&gt;
+.medium[aesthetics are less important, as long as you're not distorting your data]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Moving toward explanatory data viz for presentation]
+&lt;br&gt;
+.medium[data viz = communication]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[What's necessary vs. what's aesthetic preference]
+&lt;br&gt;
+.medium[there are always bad options, but there's rarely only one good option]
+
+---
+
+# Data-ink ratio
+
+&lt;br&gt;
+&lt;br&gt;
+.large[The ratio of your data to everything else]
+&lt;br&gt;
+.medium[popularized by Edward Tufte]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Be mindful, but don't go too far]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[The "extras" may add visual clutter, technically, but they're essential for orienting yourself]
+&lt;br&gt;
+.medium[gridlines, axes, etc.]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Titles
+
+&lt;br&gt;
+&lt;br&gt;
+.large[The purpose is to make a point!]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Don't be afraid to put your conclusion in your title]
+&lt;br&gt;
+.medium[guide your reader to the purpose of the graph]
+&lt;br&gt;
+.medium[why am I making this plot?]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Use subtitles and captions to add extra context or data source info]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Axes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[When axis labels aren't necessary]
+&lt;br&gt;
+.medium[generally: time, regions, many categorical variables]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Adjust font size!]
+&lt;br&gt;
+.medium[frequently knit to your desired output to check scale]
+&lt;br&gt;
+.medium[axis labels are often too small]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Legends
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Limit their presence when possible]
+&lt;br&gt;
+.medium[move onto the plot if there's space]
+&lt;br&gt;
+.medium[label relevant points instead]
+&lt;br&gt;
+.medium[or match colors to words in the title]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Order in a meaningful way]
+&lt;br&gt;
+.medium[match ordering of lines to the legend]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Multiple plots
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Maintain the same color scheme throughout]
+&lt;br&gt;
+.medium[reuse/share legends where possible]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Move from simple to more complex]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Diversity chart types]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Generally one "point" per graph]
+
+---
+
+# Syntax
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Never worry about memorizing all the syntax]
+&lt;br&gt;
+.medium[Google is your friend]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Be aware of the guidelines we'll discuss]
+&lt;br&gt;
+.medium[and how out-of-the-box ggplots can fall short]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Know what options are available so you can look up details]
+
+---
+
+# 1: HW 1, Problem 2
+
+&lt;img src="figs/Lec8/1-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 1: HW 1, Problem 2
+
+&lt;img src="figs/Lec8/1-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 1: HW 1, Problem 2]
+
+.tiny[
+
+```r
+mpg %&gt;% 
+  filter(year == 2008 &amp; class == "suv") %&gt;% 
+  group_by(manufacturer) %&gt;% 
+  summarize(median = median(cty),
+            n = n()) %&gt;% 
+* mutate(manufacturer = str_to_title(manufacturer),
+*        label = paste0(manufacturer, "\n", n,
+*                       ifelse(n &gt; 1, " models", " model"))) %&gt;%
+  ggplot(aes(x = reorder(label, -median), y = median)) +
+  geom_bar(stat = "identity") +
+* scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+* labs(title = "Subaru SUVs have highest median city mpg",
+       subtitle = "Among manufacturers in 2008",
+       x = NULL,
+       y = "Miles per gallon") +
+* theme(axis.ticks = element_blank(),
+*       panel.background = element_blank(),
+*       panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+*       panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# 2: HW 1, Problem 3
+
+&lt;img src="figs/Lec8/2-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 2: HW 1, Problem 3
+
+&lt;img src="figs/Lec8/2-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 2: HW 1, Problem 3]
+
+.tiny[
+
+```r
+mpg %&gt;% 
+  filter(manufacturer %in% c("toyota","dodge","audi","nissan") &amp; year == 2008) %&gt;% 
+  group_by(manufacturer, drv) %&gt;% 
+  summarize(mean = mean(hwy)) %&gt;% 
+* mutate(manufacturer = str_to_title(manufacturer),
+*        drv = fct_recode(drv,  "4-wheel drive" = "4", "front-wheel drive" = "f")) %&gt;%
+  ggplot(aes(x = manufacturer, y = mean, fill = drv)) +
+  geom_bar(stat = "identity", position = "dodge") +
+* scale_fill_manual(values = c("#707078", "#BB0000"), name = NULL) +
+  geom_text(aes(label = round(mean, 1)), position = position_dodge(width = 0.9), 
+*           vjust = 1.5, color = "white", fontface = 2) +
+* labs(title = "Average highway miles per gallon is higher in front-wheel drive vehicles",
+       subtitle = "Among selected manufacturers in 2008",
+       x = NULL,
+       y = "Miles per gallon") +
+  theme(axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+*       legend.position = c(0.44, 0.85),
+*       legend.text = element_text(size = 11))
+```
+]
+
+---
+
+# 3: Lab 3, Problem 3
+
+&lt;img src="figs/Lec8/3-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 3: Lab 3, Problem 3
+
+&lt;img src="figs/Lec8/3-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 3: Lab 3, Problem 3]
+
+.tiny[
+
+```r
+txhousing %&gt;% 
+  filter(year &gt;= 2010) %&gt;% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+* geom_jitter(alpha = .25, width = .3, size = 0.5, color = "#bb0000") +
+* scale_y_continuous(labels = dollar, breaks = seq(100000, 300000, 50000)) +
+  labs(title = "The distribution of median home prices by city in Texas") +
+  theme(axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+*       axis.text = element_text(size = 10, face = 2),
+*       plot.title.position = "plot")
+```
+]
+
+---
+
+# 4: Lecture 5
+
+&lt;img src="figs/Lec8/4-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 4: Lecture 5
+
+&lt;img src="figs/Lec8/4-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 4: Lecture 5]
+
+.tiny[
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  mutate(third = ifelse(name %in% 
+                          c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) &amp;
+                           third != "z", name, NA_character_)) %&gt;%
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4.5) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+* labs(title = "The race for third place during the 2020 F1 season",
+*      subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+*       panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# 5: Lecture 6
+
+&lt;img src="figs/Lec8/5-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 5: Lecture 6
+
+&lt;img src="figs/Lec8/5-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 5: Lecture 6]
+
+.tiny[
+
+```r
+friends_info %&gt;% 
+* mutate(label = ifelse(us_views_millions &gt; 50, title, NA_character_)) %&gt;%
+  ggplot(aes(x = us_views_millions, y = imdb_rating, color = season)) + 
+  geom_jitter(size = 2) +
+  scale_colour_gradient(low = "#fafafa",high = "#191970",breaks = seq(1, 10, 1),
+                        name = "Season") +
+* geom_label_repel(aes(label = label, x = us_views_millions,
+*                      y = imdb_rating), size = 4, inherit.aes = FALSE) +
+* scale_x_continuous(labels = label_number(suffix = "M")) +
+  scale_y_continuous(breaks = seq(7, 10, 0.5)) +
+* labs(title = "Two Friends episodes were viewed far more than the rest",
+*      subtitle = "Both highlighted episodes were two-part episodes",
+       x = "US views",
+       y = "IMDB rating") +
+* theme(legend.position = c(0.75, 0.08),
+*       legend.direction = "horizontal",
+*       legend.background = element_blank(),
+*       legend.title = element_text(color = "#353839", size = 11, face = "bold", vjust = 0.75),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        panel.grid.major = element_line(color = "grey90", size = 0.3))
+```
+]
+
+---
+
+# 6: Lecture 6
+
+&lt;img src="figs/Lec8/6-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 6: Lecture 6
+
+&lt;img src="figs/Lec8/6-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 6: Lecture 6]
+
+.tiny[
+
+```r
+penguins %&gt;% 
+  filter(species != "Gentoo") %&gt;% 
+  mutate(label = case_when(flipper_length_mm == 192 &amp; 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 &amp; 
+                             body_mass_g == 4650 ~ "Adelie")) %&gt;% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(0.1, 7), breaks = c(35, 40, 45, 50, 55), 
+             name = "Bill Length (mm)") +
+* geom_label_repel(aes(x = flipper_length_mm, y = body_mass_g,
+*                      color = species, label = label),
+                   inherit.aes = FALSE) +
+* scale_color_discrete(guide = "none") +
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       title = "Chinstrap penguins tend to have longer flippers and longer bills",
+*      caption = "Data from the palmerpenguins package") +
+  theme(legend.position = "top",
+        panel.background = element_blank(),
+*       panel.grid.major = element_line(color = "grey90", size = 0.2),
+*       axis.ticks = element_line(color = "grey90", size = 0.2),
+*       legend.key = element_rect(fill = "transparent"))
+```
+]
+
+---
+
+# 7: Lecture 7
+
+&lt;img src="figs/Lec8/7-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 7: Lecture 7
+
+&lt;img src="figs/Lec8/7-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 7: Lecture 7]
+
+.tiny[
+
+```r
+lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+*        month = month(date, label = TRUE),
+         day = day(date)) %&gt;% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+  geom_tile(color = "white") +
+  scale_y_continuous(trans = "reverse", 
+                     breaks = seq(1, 31, 5)) + 
+  labs(title = "Maximum Temperature by day in Lincoln, NE in 2016") +
+* geom_text(aes(color = temp &lt; 40, label = temp), size = 2) +
+* scale_color_manual(guide = FALSE, values = c("black", "white")) +
+  scale_fill_gradient(low = "blue", high = "yellow",
+                      breaks = seq(20, 90, 10),
+                      name = " °F") +
+* guides(fill = guide_colorsteps()) +
+  theme(axis.ticks = element_blank(),
+*       panel.background = element_blank(),
+        axis.title = element_blank(),
+*       axis.text = element_text(face = 2)) +
+  coord_cartesian(expand = FALSE)
+```
+]
+
+---
+
+# 8: Lecture 7
+
+&lt;img src="figs/Lec8/8-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 8: Lecture 7
+
+&lt;img src="figs/Lec8/8-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 8: Lecture 7]
+
+.tiny[
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+*                   aes(fill = "all penguins"), color = "transparent") +
+* geom_density_line(aes(fill = "species"), color = "transparent") +
+  facet_wrap(~species, nrow = 1) +
+  scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+                    guide = guide_legend(direction = "horizontal")) +
+  labs(x = "Body Mass (g)",
+*      title = "Comparing the distribution of body mass by penguin species",
+*      subtitle = "Gentoo penguins tend to be the heaviest") +
+  theme(legend.position = "bottom",
+        panel.background = element_blank(),
+*       panel.grid.major = element_line(color = "grey90", size = 0.3),
+*       strip.text = element_text(face = "bold", color = "white"),
+*       strip.background = element_rect(fill = "#0C8346"),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+*       plot.title.position = "plot")
+```
+]
+
+---
+
+# 9: HW 2, Problem 5
+
+&lt;img src="figs/Lec8/9-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 9: HW 2, Problem 5
+
+&lt;img src="figs/Lec8/9-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 9: HW 2, Problem 5]
+
+.tiny[
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+* geom_smooth(method = "lm", show.legend = FALSE, alpha = 0.3) +
+* labs(title = "Bill depth is positively correlated with bill length, regardless of species",
+       y = "Bill Depth (mm)",
+       x = "Bill Length (mm)") +
+* guides(color = guide_legend(override.aes = list(size = 5))) +
+  theme(legend.position = c(0.1, 0.1),
+        legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        axis.ticks = element_line(color = "grey90", size = 0.3),
+*       legend.key = element_rect(fill = "transparent"))
+```
+]
+
+---
+
+# 10: Lab 5, Problem 1
+
+&lt;img src="figs/Lec8/10-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# 10: Lab 5, Problem 1
+
+&lt;img src="figs/Lec8/10-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# 10: Lab 5, HW 1]
+
+.tiny[
+
+```r
+msleep %&gt;% 
+  filter(vore %in% c("carni","herbi")) %&gt;% 
+  mutate(name = fct_reorder(name, sleep_total),
+         name = fct_reorder(name, vore),
+*        vore = fct_recode(vore, "herbivore" = "herbi", "carnivore" = "carni")) %&gt;%
+  group_by(vore) %&gt;% 
+  mutate(mean = mean(sleep_total)) %&gt;% 
+  ggplot(aes(x = sleep_total, y = name, color = vore)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("#bb0000","#098641")) +
+* scale_x_continuous(name = NULL, labels = number_format(suffix = " hrs", accuracy = 1)) +
+  labs(y = NULL, x = "Total sleep per day (hrs)",
+*      title = "&lt;span style = 'color:#bb0000;'&gt;**Carnivores**&lt;/span&gt; sleep slightly more per day than &lt;span style = 'color:#098641;'&gt;**herbivores**&lt;/span&gt;",
+       subtitle = "Among these species, carnivores sleep one hour more per day on average") +
+* theme(plot.title = element_markdown(),
+*       plot.subtitle = element_text(margin = margin(-5, 0, 10, 0)),
+        plot.title.position = "plot",
+        legend.position = "none",
+        panel.background  = element_blank(),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_line(color = "black", size = 0.1),
+        axis.ticks = element_blank(),
+*       axis.text.y = element_text(size = 6.75))
+```
+]
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lab 6 on Thursday June 10]
+
+&lt;br&gt;
+
+.large[Lecture 9 on Friday June 11]
+
+&lt;br&gt;
+
+.large[Homework 2 due Tuesday June 15]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

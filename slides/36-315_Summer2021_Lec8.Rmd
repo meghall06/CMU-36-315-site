@@ -1,0 +1,840 @@
+---
+title: "36-315-Lec8"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+#      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(showtext)
+library(scales)
+library(palmerpenguins)
+library(ggridges)
+library(ggtext)
+library(lubridate)
+library(friends)
+library(ggrepel)
+
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec8/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+constructor_pts <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/constructor_pts.csv')
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 8
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 9, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# From last time
+
+<br>
+
+.large[Grab bag!]
+<br>
+.medium[maps, pie charts, heat maps]
+
+<br>
+
+.large[Data manipulation]
+<br>
+.medium[aggregating, joining, pivoting]
+
+---
+
+# Today
+
+<br>
+
+.large[Taking plots to the next level]
+<br>
+.medium[effective *and* elegant]
+
+<br>
+
+.large[Redoing plots we've seen before]
+<br>
+.medium[get familiar with the syntax and the options]
+
+---
+
+# Intro
+
+<br>
+<br>
+.large[Previously: exploratory data viz]
+<br>
+.medium[aesthetics are less important, as long as you're not distorting your data]
+<br>
+<br>
+--
+<br>
+.large[Moving toward explanatory data viz for presentation]
+<br>
+.medium[data viz = communication]
+<br>
+<br>
+--
+<br>
+.large[What's necessary vs. what's aesthetic preference]
+<br>
+.medium[there are always bad options, but there's rarely only one good option]
+
+---
+
+# Data-ink ratio
+
+<br>
+<br>
+.large[The ratio of your data to everything else]
+<br>
+.medium[popularized by Edward Tufte]
+<br>
+<br>
+--
+<br>
+.large[Be mindful, but don't go too far]
+<br>
+<br>
+--
+<br>
+.large[The "extras" may add visual clutter, technically, but they're essential for orienting yourself]
+<br>
+.medium[gridlines, axes, etc.]
+<br>
+<br>
+
+---
+
+# Titles
+
+<br>
+<br>
+.large[The purpose is to make a point!]
+<br>
+<br>
+--
+<br>
+.large[Don't be afraid to put your conclusion in your title]
+<br>
+.medium[guide your reader to the purpose of the graph]
+<br>
+.medium[why am I making this plot?]
+<br>
+<br>
+--
+<br>
+.large[Use subtitles and captions to add extra context or data source info]
+<br>
+<br>
+
+---
+
+# Axes
+
+<br>
+<br>
+.large[When axis labels aren't necessary]
+<br>
+.medium[generally: time, regions, many categorical variables]
+<br>
+<br>
+--
+<br>
+.large[Adjust font size!]
+<br>
+.medium[frequently knit to your desired output to check scale]
+<br>
+.medium[axis labels are often too small]
+<br>
+<br>
+
+---
+
+# Legends
+
+<br>
+<br>
+.large[Limit their presence when possible]
+<br>
+.medium[move onto the plot if there's space]
+<br>
+.medium[label relevant points instead]
+<br>
+.medium[or match colors to words in the title]
+<br>
+<br>
+--
+<br>
+.large[Order in a meaningful way]
+<br>
+.medium[match ordering of lines to the legend]
+<br>
+<br>
+
+---
+
+# Multiple plots
+
+<br>
+<br>
+.large[Maintain the same color scheme throughout]
+<br>
+.medium[reuse/share legends where possible]
+<br>
+<br>
+--
+<br>
+.large[Move from simple to more complex]
+<br>
+<br>
+--
+<br>
+.large[Diversity chart types]
+<br>
+<br>
+--
+<br>
+.large[Generally one "point" per graph]
+
+---
+
+# Syntax
+
+<br>
+<br>
+.large[Never worry about memorizing all the syntax]
+<br>
+.medium[Google is your friend]
+<br>
+<br>
+--
+<br>
+.large[Be aware of the guidelines we'll discuss]
+<br>
+.medium[and how out-of-the-box ggplots can fall short]
+<br>
+<br>
+--
+<br>
+.large[Know what options are available so you can look up details]
+
+---
+
+# 1: HW 1, Problem 2
+
+```{r 1-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+mpg %>% 
+  filter(year == 2008 & class == "suv") %>% 
+  group_by(manufacturer) %>% 
+  summarize(median = median(cty)) %>% 
+  ggplot(aes(x = reorder(manufacturer, -median), y = median)) +
+  geom_bar(stat = "identity") +
+  labs(title = "Median city mpg by manufacturer, SUVs in 2008",
+       x = "Manufacturer",
+       y = "Median city mpg")
+```
+
+---
+
+# 1: HW 1, Problem 2
+
+```{r 1-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+mpg %>% 
+  filter(year == 2008 & class == "suv") %>% 
+  group_by(manufacturer) %>% 
+  summarize(median = median(cty),
+            n = n()) %>% 
+  mutate(manufacturer = str_to_title(manufacturer), #<<
+         label = paste0(manufacturer, "\n", n, #<<
+                        ifelse(n > 1, " models", " model"))) %>% #<<
+  ggplot(aes(x = reorder(label, -median), y = median)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) + #<<
+  labs(title = "Subaru SUVs have highest median city mpg", #<<
+       subtitle = "Among manufacturers in 2008",
+       x = NULL,
+       y = "Miles per gallon") +
+  theme(axis.ticks = element_blank(), #<<
+        panel.background = element_blank(), #<<
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2), #<<
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5)) #<<
+```
+
+---
+
+.h-1[# 1: HW 1, Problem 2]
+
+.tiny[
+```{r 1-2, eval = FALSE}
+```
+]
+
+---
+
+# 2: HW 1, Problem 3
+
+```{r 2-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+mpg %>% 
+  filter(manufacturer %in% c("toyota","dodge","audi","nissan") & year == 2008) %>% 
+  group_by(manufacturer, drv) %>% 
+  summarize(mean = mean(hwy)) %>% 
+  ggplot(aes(x = manufacturer, y = mean, fill = drv)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  geom_text(aes(label = round(mean, 1)), position = position_dodge(width = 0.9), vjust = -0.5) +
+  labs(title = "Mean hwy mpg by drive train type, selected manufacturers in 2008",
+       x = "Manufacturer",
+       y = "Mean highway mpg")
+```
+
+---
+
+# 2: HW 1, Problem 3
+
+```{r 2-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+mpg %>% 
+  filter(manufacturer %in% c("toyota","dodge","audi","nissan") & year == 2008) %>% 
+  group_by(manufacturer, drv) %>% 
+  summarize(mean = mean(hwy)) %>% 
+  mutate(manufacturer = str_to_title(manufacturer), #<<
+         drv = fct_recode(drv,  "4-wheel drive" = "4", "front-wheel drive" = "f")) %>% #<<
+  ggplot(aes(x = manufacturer, y = mean, fill = drv)) +
+  geom_bar(stat = "identity", position = "dodge") +
+  scale_fill_manual(values = c("#707078", "#BB0000"), name = NULL) + #<<
+  geom_text(aes(label = round(mean, 1)), position = position_dodge(width = 0.9), 
+            vjust = 1.5, color = "white", fontface = 2) + #<<
+  labs(title = "Average highway miles per gallon is higher in front-wheel drive vehicles", #<<
+       subtitle = "Among selected manufacturers in 2008",
+       x = NULL,
+       y = "Miles per gallon") +
+  theme(axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        legend.position = c(0.44, 0.85), #<<
+        legend.text = element_text(size = 11)) #<<
+```
+
+---
+
+.h-1[# 2: HW 1, Problem 3]
+
+.tiny[
+```{r 2-2, eval = FALSE}
+```
+]
+
+---
+
+# 3: Lab 3, Problem 3
+
+```{r 3-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+txhousing %>% 
+  filter(year >= 2010) %>% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  scale_y_continuous(labels = dollar)
+```
+
+---
+
+# 3: Lab 3, Problem 3
+
+```{r 3-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+txhousing %>% 
+  filter(year >= 2010) %>% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_jitter(alpha = .25, width = .3, size = 0.5, color = "#bb0000") + #<<
+  scale_y_continuous(labels = dollar, breaks = seq(100000, 300000, 50000)) + #<<
+  labs(title = "The distribution of median home prices by city in Texas") +
+  theme(axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_text(size = 10, face = 2), #<<
+        plot.title.position = "plot") #<<
+```
+
+---
+
+.h-1[# 3: Lab 3, Problem 3]
+
+.tiny[
+```{r 3-2, eval = FALSE}
+```
+]
+
+---
+
+# 4: Lecture 5
+
+```{r 4-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% 
+              c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) & 
+                           third != "z", name, NA_character_)) %>% 
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+```
+
+---
+
+# 4: Lecture 5
+
+```{r 4-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% 
+                          c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) &
+                           third != "z", name, NA_character_)) %>%
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4.5) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 F1 season", #<<
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place", #<<
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2), #<<
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+
+---
+
+.h-1[# 4: Lecture 5]
+
+.tiny[
+```{r 4-2, eval = FALSE}
+```
+]
+
+---
+
+# 5: Lecture 6
+
+```{r 5-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+friends_info %>% 
+  ggplot(aes(x = us_views_millions, y = imdb_rating, color = season)) +
+  geom_jitter(size = 2) +
+  scale_colour_gradient(low = "#fafafa", high = "#191970",
+                        breaks = seq(1, 10, 1))
+```
+
+---
+
+# 5: Lecture 6
+
+```{r 5-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+friends_info %>% 
+  mutate(label = ifelse(us_views_millions > 50, title, NA_character_)) %>% #<< 
+  ggplot(aes(x = us_views_millions, y = imdb_rating, color = season)) + 
+  geom_jitter(size = 2) +
+  scale_colour_gradient(low = "#fafafa",high = "#191970",breaks = seq(1, 10, 1),
+                        name = "Season") +
+  geom_label_repel(aes(label = label, x = us_views_millions, #<<
+                       y = imdb_rating), size = 4, inherit.aes = FALSE) + #<<
+  scale_x_continuous(labels = label_number(suffix = "M")) + #<<
+  scale_y_continuous(breaks = seq(7, 10, 0.5)) +
+  labs(title = "Two Friends episodes were viewed far more than the rest", #<<
+       subtitle = "Both highlighted episodes were two-part episodes", #<<
+       x = "US views",
+       y = "IMDB rating") +
+  theme(legend.position = c(0.75, 0.08), #<<
+        legend.direction = "horizontal", #<<
+        legend.background = element_blank(), #<<
+        legend.title = element_text(color = "#353839", size = 11, face = "bold", vjust = 0.75), #<<
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        panel.grid.major = element_line(color = "grey90", size = 0.3))
+```
+
+---
+
+.h-1[# 5: Lecture 6]
+
+.tiny[
+```{r 5-2, eval = FALSE}
+```
+]
+
+---
+
+# 6: Lecture 6
+
+```{r 6-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  filter(species != "Gentoo") %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm)) +
+  geom_point(alpha = 0.5, color = "red") +
+  scale_size(range = c(0.1, 7), breaks = c(35, 40, 45, 50, 55)) +
+  theme(legend.position = "top")
+```
+
+---
+
+# 6: Lecture 6
+
+```{r 6-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  filter(species != "Gentoo") %>% 
+  mutate(label = case_when(flipper_length_mm == 192 & 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 & 
+                             body_mass_g == 4650 ~ "Adelie")) %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(0.1, 7), breaks = c(35, 40, 45, 50, 55), 
+             name = "Bill Length (mm)") +
+  geom_label_repel(aes(x = flipper_length_mm, y = body_mass_g, #<<
+                       color = species, label = label), #<<
+                   inherit.aes = FALSE) +
+  scale_color_discrete(guide = "none") + #<<
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       title = "Chinstrap penguins tend to have longer flippers and longer bills",
+       caption = "Data from the palmerpenguins package") + #<<
+  theme(legend.position = "top",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2), #<<
+        axis.ticks = element_line(color = "grey90", size = 0.2), #<<
+        legend.key = element_rect(fill = "transparent")) #<<
+```
+
+---
+
+.h-1[# 6: Lecture 6]
+
+.tiny[
+```{r 6-2, eval = FALSE}
+```
+]
+
+---
+
+# 7: Lecture 7
+
+```{r 7-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+lincoln_weather %>% 
+  select(CST, temp = `Max Temperature [F]`) %>% 
+  mutate(date = ymd(CST), 
+         month = month(date), 
+         day = day(date)) %>% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+  geom_tile(color = "white") +
+  scale_y_continuous(trans = "reverse", 
+                     breaks = seq(1, 31, 5)) + 
+  scale_x_continuous(breaks = seq(1, 12, 1)) +
+  labs(title = "Max Temp in Lincoln, NE in 2016") +
+  scale_fill_gradient(low = "blue", high = "yellow",
+                      breaks = seq(20, 90, 10),
+                      name = " °F") +
+  theme(axis.ticks = element_blank()) +
+  coord_cartesian(expand = FALSE)
+```
+
+---
+
+# 7: Lecture 7
+
+```{r 7-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+lincoln_weather %>% 
+  select(CST, temp = `Max Temperature [F]`) %>% 
+  mutate(date = ymd(CST), 
+         month = month(date, label = TRUE), #<<
+         day = day(date)) %>% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+  geom_tile(color = "white") +
+  scale_y_continuous(trans = "reverse", 
+                     breaks = seq(1, 31, 5)) + 
+  labs(title = "Maximum Temperature by day in Lincoln, NE in 2016") +
+  geom_text(aes(color = temp < 40, label = temp), size = 2) + #<<
+  scale_color_manual(guide = FALSE, values = c("black", "white")) + #<<
+  scale_fill_gradient(low = "blue", high = "yellow",
+                      breaks = seq(20, 90, 10),
+                      name = " °F") +
+  guides(fill = guide_colorsteps()) + #<<
+  theme(axis.ticks = element_blank(),
+        panel.background = element_blank(), #<<
+        axis.title = element_blank(),
+        axis.text = element_text(face = 2)) + #<<
+  coord_cartesian(expand = FALSE)
+```
+
+---
+
+.h-1[# 7: Lecture 7]
+
+.tiny[
+```{r 7-2, eval = FALSE}
+```
+]
+
+---
+
+# 8: Lecture 7
+
+```{r 8-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                aes(fill = "all penguins"), color = "transparent") +
+  geom_density_line(aes(fill = "species"), color = "transparent") +
+  facet_wrap(~species, nrow = 1) +
+  scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+                    guide = guide_legend(direction = "horizontal")) +
+  labs(x = "Body Mass (g)") +
+  theme(legend.position = "top")
+```
+
+---
+
+# 8: Lecture 7
+
+```{r 8-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                    aes(fill = "all penguins"), color = "transparent") + #<<
+  geom_density_line(aes(fill = "species"), color = "transparent") + #<<
+  facet_wrap(~species, nrow = 1) +
+  scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+                    guide = guide_legend(direction = "horizontal")) +
+  labs(x = "Body Mass (g)",
+       title = "Comparing the distribution of body mass by penguin species", #<<
+       subtitle = "Gentoo penguins tend to be the heaviest") + #<<
+  theme(legend.position = "bottom",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3), #<<
+        strip.text = element_text(face = "bold", color = "white"), #<<
+        strip.background = element_rect(fill = "#0C8346"), #<<
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        plot.title.position = "plot") #<<
+```
+
+---
+
+.h-1[# 8: Lecture 7]
+
+.tiny[
+```{r 8-2, eval = FALSE}
+```
+]
+
+---
+
+# 9: HW 2, Problem 5
+
+```{r 9-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm") +
+  labs(title = "Bill Depth vs. Bill Length by Penguin Species",
+       y = "Bill Depth (mm)",
+       x = "Bill Length (mm)") +
+  theme(legend.position = c(0.1, 0.1),
+        legend.title = element_blank())
+```
+
+---
+
+# 9: HW 2, Problem 5
+
+```{r 9-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point() +
+  geom_smooth(method = "lm", show.legend = FALSE, alpha = 0.3) + #<<
+  labs(title = "Bill depth is positively correlated with bill length, regardless of species", #<<
+       y = "Bill Depth (mm)",
+       x = "Bill Length (mm)") +
+  guides(color = guide_legend(override.aes = list(size = 5))) + #<<
+  theme(legend.position = c(0.1, 0.1),
+        legend.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        axis.ticks = element_line(color = "grey90", size = 0.3),
+        legend.key = element_rect(fill = "transparent")) #<<
+```
+
+---
+
+.h-1[# 9: HW 2, Problem 5]
+
+.tiny[
+```{r 9-2, eval = FALSE}
+```
+]
+
+---
+
+# 10: Lab 5, Problem 1
+
+```{r 10-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+msleep %>% 
+  filter(vore %in% c("carni","herbi")) %>% 
+  mutate(name = fct_reorder(name, sleep_total),
+         name = fct_reorder(name, vore),
+         vore = fct_recode(vore, "herbivore" = "herbi", "carnivore" = "carni")) %>% 
+  ggplot(aes(x = sleep_total, y = name, color = vore)) +
+  geom_point() +
+  scale_color_manual(values = c("dark red","dark green"),
+                     guide = guide_legend(reverse = TRUE),
+                     name = NULL) +
+  labs(y = NULL, x = "Total sleep per day (hrs)",
+       title = "Total sleep per mammal species")
+```
+
+---
+
+# 10: Lab 5, Problem 1
+
+```{r 10-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+msleep %>% 
+  filter(vore %in% c("carni","herbi")) %>% 
+  mutate(name = fct_reorder(name, sleep_total),
+         name = fct_reorder(name, vore),
+         vore = fct_recode(vore, "herbivore" = "herbi", "carnivore" = "carni")) %>% #<<
+  group_by(vore) %>% 
+  mutate(mean = mean(sleep_total)) %>% 
+  ggplot(aes(x = sleep_total, y = name, color = vore)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("#bb0000","#098641")) +
+  scale_x_continuous(name = NULL, labels = number_format(suffix = " hrs", accuracy = 1)) + #<<
+  labs(y = NULL, x = "Total sleep per day (hrs)",
+       title = "<span style = 'color:#bb0000;'>**Carnivores**</span> sleep slightly more per day than <span style = 'color:#098641;'>**herbivores**</span>", #<<
+       subtitle = "Among these species, carnivores sleep one hour more per day on average") +
+  theme(plot.title = element_markdown(), #<<
+        plot.subtitle = element_text(margin = margin(-5, 0, 10, 0)), #<<
+        plot.title.position = "plot",
+        legend.position = "none",
+        panel.background  = element_blank(),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_line(color = "black", size = 0.1),
+        axis.ticks = element_blank(),
+        axis.text.y = element_text(size = 6.75)) #<<
+```
+
+---
+
+.h-1[# 10: Lab 5, HW 1]
+
+.tiny[
+```{r 10-2, eval = FALSE}
+```
+]
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Lab 6 on Thursday June 10]
+
+<br>
+
+.large[Lecture 9 on Friday June 11]
+
+<br>
+
+.large[Homework 2 due Tuesday June 15]

@@ -35,3 +35,7 @@ div.my-footer span {
 .medium { 
   font-size: 22px;
 }
+
+.tiny .remark-code { 
+  font-size: 75%;
+}
