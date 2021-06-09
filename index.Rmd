@@ -91,3 +91,19 @@ Lab slides are available below in html format, and the .Rmd files are available 
 ## Acknowledgments {.appendix}
 
 This website is made with the [distill package](https://rstudio.github.io/distill/). Many thanks to [Alison Hill](https://alison.rbind.io/) and [Desirée De Leon](https://desiree.rbind.io/) and their [Teaching in Production](https://rstudio-education.github.io/teaching-in-production/) website, which provided the inspiration for this site. Also thanks to Tom Mock for his enormously helpful [introduction to distill](https://themockup.blog/posts/2020-08-01-building-a-blog-with-distill/).
+
+```{r, include=FALSE, results='asis'}
+library(metathis)
+meta() %>%
+  meta_social(
+    title = "CMU 36-315",
+    description = "Course website for Statistical Graphics & Visualization, by Meghan Hall",
+    url = "https://cmu-36315.netlify.app/",
+    image = "https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/icon.png",
+    image_alt = "CMU 36-315",
+    og_type = "website",
+    og_author = "Meghan Hall",
+    twitter_card_type = "summary",
+    twitter_creator = "@meghanmhall"
+  )
+```
