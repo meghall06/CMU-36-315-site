@@ -99,7 +99,7 @@ meta() %>%
     title = "CMU 36-315",
     description = "Course website for Statistical Graphics & Visualization, by Meghan Hall",
     url = "https://cmu-36315.netlify.app/",
-    image = "https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/icon.png",
+    image = "https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/icon-192.png",
     image_alt = "CMU 36-315",
     og_type = "website",
     og_author = "Meghan Hall",
