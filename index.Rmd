@@ -6,7 +6,7 @@ title: "36-315: Statistical Graphics & Visualization"
 #   affiliation: Carnegie Mellon University
 #date: "`r Sys.Date()`"
 description: |
-  A companion website for the summer 2021 version of Carnegie Mellon University course 36-315: Statistical Graphics & Visualization, taught by Meghan Hall.
+  A companion website for the summer 2021 version of Carnegie Mellon University course 36-315: Statistical Graphics & Visualization, offered through the Department of Statistics & Data Science and taught by Meghan Hall.
 site: distill::distill_website
 ---
 
