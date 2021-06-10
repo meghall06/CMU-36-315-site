@@ -1,0 +1,180 @@
+---
+title: "36-315-Lab6"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(showtext)
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lab1/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lab 6
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 10, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# Today
+
+<br>
+
+.large[Taking plots to the next level]
+<br>
+.medium[effective *and* elegant]
+
+<br>
+
+.large[Redoing plots we've seen before]
+<br>
+.medium[get familiar with the syntax and the options]
+
+---
+
+# Syntax
+
+```{r, eval = FALSE}
+theme(panel.background = element_blank(),
+      panel.grid.major.y = element_line(color = "grey90", size = 0.3))
+```
+
+<br>
+.large[Most of these non-data elements are in the `theme` layer]
+<br>
+<br>
+<br>
+
+.large[Elements inherit properties hierarchically]
+<br>
+.medium[can specify `panel.grid.major` to refer to all gridlines or `axis.title` to refer to all axis titles]
+<br>
+.medium[or `panel.grid.major.x` or `axis.title.y` to be more specific]
+
+---
+
+# Theme elements
+
+<br>
+<br>
+
+.large[`element_blank`: removes an element]
+
+--
+
+.large[`element_rect`: edits borders and backgrounds]
+
+--
+
+.large[`element_line`: edits lines]
+
+--
+
+.large[`element_text`: edits text]
+
+---
+
+# Resources
+
+<br>
+<br>
+
+.large[[https://ggplot2.tidyverse.org/reference/theme.html](https://ggplot2.tidyverse.org/reference/theme.html)]
+
+.large[[https://ggplot2.tidyverse.org/reference/element.html](https://ggplot2.tidyverse.org/reference/element.html)]
+
+.large[[https://henrywang.nl/wp-content/uploads/2020/04/ggplot2-themes.pdf](https://henrywang.nl/wp-content/uploads/2020/04/ggplot2-themes.pdf)]
+
+.large[[https://ggplot2tor.com/scales/](https://ggplot2tor.com/scales/)]
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Lab assignment due 11:30am EDT Friday!]
+<br>
+.medium[Ask questions on Piazza if they don't get answered here]
+
+<br>
+
+.large[Lecture 9 on Friday June 11]
+<br>
+.medium[Themes, fonts, colors, annotations]
+
+<br>
+
+.large[Graphic critique]
+
