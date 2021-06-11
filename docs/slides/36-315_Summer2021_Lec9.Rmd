@@ -503,7 +503,7 @@ tx_map %>%
 <br>
 .large[External options]
 <br>
-.medium[`ggsci`, `paletteer`, `scico`, [coolors.co](coolors.co)]
+.medium[[`ggsci`](https://cran.r-project.org/web/packages/ggsci/vignettes/ggsci.html), [`paletteer`](https://github.com/EmilHvitfeldt/paletteer), [`scico`](https://github.com/thomasp85/scico), [coolors.co](coolors.co)]
 <br>
 .medium[colorblind safe: `scico` and `viridis`]
 <br>
@@ -569,7 +569,7 @@ lincoln_weather %>%
 <br>
 .large[External options]
 <br>
-.medium[`ggsci`, `paletteer`, `scico`, [coolors.co](coolors.co)]
+.medium[[`ggsci`](https://cran.r-project.org/web/packages/ggsci/vignettes/ggsci.html), [`paletteer`](https://github.com/EmilHvitfeldt/paletteer), [`scico`](https://github.com/thomasp85/scico), [coolors.co](coolors.co)]
 <br>
 .medium[colorblind safe: `scico` and `viridis`]
 <br>
@@ -1408,7 +1408,7 @@ mpg %>%
 <br>
 .large[Themes available in other packages]
 <br>
-.medium[`ggthemes`, `ggdark`, `hrbr_themes`]
+.medium[[`ggthemes`](https://github.com/jrnold/ggthemes), [`ggdark`](https://github.com/nsgrantham/ggdark), [`hrbrthemes`](https://github.com/hrbrmstr/hrbrthemes)]
 <br>
 <br>
 <br>
@@ -1523,7 +1523,7 @@ mpg %>%
 <br>
 .large[Themes available in other packages]
 <br>
-.medium[`ggthemes`, `ggdark`, `hrbr_themes`]
+.medium[[`ggthemes`](https://github.com/jrnold/ggthemes), [`ggdark`](https://github.com/nsgrantham/ggdark), [`hrbrthemes`](https://github.com/hrbrmstr/hrbrthemes)]
 <br>
 <br>
 <br>
