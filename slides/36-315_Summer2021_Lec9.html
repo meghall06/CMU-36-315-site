@@ -1,0 +1,1259 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec9</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 9
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 11, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Taking plots to the next level]
+&lt;br&gt;
+.medium[effective *and* elegant]
+
+&lt;br&gt;
+
+.large[Redoing plots we've seen before]
+&lt;br&gt;
+.medium[get familiar with the syntax and the options]
+
+---
+
+# Note on homework/labs
+
+&lt;br&gt;
+
+.large[Read the instructions!]
+&lt;br&gt;
+.medium[that's where most points are coming off]
+
+&lt;br&gt;
+
+.large[.Rmd assignment files might not knit]
+&lt;br&gt;
+.medium[can add `eval = FALSE` to the function in the setup chunk]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[More details]
+&lt;br&gt;
+.medium[colors, fonts, annotations]
+
+&lt;br&gt;
+
+.large[Putting it all together with themes]
+&lt;br&gt;
+.medium[built-in, external options, custom]
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. **colors**
+
+2. fonts
+
+3. annotations
+
+4. themes
+
+]
+
+---
+
+# Types of color scales
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Qualitative]
+&lt;br&gt;
+.medium[distinguishing discrete items that don't have an order (nominal categorical)]
+&lt;br&gt;
+.medium[colors should be distinct and equal with none standing out]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Sequential]
+&lt;br&gt;
+.medium[when data values are mapped to one shade]
+&lt;br&gt;
+.medium[e.g., in a choropleth, for an ordered categorical variable]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Divergent]
+&lt;br&gt;
+.medium[think of it as two sequential scales with a natural midpoint]
+&lt;br&gt;
+.medium[midpoint could represent 0 (assuming +/- values)]
+&lt;br&gt;
+.medium[or 50% if your data spans the full scale]
+
+---
+
+# What's *not* appropriate
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Using a sequential scale on an unordered variable]
+&lt;br&gt;
+.medium[viewers will assume there's a relationship]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Using a divergent scale on a data without a natural midpoint]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Using a discrete scale on a continuous variable]
+&lt;br&gt;
+.medium[will disguise the trend]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Options for finding palettes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Internal within `ggplot2`]
+&lt;br&gt;
+.medium[ColorBrewer]
+&lt;br&gt;
+&lt;br&gt;
+--
+.center[![chart](figs/Lec9/colorbrewer.png)]
+
+---
+
+# ColorBrewer
+
+&lt;img src="figs/Lec9/color-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# ColorBrewer]
+
+.tiny[
+
+```r
+penguins %&gt;% 
+  filter(species != "Gentoo") %&gt;% 
+  mutate(label = case_when(flipper_length_mm == 192 &amp; 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 &amp; 
+                             body_mass_g == 4650 ~ "Adelie")) %&gt;% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(0.1, 7), breaks = c(35, 40, 45, 50, 55), 
+             name = "Bill Length (mm)") +
+  geom_label_repel(aes(x = flipper_length_mm, y = body_mass_g,
+                       color = species, label = label),
+                   inherit.aes = FALSE) +
+* scale_color_brewer(palette = "Set2", guide = "none") +
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       title = "Chinstrap penguins tend to have longer flippers and longer bills",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = "top",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"))
+```
+]
+
+---
+
+# ColorBrewer
+
+&lt;img src="figs/Lec9/color-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ColorBrewer
+
+&lt;img src="figs/Lec9/color-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# ColorBrewer]
+
+.tiny[
+
+```r
+tx_map %&gt;% 
+  mutate(perc_bin = case_when(hispanic_perc &gt;= 0.8 ~ "80-100%",
+                              hispanic_perc &gt;= 0.6 ~ "60-80%",
+                              hispanic_perc &gt;= 0.4 ~ "40-60%",
+                              hispanic_perc &gt;= 0.2 ~ "20-40%",
+                              TRUE ~ "0-20%")) %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = perc_bin)) +
+  geom_polygon(color = "white") +
+* scale_fill_brewer(palette = "Oranges", name = NULL) +
+  labs(title = "Percentage of Hispanic people by county in Texas",
+       subtitle = "2019 population estimate") +
+  theme_void() +
+  theme(legend.position = c(0.17, 0.8))
+```
+]
+
+---
+
+# ColorBrewer
+
+&lt;img src="figs/Lec9/color-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# ColorBrewer]
+
+.tiny[
+
+```r
+tx_map %&gt;% 
+  mutate(perc_bin = case_when(hispanic_perc &gt;= 0.8 ~ "80-100%",
+                              hispanic_perc &gt;= 0.6 ~ "60-80%",
+                              hispanic_perc &gt;= 0.4 ~ "40-60%",
+                              hispanic_perc &gt;= 0.2 ~ "20-40%",
+                              TRUE ~ "0-20%")) %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = perc_bin)) +
+  geom_polygon(color = "white") +
+* scale_fill_brewer(palette = "BrBG", name = NULL) +
+  labs(title = "Percentage of Hispanic people by county in Texas",
+       subtitle = "2019 population estimate") +
+  theme_void() +
+  theme(legend.position = c(0.17, 0.8))
+```
+]
+
+---
+
+# ColorBrewer
+
+&lt;img src="figs/Lec9/color-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Options for finding palettes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Internal within `ggplot2`]
+&lt;br&gt;
+.medium[ColorBrewer]
+&lt;br&gt;
+.medium[viridis: five different options; available for discrete &amp; continuous data]
+&lt;br&gt;
+
+---
+
+.h-1[# viridis]
+
+.tiny[
+
+```r
+tx_map %&gt;% 
+  ggplot(aes(x = long, y = lat, group = group, fill = hispanic_perc)) +
+  geom_polygon(color = "white") +
+* scale_fill_viridis_c(name = NULL, labels = percent,
+*                      direction = -1, option = "D") +
+  labs(title = "Percentage of Hispanic people by county in Texas", 
+       subtitle = "2019 population estimate") +
+  theme_void() +
+  theme(legend.position = c(0.2, 0.8))
+```
+]
+
+---
+
+# viridis
+
+&lt;img src="figs/Lec9/color-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Options for finding palettes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Internal within `ggplot2`]
+&lt;br&gt;
+.medium[ColorBrewer]
+&lt;br&gt;
+.medium[viridis: five different options; available for discrete &amp; continuous data]
+&lt;br&gt;
+&lt;br&gt;
+.large[External options]
+&lt;br&gt;
+.medium[`ggsci`, `paletteer`, `scico`, [coolors.co](coolors.co)]
+&lt;br&gt;
+.medium[colorblind safe: `scico` and `viridis`]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# `scico`
+
+`scico_palette_show()`
+
+&lt;img src="figs/Lec9/color-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# `scico`]
+
+.tiny[
+
+```r
+lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+         month = month(date, label = TRUE),
+         day = day(date)) %&gt;% 
+  ggplot(aes(x = month, y = day, fill = temp)) +
+  geom_tile(color = "white") +
+  scale_y_continuous(trans = "reverse", 
+                     breaks = seq(1, 31, 5)) + 
+  labs(title = "Maximum temperature by day in Lincoln, NE in 2016") +
+* scale_fill_scico(palette = "imola",
+*                  breaks = seq(20, 90, 10),
+*                  name = " °F") +
+  guides(fill = guide_colorsteps()) +
+  theme(axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_text(face = 2)) +
+  coord_cartesian(expand = FALSE)
+```
+]
+
+---
+
+# `scico`
+
+&lt;img src="figs/Lec9/color-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Options for finding palettes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Internal within `ggplot2`]
+&lt;br&gt;
+.medium[ColorBrewer]
+&lt;br&gt;
+.medium[viridis: five different options; available for discrete &amp; continuous data]
+&lt;br&gt;
+&lt;br&gt;
+.large[External options]
+&lt;br&gt;
+.medium[`ggsci`, `paletteer`, `scico`, [coolors.co](coolors.co)]
+&lt;br&gt;
+.medium[colorblind safe: `scico` and `viridis`]
+&lt;br&gt;
+&lt;br&gt;
+.large[Entities with known colors]
+&lt;br&gt;
+.medium[universities, sports teams, etc.]
+&lt;br&gt;
+.medium[hex codes available online]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. colors
+
+2. **fonts**
+
+3. annotations
+
+4. themes
+
+]
+
+---
+
+# Fonts
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Be careful about readability]
+&lt;br&gt;
+.medium[outlandish fonts should be used sparingly, if at all]
+&lt;br&gt;
+.medium[know your audience]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Can use fonts external to your computer]
+&lt;br&gt;
+.medium[using the `showtext` package]
+&lt;br&gt;
+.medium[easiest to use [Google fonts](https://fonts.google.com/)]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Fonts
+
+
+```r
+# name: name of the font on Google Fonts
+# family: the name you'll use to reference the font in your code
+
+font_add_google(name = "Permanent Marker",
+                family = "perm_marker") 
+
+# "turns on" showtext
+
+showtext_auto() 
+```
+
+---
+
+.h-1[# Fonts]
+
+.tiny[
+
+```r
+txhousing %&gt;% 
+  filter(year &gt;= 2010) %&gt;% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_jitter(alpha = .25, width = .3, size = 0.5, color = "#bb0000") +
+  scale_y_continuous(labels = dollar, breaks = seq(100000, 300000, 50000)) +
+  labs(title = "The distribution of median home prices by city in Texas") +
+  theme(axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_text(size = 10, face = 2),
+        plot.title.position = "plot",
+*       plot.title = element_text(family = "perm_marker", size = 18))
+```
+]
+
+---
+
+# Fonts
+
+&lt;img src="figs/Lec9/font-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. colors
+
+2. fonts
+
+3. **annotations**
+
+4. themes
+
+]
+
+---
+
+# Annotations
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful for adding extra information to plots]
+&lt;br&gt;
+.medium[besides labeling specific points]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Options:]
+&lt;br&gt;
+.medium[add text with `annotate("text")`]
+&lt;br&gt;
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# Annotations]
+
+.tiny[
+
+```r
+friends_info %&gt;% 
+  ggplot(aes(x = us_views_millions, y = imdb_rating, color = season)) + 
+  geom_jitter(size = 2) +
+  scale_colour_gradient(low = "#fafafa",high = "#191970",breaks = seq(1, 10, 1),
+                        name = "Season") +
+  scale_x_continuous(labels = label_number(suffix = "M")) +
+  scale_y_continuous(breaks = seq(7, 10, 0.5)) +
+  labs(title = "Two Friends episodes were viewed far more than the rest",
+       subtitle = "Both highlighted episodes were two-part episodes",
+       x = "US views",
+       y = "IMDB rating") +
+* annotate("text", x = 49, y = 8.7, label = "The One After the Super\nBowl aired in 1996",
+*          size = 4.5, hjust = 0.85) +
+* annotate("text", x = 49, y = 9.7, label = "The Last One aired in 2004",
+*          size = 4.5, hjust = 0.85) +
+  theme(legend.position = c(0.75, 0.08),
+        legend.direction = "horizontal",
+        legend.background = element_blank(),
+        legend.title = element_text(color = "#353839", size = 11, face = "bold", vjust = 0.75),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        panel.grid.major = element_line(color = "grey90", size = 0.3))
+```
+]
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Annotations
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful for adding extra information to plots]
+&lt;br&gt;
+.medium[besides labeling specific points]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Options:]
+&lt;br&gt;
+.medium[add text with `annotate("text")`]
+&lt;br&gt;
+.medium[add arrows with `geom_curve`]
+&lt;br&gt;
+
+---
+
+.h-1[# Annotations]
+
+.tiny[
+
+```r
+friends_info %&gt;% 
+  ggplot(aes(x = us_views_millions, y = imdb_rating, color = season)) + 
+  geom_jitter(size = 2) +
+  scale_colour_gradient(low = "#fafafa",high = "#191970",breaks = seq(1, 10, 1),
+                        name = "Season") +
+  scale_x_continuous(labels = label_number(suffix = "M")) +
+  scale_y_continuous(breaks = seq(7, 10, 0.5)) +
+  labs(title = "Two Friends episodes were viewed far more than the rest",
+       subtitle = "Both highlighted episodes were two-part episodes",
+       x = "US views",
+       y = "IMDB rating") +
+  annotate("text", x = 49, y = 8.7, label = "The One After the Super\nBowl aired in 1996", 
+           size = 4.5, hjust = 0.85) + 
+  annotate("text", x = 49, y = 9.7, label = "The Last One aired in 2004", 
+           size = 4.5, hjust = 0.85) + 
+* geom_curve(aes(x = 45, y = 8.9, xend = 52, yend = 8.9),
+*            size = 1, color = "dark grey", curvature = -0.7,
+*            arrow = arrow(length = unit(0.07, "npc"))) +
+* geom_curve(aes(x = 45, y = 9.6, xend = 52, yend = 9.6),
+*            size = 1, color = "dark grey", curvature = 0.7,
+*            arrow = arrow(length = unit(0.07, "npc"))) +
+  theme(legend.position = c(0.75, 0.08),
+        legend.direction = "horizontal",
+        legend.background = element_blank(),
+        legend.title = element_text(color = "#353839", size = 11, face = "bold", vjust = 0.75),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        panel.grid.major = element_line(color = "grey90", size = 0.3))
+```
+]
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Annotations
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful for adding extra information to plots]
+&lt;br&gt;
+.medium[besides labeling specific points]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Options:]
+&lt;br&gt;
+.medium[add text with `annotate("text")`]
+&lt;br&gt;
+.medium[add arrows with `geom_curve`]
+&lt;br&gt;
+.medium[add multiple lines with `geom_linerange`]
+&lt;br&gt;
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# Annotations]
+
+.tiny[
+
+```r
+msleep %&gt;% 
+  filter(vore %in% c("carni","herbi")) %&gt;% 
+  mutate(name = fct_reorder(name, sleep_total),
+         name = fct_reorder(name, vore),
+         vore = fct_recode(vore, "herbivore" = "herbi", "carnivore" = "carni")) %&gt;%
+  group_by(vore) %&gt;% 
+  mutate(mean = mean(sleep_total)) %&gt;% 
+  ggplot(aes(x = sleep_total, y = name, color = vore)) +
+  geom_point(size = 2) +
+  scale_color_manual(values = c("#bb0000","#098641")) +
+  scale_x_continuous(name = NULL, labels = number_format(suffix = " hrs", accuracy = 1)) +
+  labs(y = NULL, x = "Total sleep per day (hrs)",
+       title = "&lt;span style = 'color:#bb0000;'&gt;**Carnivores**&lt;/span&gt; sleep slightly more per day than &lt;span style = 'color:#098641;'&gt;**herbivores**&lt;/span&gt;",
+       subtitle = "Among these species, carnivores sleep one hour more per day on average") +
+* geom_linerange(aes(x = 10.4, ymin = 1, ymax = 19),
+*                color = "#bb0000", size = 1.5, linetype = "dotted") +
+* geom_linerange(aes(x = 9.5, ymin = 20, ymax = 51),
+*                color = "#098641", size = 1.5, linetype = "dotted") +
+  theme(plot.title = element_markdown(),
+        plot.subtitle = element_text(margin = margin(-5, 0, 10, 0)),
+        plot.title.position = "plot",
+        legend.position = "none",
+        panel.background  = element_blank(),
+        plot.background = element_rect(fill = "transparent", color = NA),
+        panel.grid.major = element_line(color = "black", size = 0.1),
+        axis.ticks = element_blank(),
+        axis.text.y = element_text(size = 6.75))
+```
+]
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Annotations
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful for adding extra information to plots]
+&lt;br&gt;
+.medium[besides labeling specific points]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Options:]
+&lt;br&gt;
+.medium[add text with `annotate("text")`]
+&lt;br&gt;
+.medium[add arrows with `geom_curve`]
+&lt;br&gt;
+.medium[add multiple lines with `geom_linerange`]
+&lt;br&gt;
+.medium[add shaded areas with `geom_rect` or `annotate("rect")`]
+&lt;br&gt;
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# Annotations]
+
+.tiny[
+
+```r
+economics %&gt;% 
+  ggplot() + 
+* geom_rect(aes(xmin = start, xmax = end, fill = status),
+*           ymin = -Inf, ymax = Inf, alpha = 0.5, data = recession_list) +
+  geom_line(aes(x = date, y = unemploy), size = 1) +
+  scale_fill_manual(values = c("white","#bb0000")) +
+  labs(y = "Unemployed (in thousands)",
+       x = NULL,
+       title = "The number of unemployed people tends to increase during a &lt;span style = 'color:#bb0000;'&gt;**recession**&lt;/span&gt;") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        plot.title = element_markdown(),
+        plot.title.position = "plot",
+        legend.position = "none")
+```
+]
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# Annotations]
+
+.tiny[
+
+```r
+friends_info %&gt;% 
+  ggplot(aes(x = us_views_millions, y = imdb_rating, color = season)) + 
+  geom_jitter(size = 2) +
+  scale_colour_gradient(low = "#fafafa",high = "#191970",breaks = seq(1, 10, 1),
+                        name = "Season") +
+  scale_x_continuous(labels = label_number(suffix = "M")) +
+  scale_y_continuous(breaks = seq(7, 10, 0.5)) +
+  labs(title = "Two Friends episodes were viewed far more than the rest",
+       subtitle = "Both highlighted episodes were two-part episodes",
+       x = "US views",
+       y = "IMDB rating") +
+  annotate("text", x = 49, y = 8.7, label = "The One After the Super\nBowl aired in 1996", 
+           size = 4.5, hjust = 0.85) + 
+  annotate("text", x = 49, y = 9.7, label = "The Last One aired in 2004", 
+           size = 4.5, hjust = 0.85) + 
+  geom_curve(aes(x = 45, y = 8.9, xend = 52, yend = 8.9), 
+             size = 1, color = "dark grey", curvature = -0.7, 
+             arrow = arrow(length = unit(0.07, "npc"))) + 
+  geom_curve(aes(x = 45, y = 9.6, xend = 52, yend = 9.6), 
+             size = 1, color = "dark grey", curvature = 0.7, 
+             arrow = arrow(length = unit(0.07, "npc"))) + 
+* annotate("rect", xmin = 38, xmax = 52, ymin = 8.57, ymax = 8.82,
+*          alpha = 0.2, color = "grey", fill = "black") +
+* annotate("rect", xmin = 37, xmax = 51.5, ymin = 9.6, ymax = 9.8,
+*          alpha = 0.2, color = "grey", fill = "black") +
+  theme(legend.position = c(0.75, 0.08),
+        legend.direction = "horizontal",
+        legend.background = element_blank(),
+        legend.title = element_text(color = "#353839", size = 11, face = "bold", vjust = 0.75),
+        axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        panel.grid.major = element_line(color = "grey90", size = 0.3))
+```
+]
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Annotations
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful for adding extra information to plots]
+&lt;br&gt;
+.medium[besides labeling specific points]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Options:]
+&lt;br&gt;
+.medium[add text with `annotate("text")`]
+&lt;br&gt;
+.medium[add arrows with `geom_curve`]
+&lt;br&gt;
+.medium[add multiple lines with `geom_linerange`]
+&lt;br&gt;
+.medium[add shaded areas with `geom_rect` or `annotate("rect")`]
+&lt;br&gt;
+.medium[add lines with `geom_hline`, `geom_vline`, `geom_abline`]
+&lt;br&gt;
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h-1[# Annotations]
+
+.tiny[
+
+```r
+mpg %&gt;% 
+  filter(year == 2008 &amp; class == "suv") %&gt;% 
+  group_by(manufacturer) %&gt;% 
+  summarize(median = median(cty),
+            n = n()) %&gt;% 
+  mutate(manufacturer = str_to_title(manufacturer),
+         label = paste0(manufacturer, "\n", n,
+                        ifelse(n &gt; 1, " models", " model"))) %&gt;%
+  ggplot(aes(x = reorder(label, -median), y = median)) +
+  geom_bar(stat = "identity") +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+* geom_hline(yintercept = 13.6,
+*            color = "#bb0000", size = 2) +
+  labs(title = "Subaru SUVs have highest median city mpg",
+       subtitle = "Among manufacturers in 2008; mean value shown in red",
+       x = NULL,
+       y = "Miles per gallon") +
+  theme(axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# Annotations
+
+&lt;img src="figs/Lec9/anno-10-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: left
+
+# Today's agenda
+
+&lt;br&gt;
+
+.large[
+
+1. colors
+
+2. fonts
+
+3. annotations
+
+4. **themes**
+
+]
+
+---
+
+# Themes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Why use a theme?]
+&lt;br&gt;
+.medium[adding this, for example, to every.single.plot is annoying and a waste of time]
+&lt;br&gt;
+&lt;br&gt;
+
+
+```r
+theme(panel.background = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3),
+      axis.ticks = element_line(color = "grey90", size = 0.3),
+      legend.key = element_rect(fill = "transparent"),
+      axis.text = element_text(face = 2))
+```
+
+---
+
+# Themes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Built-in themes]
+&lt;br&gt;
+.medium[8 options within `ggplot2`]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+.left[# Themes]
+
+.pull-left[
+`theme_gray`
+&lt;img src="figs/Lec9/theme-1-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+.pull-left[
+`theme_bw`
+&lt;img src="figs/Lec9/theme-2-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+
+.left[# Themes]
+
+.pull-left[
+`theme_linedraw`
+&lt;img src="figs/Lec9/theme-3-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+.pull-left[
+`theme_light`
+&lt;img src="figs/Lec9/theme-4-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+
+.left[# Themes]
+
+.pull-left[
+`theme_dark`
+&lt;img src="figs/Lec9/theme-5-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+.pull-left[
+`theme_minimal`
+&lt;img src="figs/Lec9/theme-6-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+
+.left[# Themes]
+
+.pull-left[
+`theme_classic`
+&lt;img src="figs/Lec9/theme-7-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+.pull-left[
+`theme_void`
+&lt;img src="figs/Lec9/theme-8-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+
+# Themes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Built-in themes]
+&lt;br&gt;
+.medium[8 options within `ggplot2`]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Themes available in other packages]
+&lt;br&gt;
+.medium[`ggthemes`, `ggdark`, `hrbr_themes`]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+.left[# Themes]
+
+.pull-left[
+`theme_economist`
+&lt;img src="figs/Lec9/theme-9-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+.pull-left[
+`theme_fivethirtyeight`
+&lt;img src="figs/Lec9/theme-10-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+
+.left[# Themes]
+
+.pull-left[
+`dark_theme_minimal`
+&lt;img src="figs/Lec9/theme-11-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+--
+.pull-left[
+`theme_ipsum`
+&lt;img src="figs/Lec9/theme-12-1.png" width="504" style="display: block; margin: auto auto auto 0;" /&gt;
+]
+
+---
+
+# Themes
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Built-in themes]
+&lt;br&gt;
+.medium[8 options within `ggplot2`]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Themes available in other packages]
+&lt;br&gt;
+.medium[`ggthemes`, `ggdark`, `hrbr_themes`]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Custom themes you create yourself]
+&lt;br&gt;
+.medium[often built off of a pre-set theme]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# Themes
+
+&lt;img src="figs/Lec9/dino-graph-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Themes
+
+
+```r
+data %&gt;% 
+  ggplot(aes(x = x, y = y)) + 
+  geom_point(color = "#bb0000") +
+  labs(title = "Sometimes visualizing data can reveal important details",
+       subtitle = "From Alberto Cairo's Datasaurus") +
+* cmu_theme() +
+  scale_x_continuous(limits = c(0, 100)) +
+* theme(panel.grid.major = element_blank(),
+*       axis.title = element_blank())
+```
+
+---
+
+# Themes
+
+
+```r
+cmu_theme &lt;- function () { 
+* theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace%
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+```
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lecture 10 on Monday June 11]
+
+&lt;br&gt;
+
+.large[Homework 3 due Tuesday June 15]
+
+&lt;br&gt;
+
+.large[Midterm on Thursday June 17]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
