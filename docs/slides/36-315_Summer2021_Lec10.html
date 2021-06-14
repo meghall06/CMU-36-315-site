@@ -1,0 +1,1845 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec10</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 10
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 14, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[More details]
+&lt;br&gt;
+.medium[colors, fonts, annotations]
+
+&lt;br&gt;
+
+.large[Putting it all together with themes]
+&lt;br&gt;
+.medium[built-in, external options, custom]
+
+---
+
+# Schedule going forward
+
+.large[Lab 7 tomorrow]
+&lt;br&gt;
+.medium[HW 3 due too]
+
+&lt;br&gt;
+
+.large[Midterm review lecture on Wednesday]
+
+&lt;br&gt;
+
+.large[Midterm on Thursday]
+&lt;br&gt;
+.medium[no lab on Thursday *or* lecture on Friday]
+
+&lt;br&gt;
+
+.large[HW 4 due *next* Tuesday]
+
+---
+
+# Tips on debugging code
+
+&lt;br&gt;
+
+.large[Always code iteratively]
+&lt;br&gt;
+.medium[build graphs piece by piece]
+
+--
+
+&lt;br&gt;
+
+.large[Debug that way too]
+&lt;br&gt;
+.medium[get down to the minimum chunk that works]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Extensions to `ggplot2`]
+&lt;br&gt;
+.medium[in addition to the ones we've already covered]
+
+&lt;br&gt;
+
+.large[New plot types *and* new techniques for details]
+
+---
+
+# Already covered
+
+&lt;br&gt;
+&lt;br&gt;
+.large[`ggridges`]
+&lt;br&gt;
+.medium[building ridgeline plots]
+&lt;br&gt;
+.medium[viewing/comparing distributions]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[`ggbeeswarm`]
+&lt;br&gt;
+.medium[beeswarm plots to visualize distributions]
+&lt;br&gt;
+.medium["smart" jittering]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[For details]
+&lt;br&gt;
+.medium[`ggtext`, `ggrepel`, `scico`]
+&lt;br&gt;
+.medium[`ggthemes`, `ggdark`, `hrbrthemes`]
+
+---
+
+# `ggforce`
+
+&lt;br&gt;
+&lt;br&gt;
+.large["Accelerating `ggplot2`"]
+&lt;br&gt;
+.medium[[ggforce.data-imaginist.com](https://ggforce.data-imaginist.com/reference/index.html)]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[`geom_sina`]
+&lt;br&gt;
+.medium[keeps jittered points restricted within the violin]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# `ggforce`
+
+&lt;img src="figs/Lec10/force-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `ggforce`]
+
+.tiny[
+
+```r
+txhousing %&gt;% 
+  filter(year &gt;= 2010) %&gt;% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  # replace this
+  # geom_jitter(alpha = .25, width = .3, size = 0.5, color = "#bb0000") +
+  scale_y_continuous(labels = dollar, breaks = seq(100000, 300000, 50000)) +
+  labs(title = "The distribution of median home prices by city in Texas") +
+  # with this
+* geom_sina(alpha = 0.25, width = .3, size = 0.5, color = "#bb0000") +
+  theme(axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_text(size = 10, face = 2),
+        plot.title.position = "plot")
+```
+]
+
+---
+
+# `ggforce`
+
+&lt;img src="figs/Lec10/force-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggforce`
+
+&lt;br&gt;
+&lt;br&gt;
+.large["Accelerating `ggplot2`"]
+&lt;br&gt;
+.medium[[ggforce.data-imaginist.com](https://ggforce.data-imaginist.com/reference/index.html)]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[`geom_sina`]
+&lt;br&gt;
+.medium[keeps jittered points restricted within the violin]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[`geom_mark_circle` (and related `geom`s)]
+&lt;br&gt;
+.medium[circle and label points within a group]
+&lt;br&gt;
+&lt;br&gt;
+
+---
+
+# `ggforce`
+
+&lt;img src="figs/Lec10/force-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `ggforce`]
+
+.tiny[
+
+```r
+penguins %&gt;% 
+  filter(!is.na(body_mass_g) &amp; !is.na(flipper_length_mm) &amp; 
+           species != "Chinstrap") %&gt;% 
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm)) +
+* geom_mark_circle(aes(fill = species, label = species)) +
+  geom_point() +
+  scale_x_continuous(limits = c(2240, 6500)) +
+  scale_y_continuous(limits = c(160, 250)) +
+  labs(y = "Flipper Length (mm)",
+       x = "Body Mass (g)",
+       title = "Gentoo penguins tend to be heavier and have longer flippers",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"))
+```
+]
+
+---
+
+# `ggforce`
+
+&lt;img src="figs/Lec10/force-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggwaffle`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[For waffle charts]
+&lt;br&gt;
+.medium[[https://liamgilbey.github.io/ggwaffle/](https://liamgilbey.github.io/ggwaffle/)]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Another option for showing parts of a whole]
+&lt;br&gt;
+.medium[when overall *n* and # of categories is small]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[`waffle_iron` to get data prepped]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[`geom_waffle` and `theme_waffle` to make the plot]
+
+
+---
+
+# `ggwaffle`
+
+
+```r
+penguins$species &lt;- 
+  as.character(penguins$species)
+
+penguin_waffle &lt;- 
+  waffle_iron(penguins, aes_d(group = species))
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; y &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; x &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; group &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.h1[# `ggwaffle`]
+
+.tiny[
+
+```r
+penguin_waffle %&gt;% 
+  ggplot(aes(x, y, fill = group)) + 
+  geom_waffle() +  
+  coord_equal() + 
+  theme_waffle() +
+  scale_fill_brewer(type = "qual") +
+  theme(legend.position = "bottom",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.title = element_blank())
+```
+
+&lt;img src="figs/Lec10/waffle-3-1.png" width="6in" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# `ggwaffle`
+
+&lt;img src="figs/Lec10/waffle-3-1.png" width="504" height="50%" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggExtra`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[For adding marginal distributions]
+&lt;br&gt;
+.medium[[https://cran.r-project.org/web/packages/ggExtra/vignettes/ggExtra.html](https://cran.r-project.org/web/packages/ggExtra/vignettes/ggExtra.html)]
+&lt;br&gt;
+.medium[helpful to add context to a scatter plot, especially if *n* is high]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[`ggMarginal`]
+&lt;br&gt;
+.medium[defaults to a very plain density curve]
+&lt;br&gt;
+.medium[add `groupFill = TRUE` to color by group to match plot]
+&lt;br&gt;
+.medium[add `type = "histogram"` to show a density plot instead]
+&lt;br&gt;
+.medium[same alpha/size/color aesthetics apply]
+
+---
+
+# `ggExtra`
+
+&lt;img src="figs/Lec10/extra-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `ggExtra`]
+
+.tiny[
+
+```r
+*plot &lt;- penguins %&gt;%
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5, size = 3) +
+  scale_color_brewer(palette = "Set2", name = NULL) + 
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = c(0.2, 0.8),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"),
+        legend.background = element_rect(fill = "transparent"),
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+
+*ggMarginal(plot, groupFill = TRUE)
+```
+]
+
+---
+
+# `ggExtra`
+
+&lt;img src="figs/Lec10/extra-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `ggExtra`]
+
+.tiny[
+
+```r
+*plot &lt;- penguins %&gt;%
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5, size = 3) +
+  scale_color_brewer(palette = "Set2", name = NULL) + 
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = c(0.2, 0.8),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"),
+        legend.background = element_rect(fill = "transparent"),
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+
+*ggMarginal(plot, type = "histogram", alpha = 0.5)
+```
+
+&lt;img src="figs/Lec10/extra-3-1.png" width="6in" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# `ggExtra`
+
+&lt;img src="figs/Lec10/extra-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggtext`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[For any kind of text manipulation]
+&lt;br&gt;
+.medium[[https://github.com/wilkelab/ggtext](https://github.com/wilkelab/ggtext)]
+&lt;br&gt;
+.medium[using simple HTML]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+--
+.large[Already saw an example to color the title to match groups]
+&lt;br&gt;
+.medium[another option to get rid of legends]
+&lt;br&gt;
+.medium[just add `element_markdown()` in the `theme` layer for that element]
+
+---
+
+# `ggtext`
+
+&lt;img src="figs/Lec10/text-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggtext`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[For any kind of text manipulation]
+&lt;br&gt;
+.medium[[https://github.com/wilkelab/ggtext](https://github.com/wilkelab/ggtext)]
+&lt;br&gt;
+.medium[using simple HTML]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Already saw an example to color the title to match groups]
+&lt;br&gt;
+.medium[another option to get rid of legends]
+&lt;br&gt;
+.medium[just add `element_markdown()` in the `theme` layer for that element]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Also useful for text boxes]
+
+---
+
+.h1[# `ggtext`]
+
+.tiny[
+
+```r
+economics %&gt;% 
+  ggplot(aes(x = date, y = unemploy, color = recession, group = 1)) + 
+  geom_line(size = 1) +
+  scale_color_manual(values = c("dark grey","#bb0000")) +
+  labs(y = "Unemployed (in thousands)",
+       x = NULL,
+       title = "The number of unemployed people tends to increase during a &lt;span style = 'color:#bb0000;'&gt;**recession**&lt;/span&gt;") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        # plot.title = element_markdown(), #no longer need this line
+        plot.title.position = "plot",
+        legend.position = "none",
+*       plot.title = element_textbox_simple(size = 13, lineheight = 1,
+*                                           padding = margin(5.5, 5.5, 5.5, 5.5),
+*                                           margin = margin(0, 0, 5.5, 0),
+*                                           fill = "#d4d4d4", r = grid::unit(8, "pt")))
+```
+]
+
+---
+
+# `ggtext`
+
+&lt;img src="figs/Lec10/text-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggtext`
+
+&lt;img src="figs/Lec10/text-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `ggtext`]
+
+.tiny[
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                    aes(fill = "all penguins"), color = "transparent") +
+  geom_density_line(aes(fill = "species"), color = "transparent") +
+  facet_wrap(~species, nrow = 1) +
+  scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+                    guide = guide_legend(direction = "horizontal")) +
+  labs(x = "Body Mass (g)",
+       title = "Comparing the distribution of body mass by penguin species",
+       subtitle = "Gentoo penguins tend to be the heaviest") +
+  theme(legend.position = "bottom",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        strip.background = element_blank(),
+*       strip.text = element_textbox(
+*         size = 11,
+*         color = "white", fill = "#0C8346", box.color = "#4A618C",
+*         halign = 0.5, linetype = 1, r = unit(5, "pt"), width = unit(1, "npc"),
+*         padding = margin(2, 0, 1, 0), margin = margin(3, 3, 3, 3)),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        plot.title.position = "plot")
+```
+]
+
+---
+
+# `ggtext`
+
+&lt;img src="figs/Lec10/text-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `gghighlight`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Very useful for highlighting certain groups &amp; applying aesthetics]
+&lt;br&gt;
+.medium[[https://cran.r-project.org/web/packages/gghighlight/vignettes/gghighlight.html](https://cran.r-project.org/web/packages/gghighlight/vignettes/gghighlight.html)]
+&lt;br&gt;
+.medium[to avoid spaghetti graphs]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Easy to highlight/label based on specific values]
+&lt;br&gt;
+.medium[or a specific number (e.g., top 5)]
+&lt;br&gt;
+.medium[can control aesthetics of unhighlighted categories]
+&lt;br&gt;
+
+---
+
+# `gghighlight`
+
+&lt;img src="figs/Lec10/highlight-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `gghighlight`]
+
+.tiny[
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  ggplot(aes(x = round, y = points, color = name, group = name)) + 
+  geom_line() +
+* gghighlight(max(points) &gt; 180 &amp; max(points) &lt; 250,
+*             label_params = list(size = 4.5)) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  labs(title = "The race for third place during the 2020 F1 season",
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+.h1[# `gghighlight`]
+
+.tiny[
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  ggplot(aes(x = round, y = points, color = name, group = name)) + 
+  geom_line() +
+* gghighlight(max(points), max_highlight = 5L) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(title = "The race for third place during the 2020 F1 season",
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# `gghighlight`
+
+&lt;img src="figs/Lec10/highlight-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `gghighlight`]
+
+.tiny[
+
+```r
+constructor_pts %&gt;% 
+  filter(year == 2020) %&gt;% 
+  ggplot(aes(x = round, y = points, color = name, group = name)) + 
+  geom_line() +
+* gghighlight(max(points) &gt; 180 &amp; max(points) &lt; 250,
+*             unhighlighted_params = list(linetype = "dotted", alpha = 0.8)) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  labs(title = "The race for third place during the 2020 F1 season",
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# `gghighlight`
+
+&lt;img src="figs/Lec10/highlight-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful functions for manipulating graphs]
+&lt;br&gt;
+.medium[[https://wilkelab.org/cowplot/articles/introduction.html](https://wilkelab.org/cowplot/articles/introduction.html)]
+&lt;br&gt;
+.medium[adding images to plots, arranging plots]
+&lt;br&gt;
+.medium[adding joint titles and joint legends]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Also includes themes]
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `cowplot`]
+
+.medium[**adding an image to a plot**]
+
+.tiny[
+
+```r
+*p &lt;- penguins %&gt;%
+  filter(species != "Gentoo") %&gt;% 
+  mutate(label = case_when(flipper_length_mm == 192 &amp; 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 &amp; 
+                             body_mass_g == 4650 ~ "Adelie")) %&gt;% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  ...
+
+*ggdraw() +
+* draw_plot(p) +
+* draw_image("https://allisonhorst.github.io/palmerpenguins/reference/figures/palmerpenguins.png",
+*            x = 1, y = 0.35, hjust = 1, vjust = 1, halign = 1, valign = 1, width = 0.15)
+```
+]
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-full-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+`scatter`
+
+&lt;img src="figs/Lec10/cowplot-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+`bar`
+
+&lt;img src="figs/Lec10/cowplot-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+
+
+**creating an inset plot**
+
+
+```r
+ggdraw(scatter) +
+  draw_plot(bar, x = .55, y = .55, width = .4, height = .4) +
+  draw_plot_label(c("A.", "B."), x = c(0, 0.45),
+                  y = c(0.95, 0.95), size = 12)
+```
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+
+```r
+plot_grid(scatter, bar, labels = c("A.", "B."), label_size = 12)
+```
+
+&lt;img src="figs/Lec10/cowplot-6-1.png" width="720" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+
+```r
+plot_grid(scatter, bar, labels = c("A.", "B."), label_size = 12, 
+          align = "h")
+```
+
+&lt;img src="figs/Lec10/cowplot-7-1.png" width="720" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+
+```r
+plot_grid(scatter, bar, labels = c("A.", "B."), label_size = 12, 
+          align = "h", rel_widths = c(2, 1))
+```
+
+&lt;img src="figs/Lec10/cowplot-8-1.png" width="720" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+**sharing titles among plots**
+
+
+```r
+plots &lt;- plot_grid(scatter, bar, labels = c("A.", "B."), 
+                   label_size = 12, align = "h")
+
+title &lt;- ggdraw() + 
+  draw_label("Gentoo penguins tend to be heavier, with longer and shallower bills",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0) +
+  theme(plot.margin = margin(0, 0, 0, 5))
+
+plot_grid(title, plots, ncol = 1,
+          # necessary so that the title is small
+          rel_heights = c(0.1, 1)) 
+```
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-9-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+**sharing legends among plots**
+
+
+```r
+plots_shared_legend &lt;- 
+  plot_grid(scatter + 
+              theme(legend.position="none"),
+            bar,
+            labels = c("A.", "B."), label_size = 12, align = "h")
+
+legend &lt;- 
+  get_legend(scatter + 
+               theme(legend.position = "top"))
+
+plot_grid(title, legend, plots_shared_legend, 
+          ncol = 1, rel_heights = c(.1, .05, 1))
+```
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-10-1.png" width="864" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-11-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `cowplot`
+
+&lt;img src="figs/Lec10/cowplot-12-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `corrplot`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Easy way to create a correlation matrix]
+&lt;br&gt;
+.medium[[https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)]
+&lt;br&gt;
+.medium[aka a correlogram]
+&lt;br&gt;
+&lt;br&gt;
+&lt;br&gt;
+.large[Most useful when you represent correlations as color as well as size]
+&lt;br&gt;
+.medium[but always examine the raw data as well]
+
+---
+
+# `corrplot`
+
+
+```r
+corr &lt;- 
+  cor(penguins %&gt;% 
+        select(`Bill Length` = bill_length_mm,
+               `Bill Depth` = bill_depth_mm,
+               `Flipper Length` = flipper_length_mm,
+               `Body Mass` = body_mass_g) %&gt;% 
+        drop_na())
+
+corrplot(corr, method = "circle")
+```
+
+---
+
+# `corrplot`
+
+&lt;img src="figs/Lec10/corr-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `corrplot`
+
+
+```r
+corrplot(corr, method = "number")
+```
+
+---
+
+# `corrplot`
+
+&lt;img src="figs/Lec10/corr-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `corrplot`
+
+
+```r
+corrplot(corr, method = "color")
+```
+
+---
+
+# `corrplot`
+
+&lt;img src="figs/Lec10/corr-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `corrplot`
+
+
+```r
+diag(corr) = NA # changes diagonal corrleations to NA
+
+corrplot(corr, type = "lower", tl.srt = 45, # controls angle of text
+         # controls color palette
+         col = brewer.pal(n = 8, name = "RdGy"), 
+         # gets rid of background grid
+         addgrid.col = NA, 
+         # controls text color
+         tl.col = "black", 
+         # controls label of NA values
+         na.label = "x") 
+```
+
+---
+
+# `corrplot`
+
+&lt;img src="figs/Lec10/corr-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `ggalt`
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Very easy to make a dumbbell plot]
+&lt;br&gt;
+.medium[[https://github.com/hrbrmstr/ggalt](https://github.com/hrbrmstr/ggalt)]
+&lt;br&gt;
+.medium[various miscellaneous functions]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[Dumbbell plots]
+&lt;br&gt;
+.medium[great way to show specific change over two points in time]
+&lt;br&gt;
+.medium[encoded by position, so axis doesn't have to start at zero]
+&lt;br&gt;
+.medium[can handle many categories as bars are narrow (similar to lollipop)]
+&lt;br&gt;
+
+---
+
+# `ggalt`
+
+**What's the increase in median listing price, by city, from 2006 to 2015?**
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; month &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sales &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; volume &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; median &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; listings &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; inventory &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; date &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5380000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 71400 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 701 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6505000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58700 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 746 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.083 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9285000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58100 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 784 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.167 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9730000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68600 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 785 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.250 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 141 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10590000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 67300 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 794 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6.8 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2000.333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `ggalt`
+
+**What's the increase in median listing price, by city, from 2006 to 2015?**
+
+
+```r
+txhousing %&gt;% 
+  filter((year == 2006 | year == 2015) &amp; 
+           !(city %in% c("South Padre Island", "Kerrville"))) %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; median &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100291.7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 137414.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amarillo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 114216.7 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amarillo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2015 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 147957.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arlington &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2006 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130308.3 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `ggalt`
+
+**What's the increase in median listing price, by city, from 2006 to 2015?**
+
+
+```r
+txhousing %&gt;% 
+  filter((year == 2006 | year == 2015) &amp; 
+           !(city %in% c("South Padre Island", "Kerrville"))) %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE)) %&gt;%
+  pivot_wider(names_from = year, values_from = median)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2006 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2015 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100291.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 137414.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amarillo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 114216.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 147957.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arlington &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130308.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 170142.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Austin &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 171766.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 259000.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Bay Area &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 144766.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 190300.0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `ggalt`
+
+&lt;img src="figs/Lec10/dumbbell-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+.h1[# `ggalt`]
+
+.tiny[
+
+```r
+txhousing %&gt;% 
+  filter((year == 2006 | year == 2015) &amp; 
+           !(city %in% c("South Padre Island", "Kerrville"))) %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE)) %&gt;% 
+  pivot_wider(names_from = year, values_from = median) %&gt;% 
+* ggplot(aes(x = `2006`, xend = `2015`, y = reorder(city, `2015`), group = city)) +
+* geom_dumbbell(size = 1.5, color = "#d4d4d4",
+*               colour_x = "#BA95DB", colour_xend = "#693498",
+*               dot_guide = TRUE, dot_guide_size = 0.25) +
+  scale_x_continuous(labels = dollar) +
+  labs(title = "Median listing price increases from 2006 to 2015") +
+  theme_linedraw() +
+  theme(axis.ticks = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.title = element_blank())
+```
+]
+
+---
+
+# `ggalt`
+
+**which cities saw the greatest increase in this time?**
+
+
+```r
+txhousing %&gt;% 
+  filter((year == 2006 | year == 2015) &amp; 
+           !(city %in% c("South Padre Island", "Kerrville"))) %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE)) %&gt;% 
+  pivot_wider(names_from = year, values_from = median)
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2006 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2015 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Abilene &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 100291.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 137414.3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Amarillo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 114216.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 147957.1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Arlington &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130308.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 170142.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Austin &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 171766.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 259000.0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Bay Area &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 144766.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 190300.0 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `ggalt`
+
+**which cities saw the greatest increase in this time?**
+
+
+```r
+txhousing %&gt;% 
+  filter((year == 2006 | year == 2015) &amp; 
+           !(city %in% c("South Padre Island", "Kerrville"))) %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE)) %&gt;% 
+  pivot_wider(names_from = year, values_from = median) %&gt;% 
+* mutate(change = (`2015` - `2006`) / `2006`) %&gt;%
+* arrange(desc(change))
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; city &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2006 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 2015 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; change &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Odessa &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87750.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 176114.3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.0070004 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Midland &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 130790.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 239950.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8346204 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Irving &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 125741.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 202900.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6136258 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Fort Bend &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 170016.7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 272400.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6021959 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; San Angelo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 98775.0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 156728.6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5867231 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.h1[# `ggalt` + `ggtext`]
+
+.tiny[
+
+```r
+txhousing %&gt;% 
+  filter((year == 2006 | year == 2015) &amp; 
+           !(city %in% c("South Padre Island", "Kerrville"))) %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE)) %&gt;% 
+  pivot_wider(names_from = year, values_from = median) %&gt;% 
+* mutate(color = ifelse(city %in% c("Midland","Odessa"), "#bb0000", "black"),
+*        name = ifelse(city %in% c("Midland","Odessa"),
+*                      glue("&lt;b style='color:{color}'&gt;{city}&lt;/b&gt;"), city)) %&gt;%
+  ggplot(aes(x = `2006`, xend = `2015`, y = reorder(name, `2015`), group = city)) +
+  geom_dumbbell(size = 1.5, color = "#d4d4d4", 
+                colour_x = "#BA95DB", colour_xend = "#693498",
+                dot_guide = TRUE, dot_guide_size = 0.25) +
+  scale_x_continuous(labels = dollar) +
+  labs(title = "Median listing price increases from 2006 to 2015",
+*      subtitle = "Midland &amp; Odessa saw the largest increase over this time") +
+  theme_linedraw() +
+  theme(axis.ticks = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.title = element_blank(),
+*       axis.text.y = element_markdown(),
+        plot.subtitle = element_text(margin = margin(-5, 0, 5, 0)))
+```
+]
+
+---
+
+# `ggalt` + `ggtext`
+
+&lt;img src="figs/Lec10/dumbbell-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Bullet graph
+
+&lt;br&gt;
+&lt;br&gt;
+.large[Useful for showing progress toward a goal]
+&lt;br&gt;
+.medium[using bars of varying widths]
+&lt;br&gt;
+.medium[can also show performance compared to a baseline]
+&lt;br&gt;
+.medium[or even a change over time, as appropriate]
+&lt;br&gt;
+&lt;br&gt;
+--
+&lt;br&gt;
+.large[No easy package solution, so time for DIY]
+&lt;br&gt;
+.medium[using `geom_col`]
+&lt;br&gt;
+
+---
+
+# Bullet graph
+
+**did SUV manufacturers improve on their highway mpg from 1999 to 2008?**
+
+
+```r
+mpg %&gt;% 
+  filter(class == "suv") %&gt;% 
+  group_by(manufacturer, year) %&gt;% 
+  summarize(mean = mean(hwy))
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chevrolet &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.33333 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chevrolet &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.50000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.33333 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bullet graph
+
+**did SUV manufacturers improve on their highway mpg from 1999 to 2008?**
+
+
+```r
+*mpg_bullet &lt;- mpg %&gt;%
+  filter(class == "suv") %&gt;% 
+  group_by(manufacturer, year) %&gt;% 
+  summarize(mean = mean(hwy)) %&gt;% 
+* mutate(year = as.character(year),
+*        width = ifelse(year == "1999", 0.9, 0.5))
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; width &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chevrolet &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.33333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chevrolet &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.50000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.33333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bullet graph
+
+
+```r
+mpg_bullet %&gt;% 
+* mutate(manufacturer = str_to_title(manufacturer)) %&gt;%
+* ggplot(aes(x = mean, y = manufacturer, fill = year)) +
+* geom_col(width = mpg_bullet$width) +
+  scale_fill_manual(values = c("grey", "#098641"), name = NULL) +
+  scale_alpha_manual(values = c(0.3, 1),
+                     guide = FALSE)
+```
+
+---
+
+# Bullet graph
+
+&lt;img src="figs/Lec10/bullet-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bullet graph
+
+**changes to make?**
+
+- remove x-axis title and adjust y-axis title
+- clean up background, lines, etc.
+- add a good title
+- find a way to take care of the legend
+- take the bars all the way to the axis
+- reorder bars in a meaningful way
+
+---
+
+.h1[# Bullet graph]
+
+.tiny[
+
+```r
+mpg_bullet %&gt;% 
+  mutate(manufacturer = str_to_title(manufacturer)) %&gt;% 
+  ggplot(aes(x = mean, y = manufacturer, fill = year)) +
+  geom_col(width = mpg_bullet$width) +
+  scale_fill_manual(values = c("grey", "#098641"), name = NULL) +
+  scale_alpha_manual(values = c(0.3, 1),
+                     guide = FALSE) +
+* scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(subtitle = "Jeep only manufacturer to show negative change",
+       title = "The highway mpg among SUVs, by manufacturer, in &lt;span style = 'color:#7e7e7e;'&gt;**1999**&lt;/span&gt; and &lt;span style = 'color:#098641;'&gt;**2008**&lt;/span&gt;",
+       x = "Highway miles per gallon") +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+*       plot.title = element_markdown(),
+        axis.ticks = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none")
+```
+]
+
+---
+
+# Bullet graph
+
+&lt;img src="figs/Lec10/bullet-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bullet graph
+
+**changes to make?**
+
+- remove x-axis title and adjust y-axis title
+- clean up background, lines, etc.
+- add a good title
+- find a way to take care of the legend
+- take the bars all the way to the axis
+- **reorder bars in a meaningful way**
+
+---
+
+# Bullet graph
+
+**to reorder the bars**
+
+
+```r
+mpg_bullet %&gt;% 
+  group_by(manufacturer) %&gt;% 
+  mutate(max = max(mean)) 
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; manufacturer &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; mean &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; width &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; max &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chevrolet &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.33333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.50000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chevrolet &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.50000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.50000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dodge &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2008 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.00000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ford &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 1999 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17.33333 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18.66667 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.h1[# Bullet graph]
+
+.tiny[
+
+```r
+mpg_bullet %&gt;% 
+  mutate(manufacturer = str_to_title(manufacturer)) %&gt;% 
+  group_by(manufacturer) %&gt;% 
+  mutate(max = max(mean)) %&gt;% 
+* ggplot(aes(x = mean, y = reorder(manufacturer, max), fill = year)) +
+  geom_col(width = mpg_bullet$width) +
+  scale_fill_manual(values = c("grey", "#098641"), name = NULL) +
+  scale_alpha_manual(values = c(0.3, 1),
+                     guide = FALSE) +
+* scale_x_continuous(expand = expansion(mult = c(0, 0.1))) +
+  labs(subtitle = "Jeep only manufacturer to show negative change",
+       title = "The highway mpg among SUVs, by manufacturer, in &lt;span style = 'color:#7e7e7e;'&gt;**1999**&lt;/span&gt; and &lt;span style = 'color:#098641;'&gt;**2008**&lt;/span&gt;",
+       x = "Highway miles per gallon") +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+*       plot.title = element_markdown(),
+        axis.ticks = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none")
+```
+]
+
+---
+
+# Bullet graph
+
+&lt;img src="figs/Lec10/bullet-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lecture 11 on Wednesday June 16 **midterm review**]
+
+&lt;br&gt;
+
+.large[Homework 3 due Tuesday June 15]
+
+&lt;br&gt;
+
+.large[Lab 7 on Tuesday June 15]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

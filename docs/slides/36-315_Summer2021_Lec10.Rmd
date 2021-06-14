@@ -1,0 +1,1711 @@
+---
+title: "36-315-Lec10"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+#      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(tidyverse)
+library(showtext)
+library(scales)
+library(palmerpenguins)
+library(ggridges)
+library(ggtext)
+library(lubridate)
+library(friends)
+library(ggrepel)
+library(ggforce)
+library(ggwaffle)
+library(ggExtra)
+library(gghighlight)
+library(glue)
+library(ggalt)
+library(cowplot)
+library(corrplot)
+library(RColorBrewer)
+
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec10/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+recessions <- list(interval(ymd("1969-12-01"), ymd("1970-11-01")),
+                   interval(ymd("1973-11-01"), ymd("1975-03-01")),
+                   interval(ymd("1980-01-01"), ymd("1980-07-01")), 
+                   interval(ymd("1981-07-01"), ymd("1982-11-01")),
+                   interval(ymd("1990-07-01"), ymd("1991-03-01")),
+                   interval(ymd("2001-03-01"), ymd("2001-11-01")),
+                   interval(ymd("2007-12-01"), ymd("2009-06-01")))
+
+economics <- economics %>% 
+  mutate(recession = ifelse(date %within% recessions, "recession", "not a recession"))
+
+constructor_pts <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/constructor_pts.csv')
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 10
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 14, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# From last time
+
+<br>
+
+.large[More details]
+<br>
+.medium[colors, fonts, annotations]
+
+<br>
+
+.large[Putting it all together with themes]
+<br>
+.medium[built-in, external options, custom]
+
+---
+
+# Schedule going forward
+
+.large[Lab 7 tomorrow]
+<br>
+.medium[HW 3 due too]
+
+<br>
+
+.large[Midterm review lecture on Wednesday]
+
+<br>
+
+.large[Midterm on Thursday]
+<br>
+.medium[no lab on Thursday *or* lecture on Friday]
+
+<br>
+
+.large[HW 4 due *next* Tuesday]
+
+---
+
+# Tips on debugging code
+
+<br>
+
+.large[Always code iteratively]
+<br>
+.medium[build graphs piece by piece]
+
+--
+
+<br>
+
+.large[Debug that way too]
+<br>
+.medium[get down to the minimum chunk that works]
+
+---
+
+# Today
+
+<br>
+
+.large[Extensions to `ggplot2`]
+<br>
+.medium[in addition to the ones we've already covered]
+
+<br>
+
+.large[New plot types *and* new techniques for details]
+
+---
+
+# Already covered
+
+<br>
+<br>
+.large[`ggridges`]
+<br>
+.medium[building ridgeline plots]
+<br>
+.medium[viewing/comparing distributions]
+<br>
+<br>
+--
+<br>
+.large[`ggbeeswarm`]
+<br>
+.medium[beeswarm plots to visualize distributions]
+<br>
+.medium["smart" jittering]
+<br>
+<br>
+--
+<br>
+.large[For details]
+<br>
+.medium[`ggtext`, `ggrepel`, `scico`]
+<br>
+.medium[`ggthemes`, `ggdark`, `hrbrthemes`]
+
+---
+
+# `ggforce`
+
+<br>
+<br>
+.large["Accelerating `ggplot2`"]
+<br>
+.medium[[ggforce.data-imaginist.com](https://ggforce.data-imaginist.com/reference/index.html)]
+<br>
+<br>
+--
+<br>
+.large[`geom_sina`]
+<br>
+.medium[keeps jittered points restricted within the violin]
+<br>
+<br>
+
+---
+
+# `ggforce`
+
+```{r force-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+txhousing %>% 
+  filter(year >= 2010) %>% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  geom_jitter(alpha = .25, width = .3, size = 0.5, color = "#bb0000") +
+  scale_y_continuous(labels = dollar, breaks = seq(100000, 300000, 50000)) +
+  labs(title = "The distribution of median home prices by city in Texas") +
+#  geom_sina(alpha = 0.25, width = .3, size = 0.5, color = "#bb0000") +
+  theme(axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_text(size = 10, face = 2),
+        plot.title.position = "plot")
+```
+
+---
+
+.h1[# `ggforce`]
+
+.tiny[
+```{r force-2, eval = FALSE}
+txhousing %>% 
+  filter(year >= 2010) %>% 
+  ggplot(aes(x = as.character(year), y = median)) +
+  geom_violin(draw_quantiles = c(0.25, 0.5, 0.75)) +
+  # replace this
+  # geom_jitter(alpha = .25, width = .3, size = 0.5, color = "#bb0000") +
+  scale_y_continuous(labels = dollar, breaks = seq(100000, 300000, 50000)) +
+  labs(title = "The distribution of median home prices by city in Texas") +
+  # with this
+  geom_sina(alpha = 0.25, width = .3, size = 0.5, color = "#bb0000") + #<<
+  theme(axis.title = element_blank(),
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        axis.text = element_text(size = 10, face = 2),
+        plot.title.position = "plot")
+```
+]
+
+---
+
+# `ggforce`
+
+```{r force-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# `ggforce`
+
+<br>
+<br>
+.large["Accelerating `ggplot2`"]
+<br>
+.medium[[ggforce.data-imaginist.com](https://ggforce.data-imaginist.com/reference/index.html)]
+<br>
+<br>
+<br>
+.large[`geom_sina`]
+<br>
+.medium[keeps jittered points restricted within the violin]
+<br>
+<br>
+<br>
+.large[`geom_mark_circle` (and related `geom`s)]
+<br>
+.medium[circle and label points within a group]
+<br>
+<br>
+
+---
+
+# `ggforce`
+
+```{r force-3, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  filter(species != "Chinstrap") %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5) +
+  scale_color_brewer(palette = "Set2", guide = "none") + #<<
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       title = "Chinstrap penguins tend to have longer flippers and longer bills",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = "top",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"))
+```
+
+---
+
+.h1[# `ggforce`]
+
+.tiny[
+```{r force-4, eval = FALSE}
+penguins %>% 
+  filter(!is.na(body_mass_g) & !is.na(flipper_length_mm) & 
+           species != "Chinstrap") %>% 
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm)) +
+  geom_mark_circle(aes(fill = species, label = species)) + #<<
+  geom_point() +
+  scale_x_continuous(limits = c(2240, 6500)) +
+  scale_y_continuous(limits = c(160, 250)) +
+  labs(y = "Flipper Length (mm)",
+       x = "Body Mass (g)",
+       title = "Gentoo penguins tend to be heavier and have longer flippers",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"))
+```
+]
+
+---
+
+# `ggforce`
+
+```{r force-4, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# `ggwaffle`
+
+<br>
+<br>
+.large[For waffle charts]
+<br>
+.medium[[https://liamgilbey.github.io/ggwaffle/](https://liamgilbey.github.io/ggwaffle/)]
+<br>
+<br>
+<br>
+.large[Another option for showing parts of a whole]
+<br>
+.medium[when overall *n* and # of categories is small]
+<br>
+<br>
+<br>
+.large[`waffle_iron` to get data prepped]
+<br>
+<br>
+<br>
+.large[`geom_waffle` and `theme_waffle` to make the plot]
+
+
+---
+
+# `ggwaffle`
+
+```{r waffle-1}
+penguins$species <- 
+  as.character(penguins$species)
+
+penguin_waffle <- 
+  waffle_iron(penguins, aes_d(group = species))
+```
+
+```{r waffle-2, echo = FALSE}
+penguin_waffle %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+.h1[# `ggwaffle`]
+
+.tiny[
+```{r waffle-3, fig.align = "center", out.width = "6in"}
+penguin_waffle %>% 
+  ggplot(aes(x, y, fill = group)) + 
+  geom_waffle() +  
+  coord_equal() + 
+  theme_waffle() +
+  scale_fill_brewer(type = "qual") +
+  theme(legend.position = "bottom",
+        axis.title.x = element_blank(),
+        axis.title.y = element_blank(),
+        legend.title = element_blank())
+```
+]
+
+---
+
+# `ggwaffle`
+
+```{r waffle-3, echo = FALSE, fig.align = "center", out.height = "50%"}
+```
+
+---
+
+# `ggExtra`
+
+<br>
+<br>
+.large[For adding marginal distributions]
+<br>
+.medium[[https://cran.r-project.org/web/packages/ggExtra/vignettes/ggExtra.html](https://cran.r-project.org/web/packages/ggExtra/vignettes/ggExtra.html)]
+<br>
+.medium[helpful to add context to a scatter plot, especially if *n* is high]
+<br>
+<br>
+<br>
+.large[`ggMarginal`]
+<br>
+.medium[defaults to a very plain density curve]
+<br>
+.medium[add `groupFill = TRUE` to color by group to match plot]
+<br>
+.medium[add `type = "histogram"` to show a density plot instead]
+<br>
+.medium[same alpha/size/color aesthetics apply]
+
+---
+
+# `ggExtra`
+
+```{r extra-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5, size = 3) +
+  scale_color_brewer(palette = "Set2", name = NULL) + 
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = c(0.2, 0.8),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"),
+        legend.background = element_rect(fill = "transparent"),
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+```
+
+---
+
+.h1[# `ggExtra`]
+
+.tiny[
+```{r extra-2, eval = FALSE}
+plot <- penguins %>% #<<
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5, size = 3) +
+  scale_color_brewer(palette = "Set2", name = NULL) + 
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = c(0.2, 0.8),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"),
+        legend.background = element_rect(fill = "transparent"),
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+
+ggMarginal(plot, groupFill = TRUE) #<<
+```
+]
+
+---
+
+# `ggExtra`
+
+```{r extra-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+.h1[# `ggExtra`]
+
+.tiny[
+```{r extra-3, fig.align = "center", out.width = "6in"}
+plot <- penguins %>% #<<
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, color = species)) +
+  geom_point(alpha = 0.5, size = 3) +
+  scale_color_brewer(palette = "Set2", name = NULL) + 
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       caption = "Data from the palmerpenguins package") +
+  theme(legend.position = c(0.2, 0.8),
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"),
+        legend.background = element_rect(fill = "transparent"),
+        plot.caption.position = "plot",
+        plot.caption = element_text(hjust = 0, face = "italic"))
+
+ggMarginal(plot, type = "histogram", alpha = 0.5) #<<
+```
+]
+
+---
+
+# `ggExtra`
+
+```{r extra-3, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# `ggtext`
+
+<br>
+<br>
+.large[For any kind of text manipulation]
+<br>
+.medium[[https://github.com/wilkelab/ggtext](https://github.com/wilkelab/ggtext)]
+<br>
+.medium[using simple HTML]
+<br>
+<br>
+<br>
+--
+.large[Already saw an example to color the title to match groups]
+<br>
+.medium[another option to get rid of legends]
+<br>
+.medium[just add `element_markdown()` in the `theme` layer for that element]
+
+---
+
+# `ggtext`
+
+```{r text-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+economics %>% 
+  ggplot(aes(x = date, y = unemploy, color = recession, group = 1)) + 
+  geom_line(size = 1) +
+  scale_color_manual(values = c("dark grey","#bb0000")) +
+  labs(y = "Unemployed (in thousands)",
+       x = NULL,
+       title = "The number of unemployed people tends to increase during a <span style = 'color:#bb0000;'>**recession**</span>") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        plot.title = element_markdown(),
+        plot.title.position = "plot",
+        legend.position = "none")
+```
+
+---
+
+# `ggtext`
+
+<br>
+<br>
+.large[For any kind of text manipulation]
+<br>
+.medium[[https://github.com/wilkelab/ggtext](https://github.com/wilkelab/ggtext)]
+<br>
+.medium[using simple HTML]
+<br>
+<br>
+<br>
+.large[Already saw an example to color the title to match groups]
+<br>
+.medium[another option to get rid of legends]
+<br>
+.medium[just add `element_markdown()` in the `theme` layer for that element]
+<br>
+<br>
+<br>
+.large[Also useful for text boxes]
+
+---
+
+.h1[# `ggtext`]
+
+.tiny[
+```{r text-2, eval = FALSE}
+economics %>% 
+  ggplot(aes(x = date, y = unemploy, color = recession, group = 1)) + 
+  geom_line(size = 1) +
+  scale_color_manual(values = c("dark grey","#bb0000")) +
+  labs(y = "Unemployed (in thousands)",
+       x = NULL,
+       title = "The number of unemployed people tends to increase during a <span style = 'color:#bb0000;'>**recession**</span>") +
+  theme(panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        # plot.title = element_markdown(), #no longer need this line
+        plot.title.position = "plot",
+        legend.position = "none",
+        plot.title = element_textbox_simple(size = 13, lineheight = 1, #<<
+                                            padding = margin(5.5, 5.5, 5.5, 5.5), #<<
+                                            margin = margin(0, 0, 5.5, 0), #<<
+                                            fill = "#d4d4d4", r = grid::unit(8, "pt"))) #<<
+```
+]
+
+---
+
+# `ggtext`
+
+```{r text-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# `ggtext`
+
+```{r text-3, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                    aes(fill = "all penguins"), color = "transparent") +
+  geom_density_line(aes(fill = "species"), color = "transparent") +
+  facet_wrap(~species, nrow = 1) +
+  scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+                    guide = guide_legend(direction = "horizontal")) +
+  labs(x = "Body Mass (g)",
+       title = "Comparing the distribution of body mass by penguin species",
+       subtitle = "Gentoo penguins tend to be the heaviest") +
+  theme(legend.position = "bottom",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        strip.text = element_text(face = "bold", color = "white"),
+        strip.background = element_rect(fill = "#0C8346"),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        plot.title.position = "plot")
+```
+
+---
+
+.h1[# `ggtext`]
+
+.tiny[
+```{r text-4, eval = FALSE}
+penguins %>% 
+  ggplot(aes(x = body_mass_g, y = ..count..)) +
+  geom_density_line(data = select(penguins, -species), 
+                    aes(fill = "all penguins"), color = "transparent") +
+  geom_density_line(aes(fill = "species"), color = "transparent") +
+  facet_wrap(~species, nrow = 1) +
+  scale_fill_manual(values = c("grey","#0C8346"), name = NULL,
+                    guide = guide_legend(direction = "horizontal")) +
+  labs(x = "Body Mass (g)",
+       title = "Comparing the distribution of body mass by penguin species",
+       subtitle = "Gentoo penguins tend to be the heaviest") +
+  theme(legend.position = "bottom",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.3),
+        strip.background = element_blank(),
+        strip.text = element_textbox( #<<
+          size = 11, #<<
+          color = "white", fill = "#0C8346", box.color = "#4A618C", #<<
+          halign = 0.5, linetype = 1, r = unit(5, "pt"), width = unit(1, "npc"), #<<
+          padding = margin(2, 0, 1, 0), margin = margin(3, 3, 3, 3)), #<<
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5),
+        axis.ticks = element_blank(),
+        plot.title.position = "plot")
+```
+]
+
+---
+
+# `ggtext`
+
+```{r text-4, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# `gghighlight`
+
+<br>
+<br>
+.large[Very useful for highlighting certain groups & applying aesthetics]
+<br>
+.medium[[https://cran.r-project.org/web/packages/gghighlight/vignettes/gghighlight.html](https://cran.r-project.org/web/packages/gghighlight/vignettes/gghighlight.html)]
+<br>
+.medium[to avoid spaghetti graphs]
+<br>
+<br>
+--
+<br>
+.large[Easy to highlight/label based on specific values]
+<br>
+.medium[or a specific number (e.g., top 5)]
+<br>
+.medium[can control aesthetics of unhighlighted categories]
+<br>
+
+---
+
+# `gghighlight`
+
+```{r highlight-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  ggplot(aes(x = round, y = points, color = name, group = name)) + 
+  geom_line() +
+  gghighlight(max(points) > 180 & max(points) < 250, #<<
+              label_params = list(size = 4.5)) + #<<
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  labs(title = "The race for third place during the 2020 F1 season",
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+
+---
+
+.h1[# `gghighlight`]
+
+.tiny[
+```{r highlight-1, eval = FALSE}
+```
+]
+
+---
+
+.h1[# `gghighlight`]
+
+.tiny[
+```{r highlight-2, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  ggplot(aes(x = round, y = points, color = name, group = name)) + 
+  geom_line() +
+  gghighlight(max(points), max_highlight = 5L) + #<<
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(title = "The race for third place during the 2020 F1 season",
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# `gghighlight`
+
+```{r highlight-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+.h1[# `gghighlight`]
+
+.tiny[
+```{r highlight-3, eval = FALSE}
+constructor_pts %>% 
+  filter(year == 2020) %>% 
+  ggplot(aes(x = round, y = points, color = name, group = name)) + 
+  geom_line() +
+  gghighlight(max(points) > 180 & max(points) < 250, #<<
+              unhighlighted_params = list(linetype = "dotted", alpha = 0.8)) + #<<
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  labs(title = "The race for third place during the 2020 F1 season",
+       subtitle = "While Mercedes and Red Bull ran off with the first two placings, three teams battled all year long for third place",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none",
+        panel.background = element_blank(),
+        panel.grid.major.y = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_blank(),
+        panel.border = element_rect(color = "black", fill = NA, size = 0.5))
+```
+]
+
+---
+
+# `gghighlight`
+
+```{r highlight-3, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# `cowplot`
+
+<br>
+<br>
+.large[Useful functions for manipulating graphs]
+<br>
+.medium[[https://wilkelab.org/cowplot/articles/introduction.html](https://wilkelab.org/cowplot/articles/introduction.html)]
+<br>
+.medium[adding images to plots, arranging plots]
+<br>
+.medium[adding joint titles and joint legends]
+<br>
+<br>
+<br>
+.large[Also includes themes]
+
+---
+
+# `cowplot`
+
+```{r cowplot-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+penguins %>% 
+  filter(species != "Gentoo") %>% 
+  mutate(label = case_when(flipper_length_mm == 192 & 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 & 
+                             body_mass_g == 4650 ~ "Adelie")) %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(0.1, 7), breaks = c(35, 40, 45, 50, 55), 
+             name = "Bill Length (mm)") +
+  geom_label_repel(aes(x = flipper_length_mm, y = body_mass_g,
+                       color = species, label = label),
+                   inherit.aes = FALSE) +
+  scale_color_brewer(palette = "Set2", guide = "none") +
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       title = "Chinstrap penguins tend to have longer flippers and longer bills") +
+  theme(legend.position = "top",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"))
+```
+
+---
+
+.h1[# `cowplot`]
+
+.medium[**adding an image to a plot**]
+
+.tiny[
+```{r cowplot-2, eval = FALSE}
+p <- penguins %>% #<<
+  filter(species != "Gentoo") %>% 
+  mutate(label = case_when(flipper_length_mm == 192 & 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 & 
+                             body_mass_g == 4650 ~ "Adelie")) %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  ...
+
+ggdraw() + #<<  
+  draw_plot(p) + #<<
+  draw_image("https://allisonhorst.github.io/palmerpenguins/reference/figures/palmerpenguins.png", #<<
+             x = 1, y = 0.35, hjust = 1, vjust = 1, halign = 1, valign = 1, width = 0.15) #<<
+```
+]
+
+---
+
+# `cowplot`
+
+```{r cowplot-full, echo = FALSE, fig.align = "center", fig.height = 6.75}
+p <- penguins %>% #<<
+  filter(species != "Gentoo") %>% 
+  mutate(label = case_when(flipper_length_mm == 192 & 
+                             body_mass_g == 2700 ~ "Chinstrap",
+                           flipper_length_mm == 184 & 
+                             body_mass_g == 4650 ~ "Adelie")) %>% 
+  ggplot(aes(x = flipper_length_mm, y = body_mass_g, 
+             size = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.5) +
+  scale_size(range = c(0.1, 7), breaks = c(35, 40, 45, 50, 55), 
+             name = "Bill Length (mm)") +
+  geom_label_repel(aes(x = flipper_length_mm, y = body_mass_g,
+                       color = species, label = label),
+                   inherit.aes = FALSE) +
+  scale_color_brewer(palette = "Set2", guide = "none") +
+  labs(x = "Flipper Length (mm)",
+       y = "Body Mass (g)",
+       title = "Chinstrap penguins tend to have longer flippers and longer bills") +
+  theme(legend.position = "top",
+        panel.background = element_blank(),
+        panel.grid.major = element_line(color = "grey90", size = 0.2),
+        axis.ticks = element_line(color = "grey90", size = 0.2),
+        legend.key = element_rect(fill = "transparent"))
+
+ggdraw() + #<<  
+  draw_plot(p) + #<<
+  draw_image("https://allisonhorst.github.io/palmerpenguins/reference/figures/palmerpenguins.png", #<<
+             x = 1, y = 0.35, hjust = 1, vjust = 1, halign = 1, valign = 1, width = 0.15) #<<
+```
+
+---
+
+# `cowplot`
+
+`scatter`
+
+```{r cowplot-3, echo = FALSE, fig.align = "center", fig.height = 6}
+penguins %>% 
+  filter(species != "Chinstrap") %>% 
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = species)) + 
+  geom_point() +
+  scale_color_brewer(palette = "Set2", name = NULL) +
+  guides(color = guide_legend(override.aes = list(size = 5))) +
+  labs(x = "Bill Depth (mm)",
+       y = "Bill Length (mm)") +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        legend.position = c(0.13, 0.2))
+```
+
+---
+
+# `cowplot`
+
+`bar`
+
+```{r cowplot-4, echo = FALSE, fig.align = "center", fig.height = 6}
+penguins %>% 
+  filter(species != "Chinstrap") %>% 
+  group_by(species) %>% 
+  summarize(mean_body_mass = mean(body_mass_g, na.rm = TRUE)) %>% 
+  ggplot(aes(x = species, y = mean_body_mass, fill = species)) +
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette = "Set2", guide = "none") +
+  labs(y = "Mean Body Mass (g)",
+       x = NULL) +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank())
+```
+
+---
+
+# `cowplot`
+
+```{r eval, echo = FALSE}
+scatter <- penguins %>% 
+  filter(species != "Chinstrap") %>% 
+  ggplot(aes(x = bill_depth_mm, y = bill_length_mm, color = species)) + 
+  geom_point() +
+  scale_color_brewer(palette = "Set2", name = NULL) +
+  guides(color = guide_legend(override.aes = list(size = 5))) +
+  labs(x = "Bill Depth (mm)",
+       y = "Bill Length (mm)") +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        axis.ticks = element_blank(),
+        legend.background = element_rect(fill = "transparent"),
+        legend.position = c(0.13, 0.2),
+        legend.text = element_text(size = 11))
+
+bar <- penguins %>% 
+  filter(species != "Chinstrap") %>% 
+  group_by(species) %>% 
+  summarize(mean_body_mass = mean(body_mass_g, na.rm = TRUE)) %>% 
+  ggplot(aes(x = species, y = mean_body_mass, fill = species)) +
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(palette = "Set2", guide = "none") +
+  labs(y = "Mean Body Mass (g)",
+       x = NULL) +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.x = element_blank(),
+        axis.ticks = element_blank(),
+        axis.text.x = element_blank())
+```
+
+**creating an inset plot**
+
+```{r cowplot-5, eval = FALSE}
+ggdraw(scatter) +
+  draw_plot(bar, x = .55, y = .55, width = .4, height = .4) +
+  draw_plot_label(c("A.", "B."), x = c(0, 0.45),
+                  y = c(0.95, 0.95), size = 12)
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-5, echo = FALSE, fig.align = "center", fig.height = 6}
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-6, fig.align = "center", fig.height = 5.5, fig.width = 10}
+plot_grid(scatter, bar, labels = c("A.", "B."), label_size = 12)
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-7, fig.align = "center", fig.height = 5.5, fig.width = 10}
+plot_grid(scatter, bar, labels = c("A.", "B."), label_size = 12, 
+          align = "h")
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-8, fig.align = "center", fig.height = 5.5, fig.width = 10}
+plot_grid(scatter, bar, labels = c("A.", "B."), label_size = 12, 
+          align = "h", rel_widths = c(2, 1))
+```
+
+---
+
+# `cowplot`
+
+**sharing titles among plots**
+
+```{r cowplot-9, eval = FALSE}
+plots <- plot_grid(scatter, bar, labels = c("A.", "B."), 
+                   label_size = 12, align = "h")
+
+title <- ggdraw() + 
+  draw_label("Gentoo penguins tend to be heavier, with longer and shallower bills",
+    fontface = 'bold',
+    x = 0,
+    hjust = 0) +
+  theme(plot.margin = margin(0, 0, 0, 5))
+
+plot_grid(title, plots, ncol = 1,
+          # necessary so that the title is small
+          rel_heights = c(0.1, 1)) 
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-9, echo = FALSE, fig.align = "center", fig.height = 6.5, fig.width = 12}
+```
+
+---
+
+# `cowplot`
+
+**sharing legends among plots**
+
+```{r cowplot-10, eval = FALSE}
+plots_shared_legend <- 
+  plot_grid(scatter + 
+              theme(legend.position="none"),
+            bar,
+            labels = c("A.", "B."), label_size = 12, align = "h")
+
+legend <- 
+  get_legend(scatter + 
+               theme(legend.position = "top"))
+
+plot_grid(title, legend, plots_shared_legend, 
+          ncol = 1, rel_heights = c(.1, .05, 1))
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-10, echo = FALSE, fig.align = "center", fig.height = 6.5, fig.width = 12}
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-11, echo = FALSE, fig.align = "center", fig.height = 6.75}
+ugly <- constructor_pts %>% 
+  filter(year == 2020) %>% 
+  mutate(third = ifelse(name %in% 
+                          c("McLaren","Renault","Racing Point"), name, "z"),
+         label = if_else(round == max(round) & 
+                           third != "z", name, NA_character_)) %>% 
+  ggplot(aes(x = round, y = points, color = third, group = name, 
+             size = third, alpha = third)) + 
+  geom_line() +
+  geom_label_repel(aes(label = label), size = 4) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  scale_color_manual(values = c("#E0610E","#F596C8",
+                                "#FFF500","dark grey")) +
+  scale_size_manual(values = c(1.5, 1.5, 1.5, 0.75)) +
+  scale_alpha_manual(values = c(1, 1, 1, 0.3)) +
+  labs(title = "The race for third place during the 2020 season",
+       x = "Race Round",
+       y = "Accumulated Points") +
+  theme(legend.position = "none")
+
+stamp_ugly(ugly, vjust = 3)
+```
+
+---
+
+# `cowplot`
+
+```{r cowplot-12, echo = FALSE, fig.align = "center", fig.height = 6.75}
+stamp(ugly, color = "red", label = "needs work", vjust = 3)
+```
+
+---
+
+# `corrplot`
+
+<br>
+<br>
+.large[Easy way to create a correlation matrix]
+<br>
+.medium[[https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html](https://cran.r-project.org/web/packages/corrplot/vignettes/corrplot-intro.html)]
+<br>
+.medium[aka a correlogram]
+<br>
+<br>
+<br>
+.large[Most useful when you represent correlations as color as well as size]
+<br>
+.medium[but always examine the raw data as well]
+
+---
+
+# `corrplot`
+
+```{r corr-1, eval = FALSE}
+corr <- 
+  cor(penguins %>% 
+        select(`Bill Length` = bill_length_mm,
+               `Bill Depth` = bill_depth_mm,
+               `Flipper Length` = flipper_length_mm,
+               `Body Mass` = body_mass_g) %>% 
+        drop_na())
+
+corrplot(corr, method = "circle")
+```
+
+---
+
+# `corrplot`
+
+```{r corr-1, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# `corrplot`
+
+```{r corr-2, eval = FALSE}
+corrplot(corr, method = "number")
+```
+
+---
+
+# `corrplot`
+
+```{r corr-2, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# `corrplot`
+
+```{r corr-3, eval = FALSE}
+corrplot(corr, method = "color")
+```
+
+---
+
+# `corrplot`
+
+```{r corr-3, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# `corrplot`
+
+```{r corr-4, eval = FALSE}
+diag(corr) = NA # changes diagonal corrleations to NA
+
+corrplot(corr, type = "lower", tl.srt = 45, # controls angle of text
+         # controls color palette
+         col = brewer.pal(n = 8, name = "RdGy"), 
+         # gets rid of background grid
+         addgrid.col = NA, 
+         # controls text color
+         tl.col = "black", 
+         # controls label of NA values
+         na.label = "x") 
+```
+
+---
+
+# `corrplot`
+
+```{r corr-4, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# `ggalt`
+
+<br>
+<br>
+.large[Very easy to make a dumbbell plot]
+<br>
+.medium[[https://github.com/hrbrmstr/ggalt](https://github.com/hrbrmstr/ggalt)]
+<br>
+.medium[various miscellaneous functions]
+<br>
+<br>
+--
+<br>
+.large[Dumbbell plots]
+<br>
+.medium[great way to show specific change over two points in time]
+<br>
+.medium[encoded by position, so axis doesn't have to start at zero]
+<br>
+.medium[can handle many categories as bars are narrow (similar to lollipop)]
+<br>
+
+---
+
+# `ggalt`
+
+**What's the increase in median listing price, by city, from 2006 to 2015?**
+
+```{r practice-1, echo = FALSE}
+txhousing %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# `ggalt`
+
+**What's the increase in median listing price, by city, from 2006 to 2015?**
+
+```{r practice-2, eval = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & 
+           !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE))
+```
+
+--
+
+```{r practice-3, echo = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# `ggalt`
+
+**What's the increase in median listing price, by city, from 2006 to 2015?**
+
+```{r practice-4, eval = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & 
+           !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>%
+  pivot_wider(names_from = year, values_from = median)
+```
+
+--
+
+```{r practice-5, echo = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>%
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# `ggalt`
+
+```{r dumbbell-1, echo = FALSE, fig.align = "center", fig.height = 6.75}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & 
+           !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  ggplot(aes(x = `2006`, xend = `2015`, y = reorder(city, `2015`), group = city)) + #<<
+  geom_dumbbell(size = 1.5, color = "#d4d4d4", #<<
+                colour_x = "#BA95DB", colour_xend = "#693498", #<<
+                dot_guide = TRUE, dot_guide_size = 0.25) + #<<
+  scale_x_continuous(labels = dollar) +
+  labs(title = "Median listing price increases from 2006 to 2015") +
+  theme_linedraw() +
+  theme(axis.ticks = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.title = element_blank())
+```
+
+---
+
+.h1[# `ggalt`]
+
+.tiny[
+```{r dumbbell-1, eval = FALSE}
+```
+]
+
+---
+
+# `ggalt`
+
+**which cities saw the greatest increase in this time?**
+
+```{r practice-6, eval = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & 
+           !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median)
+```
+
+```{r practice-7, echo = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# `ggalt`
+
+**which cities saw the greatest increase in this time?**
+
+```{r practice-8, eval = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & 
+           !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  mutate(change = (`2015` - `2006`) / `2006`) %>% #<<
+  arrange(desc(change)) #<<
+```
+
+```{r practice-9, echo = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  mutate(change = (`2015` - `2006`) / `2006`) %>% 
+  arrange(desc(change)) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+.h1[# `ggalt` + `ggtext`]
+
+.tiny[
+```{r dumbbell-2, eval = FALSE}
+txhousing %>% 
+  filter((year == 2006 | year == 2015) & 
+           !(city %in% c("South Padre Island", "Kerrville"))) %>% 
+  group_by(city, year) %>% 
+  summarize(median = mean(median, na.rm = TRUE)) %>% 
+  pivot_wider(names_from = year, values_from = median) %>% 
+  mutate(color = ifelse(city %in% c("Midland","Odessa"), "#bb0000", "black"), #<<
+         name = ifelse(city %in% c("Midland","Odessa"), #<<
+                       glue("<b style='color:{color}'>{city}</b>"), city)) %>% #<<
+  ggplot(aes(x = `2006`, xend = `2015`, y = reorder(name, `2015`), group = city)) +
+  geom_dumbbell(size = 1.5, color = "#d4d4d4", 
+                colour_x = "#BA95DB", colour_xend = "#693498",
+                dot_guide = TRUE, dot_guide_size = 0.25) +
+  scale_x_continuous(labels = dollar) +
+  labs(title = "Median listing price increases from 2006 to 2015",
+       subtitle = "Midland & Odessa saw the largest increase over this time") + #<<
+  theme_linedraw() +
+  theme(axis.ticks = element_blank(),
+        panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        axis.title = element_blank(),
+        axis.text.y = element_markdown(), #<<
+        plot.subtitle = element_text(margin = margin(-5, 0, 5, 0)))
+```
+]
+
+---
+
+# `ggalt` + `ggtext`
+
+```{r dumbbell-2, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+]
+
+---
+
+# Bullet graph
+
+<br>
+<br>
+.large[Useful for showing progress toward a goal]
+<br>
+.medium[using bars of varying widths]
+<br>
+.medium[can also show performance compared to a baseline]
+<br>
+.medium[or even a change over time, as appropriate]
+<br>
+<br>
+--
+<br>
+.large[No easy package solution, so time for DIY]
+<br>
+.medium[using `geom_col`]
+<br>
+
+---
+
+# Bullet graph
+
+**did SUV manufacturers improve on their highway mpg from 1999 to 2008?**
+
+```{r bullet-1, eval = FALSE}
+mpg %>% 
+  filter(class == "suv") %>% 
+  group_by(manufacturer, year) %>% 
+  summarize(mean = mean(hwy))
+```
+
+```{r bullet-2, echo = FALSE}
+mpg %>% 
+  filter(class == "suv") %>% 
+  group_by(manufacturer, year) %>% 
+  summarize(mean = mean(hwy)) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bullet graph
+
+**did SUV manufacturers improve on their highway mpg from 1999 to 2008?**
+
+```{r bullet-3, eval = TRUE}
+mpg_bullet <- mpg %>% #<<
+  filter(class == "suv") %>% 
+  group_by(manufacturer, year) %>% 
+  summarize(mean = mean(hwy)) %>% 
+  mutate(year = as.character(year), #<<
+         width = ifelse(year == "1999", 0.9, 0.5)) #<<
+```
+
+```{r bullet-4, echo = FALSE}
+mpg %>% 
+  filter(class == "suv") %>% 
+  group_by(manufacturer, year) %>% 
+  summarize(mean = mean(hwy)) %>% 
+  mutate(year = as.character(year),
+         width = ifelse(year == "1999", 0.9, 0.5)) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bullet graph
+
+```{r bullet-5, eval = FALSE}
+mpg_bullet %>% 
+  mutate(manufacturer = str_to_title(manufacturer)) %>% #<<
+  ggplot(aes(x = mean, y = manufacturer, fill = year)) + #<<
+  geom_col(width = mpg_bullet$width) + #<<
+  scale_fill_manual(values = c("grey", "#098641"), name = NULL) +
+  scale_alpha_manual(values = c(0.3, 1),
+                     guide = FALSE)
+```
+
+---
+
+# Bullet graph
+
+```{r bullet-5, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# Bullet graph
+
+**changes to make?**
+
+- remove x-axis title and adjust y-axis title
+- clean up background, lines, etc.
+- add a good title
+- find a way to take care of the legend
+- take the bars all the way to the axis
+- reorder bars in a meaningful way
+
+---
+
+.h1[# Bullet graph]
+
+.tiny[
+```{r bullet-6, eval = FALSE}
+mpg_bullet %>% 
+  mutate(manufacturer = str_to_title(manufacturer)) %>% 
+  ggplot(aes(x = mean, y = manufacturer, fill = year)) +
+  geom_col(width = mpg_bullet$width) +
+  scale_fill_manual(values = c("grey", "#098641"), name = NULL) +
+  scale_alpha_manual(values = c(0.3, 1),
+                     guide = FALSE) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) + #<<
+  labs(subtitle = "Jeep only manufacturer to show negative change",
+       title = "The highway mpg among SUVs, by manufacturer, in <span style = 'color:#7e7e7e;'>**1999**</span> and <span style = 'color:#098641;'>**2008**</span>",
+       x = "Highway miles per gallon") +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_markdown(), #<<
+        axis.ticks = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none")
+```
+]
+
+---
+
+# Bullet graph
+
+```{r bullet-6, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# Bullet graph
+
+**changes to make?**
+
+- remove x-axis title and adjust y-axis title
+- clean up background, lines, etc.
+- add a good title
+- find a way to take care of the legend
+- take the bars all the way to the axis
+- **reorder bars in a meaningful way**
+
+---
+
+# Bullet graph
+
+**to reorder the bars**
+
+```{r bullet-7, eval = FALSE}
+mpg_bullet %>% 
+  group_by(manufacturer) %>% 
+  mutate(max = max(mean)) 
+```
+
+```{r bullet-8, echo = FALSE}
+mpg_bullet %>% 
+  group_by(manufacturer) %>% 
+  mutate(max = max(mean)) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+.h1[# Bullet graph]
+
+.tiny[
+```{r bullet-9, eval = FALSE}
+mpg_bullet %>% 
+  mutate(manufacturer = str_to_title(manufacturer)) %>% 
+  group_by(manufacturer) %>% 
+  mutate(max = max(mean)) %>% 
+  ggplot(aes(x = mean, y = reorder(manufacturer, max), fill = year)) + #<<
+  geom_col(width = mpg_bullet$width) +
+  scale_fill_manual(values = c("grey", "#098641"), name = NULL) +
+  scale_alpha_manual(values = c(0.3, 1),
+                     guide = FALSE) +
+  scale_x_continuous(expand = expansion(mult = c(0, 0.1))) + #<<
+  labs(subtitle = "Jeep only manufacturer to show negative change",
+       title = "The highway mpg among SUVs, by manufacturer, in <span style = 'color:#7e7e7e;'>**1999**</span> and <span style = 'color:#098641;'>**2008**</span>",
+       x = "Highway miles per gallon") +
+  theme_linedraw() +
+  theme(panel.grid.minor = element_blank(),
+        panel.grid.major.y = element_blank(),
+        plot.title = element_markdown(), #<<
+        axis.ticks = element_blank(),
+        axis.title.y = element_blank(),
+        legend.position = "none")
+```
+]
+
+---
+
+# Bullet graph
+
+```{r bullet-9, echo = FALSE, fig.align = "center", fig.height = 6.75}
+```
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Lecture 11 on Wednesday June 16 **midterm review**]
+
+<br>
+
+.large[Homework 3 due Tuesday June 15]
+
+<br>
+
+.large[Lab 7 on Tuesday June 15]
