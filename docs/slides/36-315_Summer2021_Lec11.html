@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec10</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 11
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 16, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# From last time
+
+&lt;br&gt;
+
+.large[Extensions to `ggplot2`]
+&lt;br&gt;
+.medium[in addition to the ones we've already covered]
+
+&lt;br&gt;
+
+.large[New plot types *and* new techniques for details]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Different lecture than usual!]
+&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Midterm logistics &amp; tips]
+&lt;br&gt;
+.medium[expectations for plots]
+
+&lt;br&gt;
+
+.large[Live coding with a new dataset]
+&lt;br&gt;
+.medium[with questions]
+
+---
+
+# Midterm logistics
+
+&lt;br&gt;
+
+.large[Available at 5pm Wednesday, due 5am Friday]
+&lt;br&gt;
+.medium[**EDT**]
+
+&lt;br&gt;
+
+.large[Logistically works like a homework assignment]
+&lt;br&gt;
+.medium[submit on Gradescope]
+
+&lt;br&gt;
+
+.large[Data source]
+&lt;br&gt;
+.medium[files on Canvas are a last resort]
+
+---
+
+.left[# Midterm logistics]
+
+.pull-left[
+
+### Allowed
+
+&lt;br&gt;
+
+Class materials
+
+&lt;br&gt;
+
+Notes
+
+&lt;br&gt;
+
+Documentation/resources
+
+]
+
+--
+
+.pull-left[
+
+### Not allowed
+
+&lt;br&gt;
+
+Piazza
+
+&lt;br&gt;
+
+Talking with classmates
+
+&lt;br&gt;
+
+Talking with *anyone* about the exam*
+
+]
+
+---
+
+# You're prepared if...
+
+&lt;br&gt;
+&lt;br&gt;
+.large[You've watched/attended lectures]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.large[You understand the lab/homework questions]
+
+&lt;br&gt;
+&lt;br&gt;
+
+.large[You're familiar with viewing documentation &amp; how to debug]
+
+---
+
+.left[# Data manipulation techniques]
+
+.center[**non-exhaustive list**]
+
+.pull-left[
+&lt;br&gt;
+&lt;br&gt;
+.large[Creating new variables]
+&lt;br&gt;
+.medium[maybe with `paste0` to create strings]&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Aggregating data]
+&lt;br&gt;
+.medium[`group_by` + `summarize`]&lt;br&gt;
+]
+
+.pull-right[
+&lt;br&gt;
+&lt;br&gt;
+.large[Joining with `left_join`]
+&lt;br&gt;
+.medium[maybe with two key variables instead of just one]&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Pivoting data]
+&lt;br&gt;
+.medium[`pivot_wider` and `pivot_longer`]&lt;br&gt;
+]
+
+---
+
+# Overall tips
+
+.large[Take time to look at your data first]
+&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Remember you can control variable type]
+&lt;br&gt;
+.medium[with `as.character` and `as.numeric`]&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Notice what rates are being asked for]
+&lt;br&gt;
+.medium[like with the TB case rates in HW 3]&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Remember there are multiple solutions!]
+&lt;br&gt;
+.medium[we've covered different ways to relabel values, highlight points, annotate graphs, etc.]&lt;br&gt;
+
+---
+
+.left[# Guidelines for plots]
+
+.pull-left[
+.large[Follow the guidelines we've discussed]
+&lt;br&gt;
+.medium[everything must be readable, etc.]&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Use appropriate color scales]
+&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Use a good, explanatory title]
+&lt;br&gt;
+]
+
+.pull-right[
+.large[If you need a legend, make it look nice]
+&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Order bars/geoms in an appropriate fashion]
+&lt;br&gt;
+
+&lt;br&gt;
+
+.large[Use appropriate axis titles]
+]
+
+---
+
+# Schedule
+
+&lt;br&gt;
+
+.large[Midterm available at 5pm today, due 5am Friday]
+
+&lt;br&gt;
+
+.large[Homework 4 due Tuesday June 22]
+
+&lt;br&gt;
+
+.large[Will start discussing final projects next week]
+
+---
+
+class: inverse, center, middle
+
+# To RStudio!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

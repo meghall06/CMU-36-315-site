@@ -40,6 +40,7 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 + [Lecture 8](slides/36-315_Summer2021_Lec8.html): taking plots to the next level
 + [Lecture 9](slides/36-315_Summer2021_Lec9.html): colors, fonts, annotations, themes
 + [Lecture 10](slides/36-315_Summer2021_Lec10.html): extensions to `ggplot2`
++ [Lecture 11](slides/36-315_Summer2021_Lec11.html): midterm review
 
 ## Labs
 
