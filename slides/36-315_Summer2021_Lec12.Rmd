@@ -1,0 +1,1541 @@
+---
+title: "36-315-Lec12"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+#      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(showtext)
+library(tidyverse)
+library(tidymodels)
+
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec12/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+nhl2021_players <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/nhl2021_players.csv')
+nhl2021_events <- read_csv('https://raw.githubusercontent.com/meghall06/CMU-36-315-site/main/data/nhl2021_events.csv')
+
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = google_font("Open Sans"),
+  text_font_google   = google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 12
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 21, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# Midterm
+
+<br>
+
+.large[Solution has been posted]
+
+<br>
+
+.large[Grades soon]
+
+<br>
+
+.large[Will go over a few commonly-missed concepts during lab tomorrow]
+
+
+---
+
+# Schedule going forward
+
+<br>
+
+.large[Lab 8 tomorrow]
+<br>
+.medium[HW 4 due too]
+
+<br>
+
+.large[Group project check-in]
+<br>
+.medium[due on **Friday**]
+
+<br>
+
+.large[Last HW due *next* Tuesday]
+
+---
+
+# Group project details
+
+<br>
+
+.large[Assigned groups of 3]
+<br>
+.medium[addressed time zones as much as possible]
+
+--
+
+<br>
+
+.large[Data needs to be publicly available]
+<br>
+.medium[possible sources: [538](https://data.fivethirtyeight.com/), [Kaggle](https://www.kaggle.com/datasets), [TidyTuesday](https://github.com/rfordatascience/tidytuesday)]
+
+--
+
+<br>
+
+.large[Report *and* presentation]
+<br>
+.medium[help available from instructor/TAs]
+
+---
+
+# Group project report
+
+.large[Must be made with R Markdown]
+<br>
+.medium[submit .Rmd/.html]
+
+--
+
+<br>
+
+.large[Include an overview of the data and ~2-3 questions addressed comprehensively]
+<br>
+.medium[need to include several different types of plots]
+<br>
+.medium[thorough summaries]
+<br>
+.medium[conclusions & further work, can address limitations]
+
+--
+
+<br>
+
+.large[Plots must go together]
+<br>
+.medium[same theme, fonts, colors, etc.]
+<br>
+.medium[some customization is necessary]
+
+---
+
+# Group project presentation
+
+<br>
+
+.large[Must be made with RStudio/R Markdown]
+<br>
+.medium[using **xaringan** (Friday's lecture)]
+
+--
+
+<br>
+
+.large[~5 minutes]
+<br>
+.medium[everyone needs to speak]
+<br>
+.medium[must include overview of data]
+<br>
+.medium[plots & conclusions]
+
+--
+
+<br>
+
+.large[Presentations on July 1 & 2]
+<br>
+.medium[will find a convenient time for each group]
+<br>
+.medium[sign-ups next week]
+
+---
+
+# Group project deadlines
+
+<br>
+
+.large[Check-in]
+<br>
+.medium[due **this** Friday on Canvas]
+<br>
+.medium[a few paragraphs: quick summary on your collaboration strategy, your thoughts on a data set selection, etc.]
+
+--
+
+<br>
+
+.large[Presentations]
+<br>
+.medium[**next** Thursday and Friday]
+
+--
+
+<br>
+
+.large[Final reports]
+<br>
+.medium[**next** Friday, 11:30am]
+
+---
+
+# Today
+
+<br>
+
+.large[Trying out `tidymodels`]
+<br>
+.medium[creating, evaluating, visualizing models]
+
+<br>
+
+.large[Experimenting with user-defined functions]
+
+---
+
+# Disclaimer
+
+<br>
+
+.large[This isn't a class on modeling]
+<br>
+.medium[designing good models: not our focus]
+<br>
+.medium[today's models are very basic!]
+<br>
+.medium[won't be asked to create models on HW/labs]
+
+--
+
+<br>
+
+.large[This *is* a class on visualization]
+<br>
+.medium[and it's handy to visualize model outputs/comparison]
+<br>
+.medium[`tidymodels` plays well with `tidyverse` and `ggplot2`]
+
+---
+
+# Today's data
+
+.center[`nhl2021_players`]
+.center[`nhl2021_events`]
+
+.center[![logo](figs/Lec12/nhl_logo.png)]
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+<br>
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+<br>
+.medium[**logistic regression**]
+
+<br>
+
+--
+
+.large[Is there a difference in the rate of scoring points by position?]
+<br>
+.medium[**hypothesis testing**]
+
+<br>
+
+--
+
+.large[Can we predict a player's rate of scoring points by:]
+<br>
+.medium[their position, their time on ice, and their rate of blocking shots?]
+<br>
+.medium[**linear regression**]
+
+---
+
+# Today's data
+
+.center[`nhl2021_players`]
+
+```{r data-1, echo = FALSE}
+nhl2021_players %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Today's data
+
+.center[`nhl2021_events`]
+
+```{r data-2, echo = FALSE}
+nhl2021_events %>% 
+  head(5) %>% 
+  select(game_id, game_date, event_index, event_type, event_player_1:event_player_3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Data prep steps
+
+<br>
+
+.large[Where do we want to be at the end?]
+
+<br>
+
+.large[One row per player, with the variables we need:]
+<br>
+.medium[**position**: from `nhl2021_players`]
+<br>
+.medium[**time on ice**: from `nhl2021_players`]
+<br>
+.medium[**scoring rate**: from `nhl2021_events`]
+<br>
+.medium[**blocked shots**: from `nhl2021_events`]
+
+---
+
+.h1[# Data prep steps]
+
+<br>
+
+.large[
+
+1. Summarize the shots blocked from `nhl2021_events`
+
+2. Summarize the points from `nhl2021_events`
+
+3. Combine 1 and 2
+
+4. Join `nhl2021_events` into `nhl2021_players`
+
+]
+
+---
+
+# Step 1
+
+summarize the shots blocked from `nhl2021_events`
+<br>
+can use the `name` argument within `count` to rename the default `n`
+
+```{r data-3, eval = TRUE}
+blocks <- nhl2021_events %>% 
+  filter(event_type == "BLOCK") %>% 
+  count(event_player_2, name = "blocks") %>% 
+  rename(player = event_player_2)
+```
+
+--
+
+```{r data-4, echo = FALSE}
+blocks %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Step 2
+
+summarize the points from `nhl2021_events`
+<br>
+all `event_player`s on a goal get a point, so pivoting is necessary
+
+```{r data-5, eval = TRUE}
+points <- nhl2021_events %>% 
+  select(event_type, event_player_1:event_player_3) %>% 
+  filter(event_type == "GOAL") %>% 
+  pivot_longer(event_player_1:event_player_3, names_to = NULL, 
+               values_to = "player", values_drop_na = TRUE) %>% 
+  count(player, name = "points")
+```
+
+--
+
+```{r data-6, echo = FALSE}
+points %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Step 3
+
+when we want to combine **all** combinations from two data frames, use `full_join`
+<br>
+`mutate_if` is a shortcut to apply the same function to multiple variables
+
+```{r data-7, eval = TRUE}
+events <- 
+  full_join(blocks, points, by = "player") %>% 
+  mutate_if(is.numeric, replace_na, replace = 0)
+```
+
+--
+
+```{r data-8, echo = FALSE}
+events %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Step 4
+
+need to reformat the `Player` variable to match
+
+```{r data-9, eval = FALSE}
+final_data <- nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", "."))
+```
+
+--
+
+```{r data-10, echo = FALSE}
+nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Step 4
+
+can now join in our events data
+<br>
+`mutate_at` is another efficient option
+
+```{r data-11, eval = FALSE}
+final_data <- nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %>% 
+  left_join(events, by = c("Player" = "player")) %>% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) 
+```
+
+--
+
+```{r data-12, echo = FALSE}
+nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %>% 
+  left_join(events, by = c("Player" = "player")) %>% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Step 4
+
+filter to only those who played >= 1/3 of a season
+<br>
+create some rate variables for better comparison
+
+```{r data-13, eval = FALSE}
+final_data <- nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %>% 
+  left_join(events, by = c("Player" = "player")) %>% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) %>% 
+  filter(GP >= 18) %>% 
+  mutate(points_60 = points * 60 / TOI,
+         blocks_60 = blocks * 60 / TOI,
+         TOI_game = TOI / GP)
+```
+
+--
+
+```{r data-14, echo = FALSE}
+nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %>% 
+  left_join(events, by = c("Player" = "player")) %>% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) %>% 
+  filter(GP >= 18) %>% 
+  mutate(points_60 = points * 60 / TOI,
+         blocks_60 = blocks * 60 / TOI,
+         TOI_game = TOI / GP) %>% 
+  head(4) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Step 4
+
+change our outcome variable to a factor (easier for logistic regression)
+<br>
+eliminate unnecessary variables
+
+```{r data-15, eval = TRUE}
+final_data <- nhl2021_players %>% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %>% 
+  left_join(events, by = c("Player" = "player")) %>% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) %>% 
+  filter(GP >= 18) %>% 
+  mutate(points_60 = points * 60 / TOI,
+         blocks_60 = blocks * 60 / TOI,
+         TOI_game = TOI / GP) %>% 
+  mutate(defense = as.factor(ifelse(Position == "D", "D", "F"))) %>% 
+  select(-c(Position, Season, points, blocks, TOI, GP))
+```
+
+--
+
+```{r data-16, echo = FALSE}
+final_data %>% 
+  head(2) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Exploring our data
+
+```{r explore-1, eval = FALSE}
+final_data %>% 
+  ggplot(aes(x = TOI_game, fill = defense)) +
+  geom_density(alpha = 0.8, color = NA) + #<<
+  scale_fill_brewer(type = "qual", name = NULL) +
+  guides(fill = guide_legend(override.aes = list(alpha = 1))) + #<<
+  scale_x_continuous(expand = expansion(mult = c(0.01, 0.01))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0))) +
+  labs(x = "Time on ice per game (min)") +
+  cmu_theme() +
+  theme(legend.position = c(0.9, 0.9))
+```
+
+---
+
+# Exploring our data
+
+```{r explore-1, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# User-defined functions
+
+<br>
+
+.large[What if we wanted to replicate that code for our other variables of interest?]
+<br>
+.medium[could just copy our code, or:]
+
+--
+
+<br>
+
+.large[User-defined functions:]
+<br>
+.medium[useful any time you're tempted to replicate code]
+<br>
+.medium[avoids mistakes from copying and pasting]
+<br>
+.medium[easy to apply your changes everywhere]
+
+---
+
+# User-defined functions
+
+```{r explore-2}
+density_fn <- function(x_var) { #<<
+  
+  final_data %>% 
+    ggplot(aes(x = x_var, fill = defense)) +
+    geom_density(alpha = 0.8, color = NA) +
+    scale_fill_brewer(type = "qual", name = NULL) +
+    guides(fill = guide_legend(override.aes = list(alpha = 1))) +
+    scale_x_continuous(expand = expansion(mult = c(0.01, 0.01))) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.03))) +
+    cmu_theme() +
+    theme(legend.position = c(0.9, 0.9))
+  
+}
+```
+
+---
+
+# User-defined functions
+
+```{r explore-3, fig.align = "center", fig.height = 5.5}
+density_fn(final_data$TOI_game) +
+  labs(x = "Time on ice per game (min)")
+```
+
+---
+
+# User-defined functions
+
+```{r explore-4, fig.align = "center", fig.height = 5.5}
+density_fn(final_data$blocks_60) +
+  labs(x = "Shots blocked per 60 minutes")
+```
+
+---
+
+# User-defined functions
+
+```{r explore-5, fig.align = "center", fig.height = 5.5}
+density_fn(final_data$points_60) +
+  labs(x = "Points per 60 min")
+```
+
+---
+
+# Exploring our data
+
+```{r explore-6, echo = FALSE, fig.align = "center", fig.height = 6.75}
+final_data %>% 
+  ggplot(aes(x = TOI_game, y = blocks_60, color = defense)) +
+  geom_point(alpha = 0.7, size = 2.5) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Time on ice per game (min)",
+       y = "Shots blocked per 60 min") +
+  guides(color = guide_legend(override.aes = 
+                                list(alpha = 1, size = 5))) + #<<
+  cmu_theme() +
+  theme(legend.position = c(0.9, 0.8))
+```
+
+---
+
+# Exploring our data
+
+```{r explore-6, eval = FALSE}
+```
+
+---
+
+# Exploring our data
+
+```{r explore-7, echo = FALSE, fig.align = "center", fig.height = 6.75}
+final_data %>% 
+  ggplot(aes(x = TOI_game, y = points_60, color = defense)) +
+  geom_point(alpha = 0.7, size = 2.5) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Time on ice per game (min)",
+       y = "Points per 60 min") +
+  guides(color = guide_legend(override.aes = list(alpha = 1, size = 5))) +
+  cmu_theme() +
+  theme(legend.position = c(0.9, 0.8))
+```
+
+---
+
+# First steps for modeling
+
+split the data into **training** data and **testing** data
+
+```{r prep-1}
+# this ensures that your samples are reproducible
+set.seed(1234)
+
+split_data <- initial_split(data = final_data, 
+                            # sets the proportion for training
+                            prop = 0.7, 
+                            strata = defense)
+```
+
+--
+
+why is `strata = defense` necessary?
+
+---
+
+.h1[# First steps for modeling]
+
+.tiny[
+```{r prep-2, fig.align = "center", fig.height = 3.5}
+final_data %>% 
+  mutate(defense = recode(defense, "D" = "defensemen", "F" = "forwards")) %>% 
+  ggplot(aes(x = defense, fill = defense)) +
+  geom_bar() +
+  scale_fill_brewer(type = "qual", name = NULL) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  cmu_theme() +
+  theme(legend.position = "none",
+        axis.title.x = element_blank())
+```
+]
+
+---
+
+# First steps for modeling
+
+split the data into **training** data and **testing** data
+
+```{r prep-3}
+training_data <- training(split_data)
+
+testing_data <- testing(split_data)
+```
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+<br>
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+<br>
+.medium[**logistic regression**]
+
+<br>
+
+--
+
+.large[Is there a difference in the rate of scoring points by position?]
+<br>
+.medium[**hypothesis testing**]
+
+<br>
+
+--
+
+.large[Can we predict a player's rate of scoring points by:]
+<br>
+.medium[their position, their time on ice, and their rate of blocking shots?]
+<br>
+.medium[**linear regression**]
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+```{r workflow-1}
+TOI_only <- 
+  recipe(defense ~ TOI_game, data = training_data) %>% 
+  prep()
+```
+
+what can you do in a recipe?
+
+- create dummy variables
+- scale/normalize/transform variables
+- remove missing data
+- automatically remove variables that are highly correlated 
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+```{r workflow-2}
+TOI_only <- 
+  recipe(defense ~ TOI_game, data = training_data) %>% 
+  prep()
+
+TOI_only
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+```{r workflow-3}
+TOI_only <- 
+  recipe(defense ~ TOI_game, data = training_data) %>% 
+  prep()
+
+summary(TOI_only)
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+```{r workflow-4}
+logistic <-
+  logistic_reg(mode = "classification") %>%
+  set_engine("glm")
+
+workflow_TOI <- 
+  workflow() %>% 
+  add_model(logistic) %>% 
+  add_recipe(TOI_only)
+
+TOI_fit <- 
+  workflow_TOI %>% 
+  fit(data = training_data)
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+```{r workflow-5}
+TOI_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy()
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+normally you'd use cross-validation with training data (split into assessment & analysis) to compare models and *simulate* performance with new data, then save the test set for evaluating *actual* performance with new data
+
+here we're going straight for the test set
+
+```{r workflow-6}
+TOI_predictions_class <- 
+  predict(TOI_fit, testing_data, type = "class") %>% 
+  bind_cols(testing_data %>% select(Player, defense, TOI_game)) 
+
+TOI_predictions <- 
+  predict(TOI_fit, testing_data, type = "prob") %>% 
+  bind_cols(TOI_predictions_class) %>% 
+  mutate(correct = .pred_class == defense,
+         prediction = ifelse(defense == "D", .pred_D, .pred_F))
+```
+
+---
+
+# The results
+
+what do our results look like? 
+
+good to have both `.pred_class` and `.pred_D`
+
+```{r results-1, echo = FALSE}
+TOI_predictions %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+.left.h1[# The results]
+
+.pull-left.tiny[
+```{r results-2, eval = FALSE}
+TOI_predictions %>% 
+  ggplot(aes(x = defense, y = TOI_game, 
+             color = .pred_class, 
+             shape = correct)) +
+  geom_jitter(size = 4) + 
+  scale_shape_manual(values = 
+              c("triangle", "circle"),
+              name = NULL) +
+  scale_color_brewer(type = "qual", 
+         name = "Predicted position") +
+  guides(color = guide_legend(
+    override.aes = list(size = 5))) +
+  labs(y = "Time on ice per game (min)",
+       x = "Actual position") +
+  cmu_theme() +
+  theme(legend.position = "top")
+```
+]
+
+--
+
+.pull-right[
+```{r results-2, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+]
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+for our `TOI_plus` model
+
+```{r workflow-7}
+TOI_plus <- 
+  recipe(defense ~ TOI_game + points_60 + blocks_60, 
+         data = training_data) %>% 
+  prep()
+
+workflow_TOI_plus <- 
+  workflow() %>% 
+  add_model(logistic) %>% 
+  add_recipe(TOI_plus)
+
+TOI_plus_fit <- 
+  workflow_TOI_plus %>% 
+  fit(data = training_data)
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+```{r workflow-8}
+TOI_plus_predictions_class <- 
+  predict(TOI_plus_fit, testing_data, type = "class") %>% 
+  bind_cols(testing_data %>% select(Player, defense, 
+                                    TOI_game, points_60, blocks_60)) 
+
+TOI_plus_predictions <- 
+  predict(TOI_plus_fit, testing_data, type = "prob") %>% 
+  bind_cols(TOI_plus_predictions_class) %>% 
+  mutate(correct = .pred_class == defense,
+         prediction = ifelse(defense == "D", .pred_D, .pred_F))
+```
+
+---
+
+# The results
+
+what do our results look like? 
+
+good to have both `.pred_class` and `.pred_D`
+
+```{r results-3, echo = FALSE}
+TOI_plus_predictions %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 13, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+.left.h1[# The results]
+
+.pull-left.tiny[
+```{r results-4, eval = FALSE}
+TOI_plus_predictions %>% 
+  ggplot(aes(x = defense, y = TOI_game, 
+             color = .pred_class, 
+             shape = correct)) +
+  geom_jitter(size = 4) + 
+  scale_shape_manual(values = 
+              c("triangle", "circle"),
+              name = NULL) +
+  scale_color_brewer(type = "qual", 
+         name = "Predicted position") +
+  guides(color = guide_legend(
+    override.aes = list(size = 5))) +
+  labs(y = "Time on ice per game (min)",
+       x = "Actual position") +
+  cmu_theme() +
+  theme(legend.position = "top")
+```
+]
+
+--
+
+.pull-right[
+```{r results-4, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+]
+
+---
+
+.h1[# Metrics to evaluate and compare]
+
+.large[
+
+1. confusion matrix
+
+2. ROC curve
+
+3. density curves
+
+4. AUC/log loss/accuracy
+
+]
+
+---
+
+# Confusion matrix
+
+small heat map with predicted value against actual
+
+```{r evaluate-1}
+confusion_matrix <- function(data_set) {
+  
+  data_set %>%
+    conf_mat(defense, .pred_class) %>% #<<
+    pluck(1) %>%
+    as_tibble() %>%
+    ggplot(aes(x = Prediction, y = Truth, alpha = n)) + #<<
+    geom_tile() +
+    geom_text(aes(label = n), colour = "white", alpha = 1, size = 8) +
+    cmu_theme() +
+    theme(panel.grid.major = element_blank(),
+          legend.position = "none") +
+    labs(y = "Actual Position",
+         x = "Predicted Position",
+         title = "Confusion Matrix")
+  
+}
+```
+
+---
+
+# Confusion matrix
+
+```{r evaluate-2, fig.align = "center", fig.height = 5}
+confusion_matrix(TOI_predictions) +
+  labs(subtitle = "TOI Only Model")
+```
+
+---
+
+# Confusion matrix
+
+```{r evaluate-3, fig.align = "center", fig.height = 5}
+confusion_matrix(TOI_plus_predictions) +
+  labs(subtitle = "TOI-Plus Model")
+```
+
+---
+
+# ROC curve
+
+plots false positive against true positive
+
+shows how good the model is at classifying
+
+aim is to maximize the area under it
+
+```{r evaluate-4}
+ROC_curve <- function(dataset) {
+  
+  dataset %>%
+    roc_curve(defense, .pred_D) %>% #<<
+    ggplot(aes(x = 1 - specificity, y = sensitivity)) + #<<
+    geom_path() +
+    geom_abline(linetype = 3) +
+    coord_equal() +
+    labs(y = "True Positive Rate (Sensitivity)", 
+         x = "False Positive Rate",
+         title = "ROC Curve") +
+    cmu_theme()  
+  
+}
+```
+
+---
+
+# ROC curve
+
+```{r evaluate-5, fig.align = "center", fig.height = 5}
+ROC_curve(TOI_predictions) +
+  labs(subtitle = "TOI Only Model")
+```
+
+---
+
+# ROC curve
+
+```{r evaluate-6, fig.align = "center", fig.height = 5}
+ROC_curve(TOI_plus_predictions) +
+  labs(subtitle = "TOI-Plus Model")
+```
+
+---
+
+# Density curves
+
+show densities for predicted values, colored by actual ones
+
+```{r evaluate-7}
+density_pred_fn <- function(predictions) {
+  
+  predictions %>% 
+    ggplot(aes(x = .pred_D, fill = defense)) +
+    geom_density(alpha = 0.5, color = NA) +
+    scale_fill_brewer(type = "qual",
+                      name = "Actual\nPosition") +
+    labs(x = "Predicted Defense") +
+    cmu_theme() +
+    theme(legend.position = c(0.8, 0.8))
+  
+}
+```
+
+---
+
+# Density curves
+
+```{r evaluate-8, fig.align = "center", fig.height = 5}
+density_pred_fn(TOI_predictions) +
+  labs(title = "TOI Only Model")
+```
+
+---
+
+# Density curves
+
+```{r evaluate-9, fig.align = "center", fig.height = 5}
+density_pred_fn(TOI_plus_predictions) +
+  labs(title = "TOI-Plus Model")
+```
+
+---
+
+# Individual metrics
+
+accuracy: how many predictions were right?
+
+```{r evaluate-10, eval = FALSE}
+TOI_predictions %>%
+  accuracy(defense, .pred_class)
+```
+
+```{r evaluate-10-2, echo = FALSE}
+TOI_predictions %>%
+  accuracy(defense, .pred_class) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 14, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+--
+
+log loss: how good were the predictions themselves?
+
+```{r evaluate-11, eval = FALSE}
+TOI_predictions %>%
+  mn_log_loss(defense, .pred_D)
+```
+
+```{r evaluate-11-2, echo = FALSE}
+TOI_predictions %>%
+  mn_log_loss(defense, .pred_D) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 14, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Individual metrics
+
+AUC: what was the area under that ROC curve?
+
+```{r evaluate-12, eval = FALSE}
+TOI_predictions %>%
+  roc_auc(defense, .pred_D)
+```
+
+```{r evaluate-12-2, echo = FALSE}
+TOI_predictions %>%
+  roc_auc(defense, .pred_D) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 14, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Individual metrics
+
+```{r evaluate-13}
+metrics <- function(dataset) {
+  
+  tibble(
+    "log_loss" = 
+      mn_log_loss(dataset, defense, .pred_D) %>%
+      select(.estimate),
+    "accuracy" = 
+      accuracy(dataset, defense, .pred_class) %>%
+      select(.estimate),
+    "auc" = 
+      roc_auc(dataset, defense, .pred_D) %>%
+      select(.estimate)
+  ) %>% 
+    unnest(everything()) %>% 
+    pivot_longer(everything(), names_to = "metric", 
+                 values_to = "value")
+  
+}
+```
+
+---
+
+# Comparing metrics
+
+```{r evaluate-14}
+metrics_TOI <- 
+  metrics(TOI_predictions) %>% 
+  mutate(model = "TOI only")
+
+metrics_TOI_plus <- 
+  metrics(TOI_plus_predictions) %>% 
+  mutate(model = "TOI plus")
+
+metrics_compare <- 
+  bind_rows(metrics_TOI, metrics_TOI_plus)
+```
+
+```{r evaluate-15, echo = FALSE}
+metrics_compare %>% 
+  kable("html") %>%
+  kable_styling(font_size = 14, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Comparing metrics
+
+```{r evaluate-16, echo = FALSE, fig.align = "center", fig.height = 6.5}
+metrics_compare %>%
+  mutate(label = case_when(metric == "accuracy" ~ "Accuracy\n(higher is better)", #<<
+                           metric == "auc" ~ "Area Under Curve\n(higher is better)", #<<
+                           metric == "log_loss" ~ "Log Loss\n(lower is better)")) %>% #<< 
+  ggplot(aes(fill = model, y = value, x = model)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(type = "qual", palette = 2) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  cmu_theme() +
+  labs(y = "Value", x = NULL, fill = NULL,
+       title = "Comparing Our Models") + 
+  facet_wrap(~label) +
+  geom_text(aes(label = round(value, 3)), vjust = -0.5, #<<
+            size = 5, position = position_dodge(width= 0.9)) + #<<
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        legend.margin = margin(t = -3, b = -3),
+        strip.background = element_rect(fill = "light grey"),
+        strip.text = element_text(color = "black", size = 12))
+```
+
+---
+
+.h1[# Comparing metrics]
+
+.tiny[
+```{r evaluate-16, eval = FALSE}
+```
+]
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+<br>
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+<br>
+.medium[**logistic regression**]
+
+<br>
+
+.large[Is there a difference in the rate of scoring points by position?]
+<br>
+.medium[**hypothesis testing**]
+
+<br>
+
+
+.large[Can we predict a player's rate of scoring points by:]
+<br>
+.medium[their position, their time on ice, and their rate of blocking shots?]
+<br>
+.medium[**linear regression**]
+
+---
+
+# Hypothesis testing
+
+```{r hypothesis-1}
+null_distribution <- final_data %>%
+  specify(response = points_60, explanatory = defense) %>% 
+  hypothesize(null = "independence") %>% 
+  generate(reps = 500, type = "permute") %>% 
+  calculate("diff in means", order = c("D", "F"))
+```
+
+---
+
+# Hypothesis testing
+
+```{r hypothesis-2, fig.align = "center", fig.height = 5}
+null_distribution %>%
+  visualize() +
+  cmu_theme()
+```
+
+---
+
+# Hypothesis testing
+
+```{r hypothesis-3}
+estimate <- final_data %>%
+  specify(response = points_60, explanatory = defense) %>%
+  calculate("diff in means", order = c("D", "F"))
+```
+
+```{r hypothesis-4, echo = FALSE}
+final_data %>%
+  specify(response = points_60, explanatory = defense) %>%
+  calculate("diff in means", order = c("D", "F")) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Hypothesis testing
+
+```{r hypothesis-5, fig.align = "center", fig.height = 5}
+null_distribution %>%
+  visualize() +
+  shade_p_value(obs_stat = estimate, direction = "two_sided") +
+  cmu_theme()
+```
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+<br>
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+<br>
+.medium[**logistic regression**]
+
+<br>
+
+.large[Is there a difference in the rate of scoring points by position?]
+<br>
+.medium[**hypothesis testing**]
+
+<br>
+
+
+.large[Can we predict a player's rate of scoring points by:]
+<br>
+.medium[their position, their time on ice, and their rate of blocking shots?]
+<br>
+.medium[**linear regression**]
+
+---
+
+# Linear regression
+
+```{r regression-1}
+linear <-
+  linear_reg(mode = "regression") %>%
+  set_engine("lm")
+
+linear_recipe <- 
+  recipe(points_60 ~ TOI_game + blocks_60 + defense, 
+         data = training_data) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  prep()
+
+```
+
+```{r regression-1-2}
+summary(linear_recipe) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Linear regression
+
+```{r regression-2}
+workflow_linear <- 
+  workflow() %>% 
+  add_model(linear) %>% 
+  add_recipe(linear_recipe)
+
+workflow_linear
+```
+
+---
+
+# Linear regression
+
+```{r regression-3}
+linear_fit <- 
+  workflow_linear %>% 
+  fit(data = training_data)
+```
+
+```{r regression-3-2}
+linear_fit %>% 
+  pull_workflow_fit() %>% 
+  tidy() %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Linear regression
+
+```{r regression-4}
+linear_predictions <- 
+  predict(linear_fit, new_data = testing_data) %>% 
+  bind_cols(testing_data)
+
+rsq(linear_predictions,
+    truth = points_60,
+    estimate = .pred)
+```
+
+---
+
+.h1[# Linear regression]
+
+.tiny[
+```{r regression-5, echo = FALSE, fig.align = "center", fig.height = 6.5}
+linear_predictions %>% 
+  ggplot(aes(x = .pred, y = points_60, color = defense)) +
+  geom_point(size = 3) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  geom_abline(intercept = 0, slope = 1, color = "black") +
+  guides(color = guide_legend(override.aes = list(size = 5))) +
+  coord_equal() +
+  cmu_theme() +
+  annotate("text", x = 0, y = 2.5, label = "R^2 == 0.584", #<<
+           parse = TRUE) + #<<
+  labs(title = "Linear Regression Results",
+       x = "Predicted Points Rate",
+       y = "Actual Points Rate") +
+  theme(legend.position = c(0.3, 0.8))
+```
+]
+
+---
+
+# Linear regression
+
+```{r regression-5, eval = FALSE}
+```
+
+---
+
+# Upcoming
+
+<br>
+
+.large[Homework 4 due Tuesday June 22]
+
+<br>
+
+.large[Lab 8 on Tuesday June 22]
+
+<br>
+
+.large[Lecture 13 on Wednesday June 23]
+<br>
+.medium[creating tables and analyzing text data]

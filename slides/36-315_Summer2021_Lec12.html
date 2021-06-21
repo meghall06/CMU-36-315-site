@@ -1,0 +1,2237 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec12</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 12
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 21, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# Midterm
+
+&lt;br&gt;
+
+.large[Solution has been posted]
+
+&lt;br&gt;
+
+.large[Grades soon]
+
+&lt;br&gt;
+
+.large[Will go over a few commonly-missed concepts during lab tomorrow]
+
+
+---
+
+# Schedule going forward
+
+&lt;br&gt;
+
+.large[Lab 8 tomorrow]
+&lt;br&gt;
+.medium[HW 4 due too]
+
+&lt;br&gt;
+
+.large[Group project check-in]
+&lt;br&gt;
+.medium[due on **Friday**]
+
+&lt;br&gt;
+
+.large[Last HW due *next* Tuesday]
+
+---
+
+# Group project details
+
+&lt;br&gt;
+
+.large[Assigned groups of 3]
+&lt;br&gt;
+.medium[addressed time zones as much as possible]
+
+--
+
+&lt;br&gt;
+
+.large[Data needs to be publicly available]
+&lt;br&gt;
+.medium[possible sources: [538](https://data.fivethirtyeight.com/), [Kaggle](https://www.kaggle.com/datasets), [TidyTuesday](https://github.com/rfordatascience/tidytuesday)]
+
+--
+
+&lt;br&gt;
+
+.large[Report *and* presentation]
+&lt;br&gt;
+.medium[help available from instructor/TAs]
+
+---
+
+# Group project report
+
+.large[Must be made with R Markdown]
+&lt;br&gt;
+.medium[submit .Rmd/.html]
+
+--
+
+&lt;br&gt;
+
+.large[Include an overview of the data and ~2-3 questions addressed comprehensively]
+&lt;br&gt;
+.medium[need to include several different types of plots]
+&lt;br&gt;
+.medium[thorough summaries]
+&lt;br&gt;
+.medium[conclusions &amp; further work, can address limitations]
+
+--
+
+&lt;br&gt;
+
+.large[Plots must go together]
+&lt;br&gt;
+.medium[same theme, fonts, colors, etc.]
+&lt;br&gt;
+.medium[some customization is necessary]
+
+---
+
+# Group project presentation
+
+&lt;br&gt;
+
+.large[Must be made with RStudio/R Markdown]
+&lt;br&gt;
+.medium[using **xaringan** (Friday's lecture)]
+
+--
+
+&lt;br&gt;
+
+.large[~5 minutes]
+&lt;br&gt;
+.medium[everyone needs to speak]
+&lt;br&gt;
+.medium[must include overview of data]
+&lt;br&gt;
+.medium[plots &amp; conclusions]
+
+--
+
+&lt;br&gt;
+
+.large[Presentations on July 1 &amp; 2]
+&lt;br&gt;
+.medium[will find a convenient time for each group]
+&lt;br&gt;
+.medium[sign-ups next week]
+
+---
+
+# Group project deadlines
+
+&lt;br&gt;
+
+.large[Check-in]
+&lt;br&gt;
+.medium[due **this** Friday on Canvas]
+&lt;br&gt;
+.medium[a few paragraphs: quick summary on your collaboration strategy, your thoughts on a data set selection, etc.]
+
+--
+
+&lt;br&gt;
+
+.large[Presentations]
+&lt;br&gt;
+.medium[**next** Thursday and Friday]
+
+--
+
+&lt;br&gt;
+
+.large[Final reports]
+&lt;br&gt;
+.medium[**next** Friday, 11:30am]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Trying out `tidymodels`]
+&lt;br&gt;
+.medium[creating, evaluating, visualizing models]
+
+&lt;br&gt;
+
+.large[Experimenting with user-defined functions]
+
+---
+
+# Disclaimer
+
+&lt;br&gt;
+
+.large[This isn't a class on modeling]
+&lt;br&gt;
+.medium[designing good models: not our focus]
+&lt;br&gt;
+.medium[today's models are very basic!]
+&lt;br&gt;
+.medium[won't be asked to create models on HW/labs]
+
+--
+
+&lt;br&gt;
+
+.large[This *is* a class on visualization]
+&lt;br&gt;
+.medium[and it's handy to visualize model outputs/comparison]
+&lt;br&gt;
+.medium[`tidymodels` plays well with `tidyverse` and `ggplot2`]
+
+---
+
+# Today's data
+
+.center[`nhl2021_players`]
+.center[`nhl2021_events`]
+
+.center[![logo](figs/Lec12/nhl_logo.png)]
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+&lt;br&gt;
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**logistic regression**]
+
+&lt;br&gt;
+
+--
+
+.large[Is there a difference in the rate of scoring points by position?]
+&lt;br&gt;
+.medium[**hypothesis testing**]
+
+&lt;br&gt;
+
+--
+
+.large[Can we predict a player's rate of scoring points by:]
+&lt;br&gt;
+.medium[their position, their time on ice, and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**linear regression**]
+
+---
+
+# Today's data
+
+.center[`nhl2021_players`]
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Season &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Position &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GP &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; A.J. Greer &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; L &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.55 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Aaron Ekblad &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 878.18 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Aaron Ness &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.83 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adam Boqvist &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 594.65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adam Brooks &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 117.45 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Today's data
+
+.center[`nhl2021_events`]
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_id &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; event_index &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; event_type &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; event_player_1 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; event_player_2 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; event_player_3 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BLOCK &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SEAN.COUTURIER &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BRIAN.DUMOULIN &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BLOCK &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MARK.JANKOWSKI &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ROBERT.HAGG &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BLOCK &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BRANDON.TANEV &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NOLAN.PATRICK &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 52 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BLOCK &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BRANDON.TANEV &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OSKAR.LINDBLOM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 58 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; GOAL &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MARK.JANKOWSKI &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BRANDON.TANEV &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; JARED.MCCANN &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Data prep steps
+
+&lt;br&gt;
+
+.large[Where do we want to be at the end?]
+
+&lt;br&gt;
+
+.large[One row per player, with the variables we need:]
+&lt;br&gt;
+.medium[**position**: from `nhl2021_players`]
+&lt;br&gt;
+.medium[**time on ice**: from `nhl2021_players`]
+&lt;br&gt;
+.medium[**scoring rate**: from `nhl2021_events`]
+&lt;br&gt;
+.medium[**blocked shots**: from `nhl2021_events`]
+
+---
+
+.h1[# Data prep steps]
+
+&lt;br&gt;
+
+.large[
+
+1. Summarize the shots blocked from `nhl2021_events`
+
+2. Summarize the points from `nhl2021_events`
+
+3. Combine 1 and 2
+
+4. Join `nhl2021_events` into `nhl2021_players`
+
+]
+
+---
+
+# Step 1
+
+summarize the shots blocked from `nhl2021_events`
+&lt;br&gt;
+can use the `name` argument within `count` to rename the default `n`
+
+
+```r
+blocks &lt;- nhl2021_events %&gt;% 
+  filter(event_type == "BLOCK") %&gt;% 
+  count(event_player_2, name = "blocks") %&gt;% 
+  rename(player = event_player_2)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; player &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BROOKS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.ERNE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.FOX &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 102 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Step 2
+
+summarize the points from `nhl2021_events`
+&lt;br&gt;
+all `event_player`s on a goal get a point, so pivoting is necessary
+
+
+```r
+points &lt;- nhl2021_events %&gt;% 
+  select(event_type, event_player_1:event_player_3) %&gt;% 
+  filter(event_type == "GOAL") %&gt;% 
+  pivot_longer(event_player_1:event_player_3, names_to = NULL, 
+               values_to = "player", values_drop_na = TRUE) %&gt;% 
+  count(player, name = "points")
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; player &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BROOKS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.ERNE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.FOX &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Step 3
+
+when we want to combine **all** combinations from two data frames, use `full_join`
+&lt;br&gt;
+`mutate_if` is a shortcut to apply the same function to multiple variables
+
+
+```r
+events &lt;- 
+  full_join(blocks, points, by = "player") %&gt;% 
+  mutate_if(is.numeric, replace_na, replace = 0)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; player &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BROOKS &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.ERNE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.FOX &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 102 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Step 4
+
+need to reformat the `Player` variable to match
+
+
+```r
+final_data &lt;- nhl2021_players %&gt;% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", "."))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Season &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Position &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GP &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; A.J..GREER &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; L &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.55 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 878.18 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.NESS &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.83 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 594.65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BROOKS &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 117.45 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Step 4
+
+can now join in our events data
+&lt;br&gt;
+`mutate_at` is another efficient option
+
+
+```r
+final_data &lt;- nhl2021_players %&gt;% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %&gt;% 
+  left_join(events, by = c("Player" = "player")) %&gt;% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) 
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Season &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Position &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GP &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; A.J..GREER &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; L &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8.55 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 878.18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.NESS &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.83 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 594.65 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BROOKS &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; C &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 117.45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Step 4
+
+filter to only those who played &gt;= 1/3 of a season
+&lt;br&gt;
+create some rate variables for better comparison
+
+
+```r
+final_data &lt;- nhl2021_players %&gt;% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %&gt;% 
+  left_join(events, by = c("Player" = "player")) %&gt;% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) %&gt;% 
+  filter(GP &gt;= 18) %&gt;% 
+  mutate(points_60 = points * 60 / TOI,
+         blocks_60 = blocks * 60 / TOI,
+         TOI_game = TOI / GP)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Season &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Position &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; GP &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points_60 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks_60 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI_game &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 878.18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.503109 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.844724 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25.09086 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 594.65 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 29 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.614395 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.926091 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.99000 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.ERNE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; L &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 626.45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.915556 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.532445 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13.92111 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.FOX &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 20-21 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 55 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1358.85 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 102 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 47 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.075284 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.503808 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.70636 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Step 4
+
+change our outcome variable to a factor (easier for logistic regression)
+&lt;br&gt;
+eliminate unnecessary variables
+
+
+```r
+final_data &lt;- nhl2021_players %&gt;% 
+  mutate(Player = str_to_upper(Player),
+         Player = str_replace(Player, " ", ".")) %&gt;% 
+  left_join(events, by = c("Player" = "player")) %&gt;% 
+  mutate_at(c("points", "blocks"), replace_na, replace = 0) %&gt;% 
+  filter(GP &gt;= 18) %&gt;% 
+  mutate(points_60 = points * 60 / TOI,
+         blocks_60 = blocks * 60 / TOI,
+         TOI_game = TOI / GP) %&gt;% 
+  mutate(defense = as.factor(ifelse(Position == "D", "D", "F"))) %&gt;% 
+  select(-c(Position, Season, points, blocks, TOI, GP))
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points_60 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks_60 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI_game &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; defense &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.503109 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.844724 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25.09086 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.BOQVIST &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.614395 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.926091 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.99000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Exploring our data
+
+
+```r
+final_data %&gt;% 
+  ggplot(aes(x = TOI_game, fill = defense)) +
+* geom_density(alpha = 0.8, color = NA) +
+  scale_fill_brewer(type = "qual", name = NULL) +
+* guides(fill = guide_legend(override.aes = list(alpha = 1))) +
+  scale_x_continuous(expand = expansion(mult = c(0.01, 0.01))) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0))) +
+  labs(x = "Time on ice per game (min)") +
+  cmu_theme() +
+  theme(legend.position = c(0.9, 0.9))
+```
+
+---
+
+# Exploring our data
+
+&lt;img src="figs/Lec12/explore-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# User-defined functions
+
+&lt;br&gt;
+
+.large[What if we wanted to replicate that code for our other variables of interest?]
+&lt;br&gt;
+.medium[could just copy our code, or:]
+
+--
+
+&lt;br&gt;
+
+.large[User-defined functions:]
+&lt;br&gt;
+.medium[useful any time you're tempted to replicate code]
+&lt;br&gt;
+.medium[avoids mistakes from copying and pasting]
+&lt;br&gt;
+.medium[easy to apply your changes everywhere]
+
+---
+
+# User-defined functions
+
+
+```r
+*density_fn &lt;- function(x_var) {
+  
+  final_data %&gt;% 
+    ggplot(aes(x = x_var, fill = defense)) +
+    geom_density(alpha = 0.8, color = NA) +
+    scale_fill_brewer(type = "qual", name = NULL) +
+    guides(fill = guide_legend(override.aes = list(alpha = 1))) +
+    scale_x_continuous(expand = expansion(mult = c(0.01, 0.01))) +
+    scale_y_continuous(expand = expansion(mult = c(0, 0.03))) +
+    cmu_theme() +
+    theme(legend.position = c(0.9, 0.9))
+  
+}
+```
+
+---
+
+# User-defined functions
+
+
+```r
+density_fn(final_data$TOI_game) +
+  labs(x = "Time on ice per game (min)")
+```
+
+&lt;img src="figs/Lec12/explore-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# User-defined functions
+
+
+```r
+density_fn(final_data$blocks_60) +
+  labs(x = "Shots blocked per 60 minutes")
+```
+
+&lt;img src="figs/Lec12/explore-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# User-defined functions
+
+
+```r
+density_fn(final_data$points_60) +
+  labs(x = "Points per 60 min")
+```
+
+&lt;img src="figs/Lec12/explore-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exploring our data
+
+&lt;img src="figs/Lec12/explore-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Exploring our data
+
+
+```r
+final_data %&gt;% 
+  ggplot(aes(x = TOI_game, y = blocks_60, color = defense)) +
+  geom_point(alpha = 0.7, size = 2.5) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Time on ice per game (min)",
+       y = "Shots blocked per 60 min") +
+  guides(color = guide_legend(override.aes = 
+*                               list(alpha = 1, size = 5))) +
+  cmu_theme() +
+  theme(legend.position = c(0.9, 0.8))
+```
+
+---
+
+# Exploring our data
+
+&lt;img src="figs/Lec12/explore-7-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# First steps for modeling
+
+split the data into **training** data and **testing** data
+
+
+```r
+# this ensures that your samples are reproducible
+set.seed(1234)
+
+split_data &lt;- initial_split(data = final_data, 
+                            # sets the proportion for training
+                            prop = 0.7, 
+                            strata = defense)
+```
+
+--
+
+why is `strata = defense` necessary?
+
+---
+
+.h1[# First steps for modeling]
+
+.tiny[
+
+```r
+final_data %&gt;% 
+  mutate(defense = recode(defense, "D" = "defensemen", "F" = "forwards")) %&gt;% 
+  ggplot(aes(x = defense, fill = defense)) +
+  geom_bar() +
+  scale_fill_brewer(type = "qual", name = NULL) +
+  scale_y_continuous(expand = expansion(mult = c(0, 0.05))) +
+  cmu_theme() +
+  theme(legend.position = "none",
+        axis.title.x = element_blank())
+```
+
+&lt;img src="figs/Lec12/prep-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# First steps for modeling
+
+split the data into **training** data and **testing** data
+
+
+```r
+training_data &lt;- training(split_data)
+
+testing_data &lt;- testing(split_data)
+```
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+&lt;br&gt;
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**logistic regression**]
+
+&lt;br&gt;
+
+--
+
+.large[Is there a difference in the rate of scoring points by position?]
+&lt;br&gt;
+.medium[**hypothesis testing**]
+
+&lt;br&gt;
+
+--
+
+.large[Can we predict a player's rate of scoring points by:]
+&lt;br&gt;
+.medium[their position, their time on ice, and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**linear regression**]
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+
+```r
+TOI_only &lt;- 
+  recipe(defense ~ TOI_game, data = training_data) %&gt;% 
+  prep()
+```
+
+what can you do in a recipe?
+
+- create dummy variables
+- scale/normalize/transform variables
+- remove missing data
+- automatically remove variables that are highly correlated 
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+
+```r
+TOI_only &lt;- 
+  recipe(defense ~ TOI_game, data = training_data) %&gt;% 
+  prep()
+
+TOI_only
+```
+
+```
+## Data Recipe
+## 
+## Inputs:
+## 
+##       role #variables
+##    outcome          1
+##  predictor          1
+## 
+## Training data contained 462 data points and no missing data.
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+
+```r
+TOI_only &lt;- 
+  recipe(defense ~ TOI_game, data = training_data) %&gt;% 
+  prep()
+
+summary(TOI_only)
+```
+
+```
+## # A tibble: 2 x 4
+##   variable type    role      source  
+##   &lt;chr&gt;    &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+## 1 TOI_game numeric predictor original
+## 2 defense  nominal outcome   original
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+
+```r
+logistic &lt;-
+  logistic_reg(mode = "classification") %&gt;%
+  set_engine("glm")
+
+workflow_TOI &lt;- 
+  workflow() %&gt;% 
+  add_model(logistic) %&gt;% 
+  add_recipe(TOI_only)
+
+TOI_fit &lt;- 
+  workflow_TOI %&gt;% 
+  fit(data = training_data)
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+
+```r
+TOI_fit %&gt;% 
+  pull_workflow_fit() %&gt;% 
+  tidy()
+```
+
+```
+## # A tibble: 2 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)    7.26     0.704      10.3  6.62e-25
+## 2 TOI_game      -0.388    0.0400     -9.70 3.01e-22
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+normally you'd use cross-validation with training data (split into assessment &amp; analysis) to compare models and *simulate* performance with new data, then save the test set for evaluating *actual* performance with new data
+
+here we're going straight for the test set
+
+
+```r
+TOI_predictions_class &lt;- 
+  predict(TOI_fit, testing_data, type = "class") %&gt;% 
+  bind_cols(testing_data %&gt;% select(Player, defense, TOI_game)) 
+
+TOI_predictions &lt;- 
+  predict(TOI_fit, testing_data, type = "prob") %&gt;% 
+  bind_cols(TOI_predictions_class) %&gt;% 
+  mutate(correct = .pred_class == defense,
+         prediction = ifelse(defense == "D", .pred_D, .pred_F))
+```
+
+---
+
+# The results
+
+what do our results look like? 
+
+good to have both `.pred_class` and `.pred_D`
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .pred_D &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .pred_F &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .pred_class &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; defense &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI_game &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; correct &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; prediction &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.9224885 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0775115 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25.09086 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9224885 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.9111255 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0888745 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.FOX &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.70636 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9111255 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.7124500 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.2875500 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.PELECH &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21.04643 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7124500 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.3342578 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6657422 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ADRIAN.KEMPE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.93250 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.6657422 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.0771476 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9228524 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ALEX.BARABANOV &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.31227 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9228524 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.left.h1[# The results]
+
+.pull-left.tiny[
+
+```r
+TOI_predictions %&gt;% 
+  ggplot(aes(x = defense, y = TOI_game, 
+             color = .pred_class, 
+             shape = correct)) +
+  geom_jitter(size = 4) + 
+  scale_shape_manual(values = 
+              c("triangle", "circle"),
+              name = NULL) +
+  scale_color_brewer(type = "qual", 
+         name = "Predicted position") +
+  guides(color = guide_legend(
+    override.aes = list(size = 5))) +
+  labs(y = "Time on ice per game (min)",
+       x = "Actual position") +
+  cmu_theme() +
+  theme(legend.position = "top")
+```
+]
+
+--
+
+.pull-right[
+&lt;img src="figs/Lec12/results-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+for our `TOI_plus` model
+
+
+```r
+TOI_plus &lt;- 
+  recipe(defense ~ TOI_game + points_60 + blocks_60, 
+         data = training_data) %&gt;% 
+  prep()
+
+workflow_TOI_plus &lt;- 
+  workflow() %&gt;% 
+  add_model(logistic) %&gt;% 
+  add_recipe(TOI_plus)
+
+TOI_plus_fit &lt;- 
+  workflow_TOI_plus %&gt;% 
+  fit(data = training_data)
+```
+
+---
+
+# The modeling workflow
+
+*for informational purposes only!*
+
+
+```r
+TOI_plus_predictions_class &lt;- 
+  predict(TOI_plus_fit, testing_data, type = "class") %&gt;% 
+  bind_cols(testing_data %&gt;% select(Player, defense, 
+                                    TOI_game, points_60, blocks_60)) 
+
+TOI_plus_predictions &lt;- 
+  predict(TOI_plus_fit, testing_data, type = "prob") %&gt;% 
+  bind_cols(TOI_plus_predictions_class) %&gt;% 
+  mutate(correct = .pred_class == defense,
+         prediction = ifelse(defense == "D", .pred_D, .pred_F))
+```
+
+---
+
+# The results
+
+what do our results look like? 
+
+good to have both `.pred_class` and `.pred_D`
+
+&lt;table class="table" style="font-size: 13px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .pred_D &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .pred_F &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .pred_class &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Player &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; defense &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; TOI_game &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points_60 &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; blocks_60 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; correct &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; prediction &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.9962503 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0037497 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; AARON.EKBLAD &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 25.09086 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.503109 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.844724 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9962503 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.9891216 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0108784 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.FOX &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 24.70636 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2.075284 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4.503808 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9891216 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.9990881 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0009119 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ADAM.PELECH &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; D &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21.04643 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.712710 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.716273 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9990881 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.0222108 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9777892 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ADRIAN.KEMPE &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 16.93250 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.835017 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.328806 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9777892 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 0.0016860 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9983140 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; ALEX.BARABANOV &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; F &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12.31227 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1.772068 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3.101119 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TRUE &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9983140 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.left.h1[# The results]
+
+.pull-left.tiny[
+
+```r
+TOI_plus_predictions %&gt;% 
+  ggplot(aes(x = defense, y = TOI_game, 
+             color = .pred_class, 
+             shape = correct)) +
+  geom_jitter(size = 4) + 
+  scale_shape_manual(values = 
+              c("triangle", "circle"),
+              name = NULL) +
+  scale_color_brewer(type = "qual", 
+         name = "Predicted position") +
+  guides(color = guide_legend(
+    override.aes = list(size = 5))) +
+  labs(y = "Time on ice per game (min)",
+       x = "Actual position") +
+  cmu_theme() +
+  theme(legend.position = "top")
+```
+]
+
+--
+
+.pull-right[
+&lt;img src="figs/Lec12/results-4-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+.h1[# Metrics to evaluate and compare]
+
+.large[
+
+1. confusion matrix
+
+2. ROC curve
+
+3. density curves
+
+4. AUC/log loss/accuracy
+
+]
+
+---
+
+# Confusion matrix
+
+small heat map with predicted value against actual
+
+
+```r
+confusion_matrix &lt;- function(data_set) {
+  
+  data_set %&gt;%
+*   conf_mat(defense, .pred_class) %&gt;%
+    pluck(1) %&gt;%
+    as_tibble() %&gt;%
+*   ggplot(aes(x = Prediction, y = Truth, alpha = n)) +
+    geom_tile() +
+    geom_text(aes(label = n), colour = "white", alpha = 1, size = 8) +
+    cmu_theme() +
+    theme(panel.grid.major = element_blank(),
+          legend.position = "none") +
+    labs(y = "Actual Position",
+         x = "Predicted Position",
+         title = "Confusion Matrix")
+  
+}
+```
+
+---
+
+# Confusion matrix
+
+
+```r
+confusion_matrix(TOI_predictions) +
+  labs(subtitle = "TOI Only Model")
+```
+
+&lt;img src="figs/Lec12/evaluate-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Confusion matrix
+
+
+```r
+confusion_matrix(TOI_plus_predictions) +
+  labs(subtitle = "TOI-Plus Model")
+```
+
+&lt;img src="figs/Lec12/evaluate-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ROC curve
+
+plots false positive against true positive
+
+shows how good the model is at classifying
+
+aim is to maximize the area under it
+
+
+```r
+ROC_curve &lt;- function(dataset) {
+  
+  dataset %&gt;%
+*   roc_curve(defense, .pred_D) %&gt;%
+*   ggplot(aes(x = 1 - specificity, y = sensitivity)) +
+    geom_path() +
+    geom_abline(linetype = 3) +
+    coord_equal() +
+    labs(y = "True Positive Rate (Sensitivity)", 
+         x = "False Positive Rate",
+         title = "ROC Curve") +
+    cmu_theme()  
+  
+}
+```
+
+---
+
+# ROC curve
+
+
+```r
+ROC_curve(TOI_predictions) +
+  labs(subtitle = "TOI Only Model")
+```
+
+&lt;img src="figs/Lec12/evaluate-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# ROC curve
+
+
+```r
+ROC_curve(TOI_plus_predictions) +
+  labs(subtitle = "TOI-Plus Model")
+```
+
+&lt;img src="figs/Lec12/evaluate-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Density curves
+
+show densities for predicted values, colored by actual ones
+
+
+```r
+density_pred_fn &lt;- function(predictions) {
+  
+  predictions %&gt;% 
+    ggplot(aes(x = .pred_D, fill = defense)) +
+    geom_density(alpha = 0.5, color = NA) +
+    scale_fill_brewer(type = "qual",
+                      name = "Actual\nPosition") +
+    labs(x = "Predicted Defense") +
+    cmu_theme() +
+    theme(legend.position = c(0.8, 0.8))
+  
+}
+```
+
+---
+
+# Density curves
+
+
+```r
+density_pred_fn(TOI_predictions) +
+  labs(title = "TOI Only Model")
+```
+
+&lt;img src="figs/Lec12/evaluate-8-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Density curves
+
+
+```r
+density_pred_fn(TOI_plus_predictions) +
+  labs(title = "TOI-Plus Model")
+```
+
+&lt;img src="figs/Lec12/evaluate-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Individual metrics
+
+accuracy: how many predictions were right?
+
+
+```r
+TOI_predictions %&gt;%
+  accuracy(defense, .pred_class)
+```
+
+&lt;table class="table" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.765 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+log loss: how good were the predictions themselves?
+
+
+```r
+TOI_predictions %&gt;%
+  mn_log_loss(defense, .pred_D)
+```
+
+&lt;table class="table" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; mn_log_loss &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4735617 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Individual metrics
+
+AUC: what was the area under that ROC curve?
+
+
+```r
+TOI_predictions %&gt;%
+  accuracy(defense, .pred_class)
+```
+
+&lt;table class="table" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimate &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.765 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Individual metrics
+
+
+```r
+metrics &lt;- function(dataset) {
+  
+  tibble(
+    "log_loss" = 
+      mn_log_loss(dataset, defense, .pred_D) %&gt;%
+      select(.estimate),
+    "accuracy" = 
+      accuracy(dataset, defense, .pred_class) %&gt;%
+      select(.estimate),
+    "auc" = 
+      roc_auc(dataset, defense, .pred_D) %&gt;%
+      select(.estimate)
+  ) %&gt;% 
+    unnest(everything()) %&gt;% 
+    pivot_longer(everything(), names_to = "metric", 
+                 values_to = "value")
+  
+}
+```
+
+---
+
+# Comparing metrics
+
+
+```r
+metrics_TOI &lt;- 
+  metrics(TOI_predictions) %&gt;% 
+  mutate(model = "TOI only")
+
+metrics_TOI_plus &lt;- 
+  metrics(TOI_plus_predictions) %&gt;% 
+  mutate(model = "TOI plus")
+
+metrics_compare &lt;- 
+  bind_rows(metrics_TOI, metrics_TOI_plus)
+```
+
+&lt;table class="table" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; metric &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; value &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; model &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; log_loss &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4735617 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.7650000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; auc &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.8175134 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; log_loss &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1084734 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9600000 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; auc &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.9911988 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.h1[# Comparing metrics]
+
+.tiny[
+&lt;img src="figs/Lec12/evaluate-16-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Comparing metrics
+
+
+```r
+metrics_compare %&gt;%
+* mutate(label = case_when(metric == "accuracy" ~ "Accuracy\n(higher is better)",
+*                          metric == "auc" ~ "Area Under Curve\n(higher is better)",
+*                          metric == "log_loss" ~ "Log Loss\n(lower is better)")) %&gt;%
+  ggplot(aes(fill = model, y = value, x = model)) + 
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(type = "qual", palette = 2) +
+  scale_y_continuous(expand = expansion(mult = c(0, .1))) +
+  cmu_theme() +
+  labs(y = "Value", x = NULL, fill = NULL,
+       title = "Comparing Our Models") + 
+  facet_wrap(~label) +
+* geom_text(aes(label = round(value, 3)), vjust = -0.5,
+*           size = 3, position = position_dodge(width= 0.9)) +
+  theme(legend.position = "bottom",
+        axis.text.x = element_blank(),
+        legend.margin = margin(t = -3, b = -3),
+        strip.background = element_rect(fill = "light grey"),
+        strip.text = element_text(color = "black", size = 12))
+```
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+&lt;br&gt;
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**logistic regression**]
+
+&lt;br&gt;
+
+.large[Is there a difference in the rate of scoring points by position?]
+&lt;br&gt;
+.medium[**hypothesis testing**]
+
+&lt;br&gt;
+
+
+.large[Can we predict a player's rate of scoring points by:]
+&lt;br&gt;
+.medium[their position, their time on ice, and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**linear regression**]
+
+---
+
+# Hypothesis testing
+
+
+```r
+null_distribution &lt;- final_data %&gt;%
+  specify(response = points_60, explanatory = defense) %&gt;% 
+  hypothesize(null = "independence") %&gt;% 
+  generate(reps = 500, type = "permute") %&gt;% 
+  calculate("diff in means", order = c("D", "F"))
+```
+
+---
+
+# Hypothesis testing
+
+
+```r
+null_distribution %&gt;%
+  visualize() +
+  cmu_theme()
+```
+
+&lt;img src="figs/Lec12/hypothesis-2-1.png" width="504" /&gt;
+
+---
+
+# Hypothesis testing
+
+
+```r
+estimate &lt;- final_data %&gt;%
+  specify(response = points_60, explanatory = defense) %&gt;%
+  calculate("diff in means", order = c("D", "F"))
+```
+
+
+```
+## # A tibble: 1 x 1
+##     stat
+##    &lt;dbl&gt;
+## 1 -0.884
+```
+
+---
+
+# Hypothesis testing
+
+
+```r
+null_distribution %&gt;%
+  visualize() +
+  shade_p_value(obs_stat = estimate, direction = "two_sided") +
+  cmu_theme()
+```
+
+&lt;img src="figs/Lec12/hypothesis-5-1.png" width="504" /&gt;
+
+---
+
+# Questions to answer
+
+.large[Can we predict a player's position (forward or defenseman) from their time on ice?]
+&lt;br&gt;
+.medium[what if we add in their rate of scoring points and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**logistic regression**]
+
+&lt;br&gt;
+
+.large[Is there a difference in the rate of scoring points by position?]
+&lt;br&gt;
+.medium[**hypothesis testing**]
+
+&lt;br&gt;
+
+
+.large[Can we predict a player's rate of scoring points by:]
+&lt;br&gt;
+.medium[their position, their time on ice, and their rate of blocking shots?]
+&lt;br&gt;
+.medium[**linear regression**]
+
+---
+
+# Linear regression
+
+
+```r
+linear &lt;-
+  linear_reg(mode = "regression") %&gt;%
+  set_engine("lm")
+
+linear_recipe &lt;- 
+  recipe(points_60 ~ TOI_game + blocks_60 + defense, data = training_data) %&gt;% 
+  step_dummy(all_nominal_predictors()) %&gt;% 
+  prep()
+
+summary(linear_recipe)
+```
+
+```
+## # A tibble: 4 x 4
+##   variable  type    role      source  
+##   &lt;chr&gt;     &lt;chr&gt;   &lt;chr&gt;     &lt;chr&gt;   
+## 1 TOI_game  numeric predictor original
+## 2 blocks_60 numeric predictor original
+## 3 points_60 numeric outcome   original
+## 4 defense_F numeric predictor derived
+```
+
+---
+
+# Linear regression
+
+
+```r
+workflow_linear &lt;- 
+  workflow() %&gt;% 
+  add_model(linear) %&gt;% 
+  add_recipe(linear_recipe)
+
+workflow_linear
+```
+
+```
+## ══ Workflow ════════════════════════════════════════════════════════════════════
+## Preprocessor: Recipe
+## Model: linear_reg()
+## 
+## ── Preprocessor ────────────────────────────────────────────────────────────────
+## 1 Recipe Step
+## 
+## ● step_dummy()
+## 
+## ── Model ───────────────────────────────────────────────────────────────────────
+## Linear Regression Model Specification (regression)
+## 
+## Computational engine: lm
+```
+
+---
+
+# Linear regression
+
+
+```r
+linear_fit &lt;- 
+  workflow_linear %&gt;% 
+  fit(data = training_data)
+
+linear_fit %&gt;% 
+  pull_workflow_fit() %&gt;% 
+  tidy()
+```
+
+```
+## # A tibble: 4 x 5
+##   term        estimate std.error statistic  p.value
+##   &lt;chr&gt;          &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+## 1 (Intercept)   -0.926   0.185       -5.01 7.82e- 7
+## 2 TOI_game       0.132   0.00772     17.2  2.41e-51
+## 3 blocks_60     -0.167   0.0225      -7.41 6.06e-13
+## 4 defenseF       1.05    0.0777      13.5  3.90e-35
+```
+
+---
+
+# Linear regression
+
+
+```r
+linear_predictions &lt;- 
+  predict(linear_fit, new_data = testing_data) %&gt;% 
+  bind_cols(testing_data)
+
+rsq(linear_predictions,
+    truth = points_60,
+    estimate = .pred)
+```
+
+```
+## # A tibble: 1 x 3
+##   .metric .estimator .estimate
+##   &lt;chr&gt;   &lt;chr&gt;          &lt;dbl&gt;
+## 1 rsq     standard       0.584
+```
+
+---
+
+.h1[# Linear regression]
+
+.tiny[
+&lt;img src="figs/Lec12/regression-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+---
+
+# Linear regression
+
+
+```r
+linear_predictions %&gt;% 
+  ggplot(aes(x = .pred, y = points_60, color = defense)) +
+  geom_point(size = 3) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  geom_abline(intercept = 0, slope = 1, color = "black") +
+  guides(color = guide_legend(override.aes = list(size = 5))) +
+  coord_equal() +
+  cmu_theme() +
+* annotate("text", x = 0, y = 2.5, label = "R^2 == 0.618",
+*          parse = TRUE) +
+  labs(title = "Linear Regression Results",
+       x = "Predicted Points Rate",
+       y = "Actual Points Rate") +
+  theme(legend.position = c(0.2, 0.8))
+```
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Homework 4 due Tuesday June 22]
+
+&lt;br&gt;
+
+.large[Lab 8 on Tuesday June 22]
+
+&lt;br&gt;
+
+.large[Lecture 13 on Wednesday June 23]
+&lt;br&gt;
+.medium[creating tables and analyzing text data]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
