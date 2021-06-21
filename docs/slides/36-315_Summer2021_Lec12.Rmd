@@ -134,8 +134,6 @@ layout: true
 <br>
 
 .large[Assigned groups of 3]
-<br>
-.medium[addressed time zones as much as possible]
 
 --
 
@@ -1518,7 +1516,8 @@ linear_fit %>%
 ```{r regression-4}
 linear_predictions <- 
   predict(linear_fit, new_data = testing_data) %>% 
-  bind_cols(testing_data)
+  bind_cols(testing_data) %>% 
+  mutate(residual = points_60 - .pred)
 
 rsq(linear_predictions,
     truth = points_60,
@@ -1552,6 +1551,34 @@ linear_predictions %>%
 # Linear regression
 
 ```{r regression-5, eval = FALSE}
+```
+
+---
+
+.h1[# Linear regression]
+
+.tiny[
+```{r regression-6, echo = FALSE, fig.align = "center", fig.height = 6.5}
+linear_predictions %>% 
+  ggplot(aes(x = .pred, y = residual, color = defense)) +
+  geom_point(size = 3) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  geom_hline(yintercept = 0, color = "black") +
+  guides(color = guide_legend(override.aes = list(size = 5))) +
+  coord_equal() +
+  cmu_theme() +
+  labs(title = "Linear Regression Results",
+       x = "Predicted Points Rate",
+       y = "Residual") +
+  theme(legend.position = c(0.1, 0.1))
+```
+]
+
+---
+
+# Linear regression
+
+```{r regression-6, eval = FALSE}
 ```
 
 ---
