@@ -1773,80 +1773,67 @@ TOI_predictions %&gt;%
 
 
 ```r
-metrics &lt;- function(dataset) {
-  
-  tibble(
-    "log_loss" = 
-      mn_log_loss(dataset, defense, .pred_D) %&gt;%
-      select(.estimate),
-    "accuracy" = 
-      accuracy(dataset, defense, .pred_class) %&gt;%
-      select(.estimate),
-    "auc" = 
-      roc_auc(dataset, defense, .pred_D) %&gt;%
-      select(.estimate)
-  ) %&gt;% 
-    unnest(everything()) %&gt;% 
-    pivot_longer(everything(), names_to = "metric", 
-                 values_to = "value")
-  
-}
+metrics &lt;- metric_set(accuracy, mn_log_loss, roc_auc)
+
+metrics_all &lt;- bind_rows(
+  metrics(TOI_predictions,
+          truth = defense,
+          estimate = .pred_class, .pred_D) %&gt;% 
+    mutate(model = "TOI only"),
+  metrics(TOI_plus_predictions,
+          truth = defense,
+          estimate = .pred_class, .pred_D) %&gt;% 
+    mutate(model = "TOI plus")
+)
 ```
 
 ---
 
 # Comparing metrics
 
-
-```r
-metrics_TOI &lt;- 
-  metrics(TOI_predictions) %&gt;% 
-  mutate(model = "TOI only")
-
-metrics_TOI_plus &lt;- 
-  metrics(TOI_plus_predictions) %&gt;% 
-  mutate(model = "TOI plus")
-
-metrics_compare &lt;- 
-  bind_rows(metrics_TOI, metrics_TOI_plus)
-```
-
 &lt;table class="table" style="font-size: 14px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
  &lt;thead&gt;
   &lt;tr&gt;
-   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; metric &lt;/th&gt;
-   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; value &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .metric &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimator &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; .estimate &lt;/th&gt;
    &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; model &lt;/th&gt;
   &lt;/tr&gt;
  &lt;/thead&gt;
 &lt;tbody&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; log_loss &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.4735617 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.7650000 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; mn_log_loss &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.4735617 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.8175134 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; TOI only &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; log_loss &lt;/td&gt;
-   &lt;td style="text-align:right;"&gt; 0.1084734 &lt;/td&gt;
-   &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
-  &lt;/tr&gt;
-  &lt;tr&gt;
    &lt;td style="text-align:left;"&gt; accuracy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.9600000 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
   &lt;/tr&gt;
   &lt;tr&gt;
-   &lt;td style="text-align:left;"&gt; auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; mn_log_loss &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.1084734 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; roc_auc &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; binary &lt;/td&gt;
    &lt;td style="text-align:right;"&gt; 0.9911988 &lt;/td&gt;
    &lt;td style="text-align:left;"&gt; TOI plus &lt;/td&gt;
   &lt;/tr&gt;
@@ -1866,11 +1853,11 @@ metrics_compare &lt;-
 .tiny[
 
 ```r
-metrics_compare %&gt;%
-* mutate(label = case_when(metric == "accuracy" ~ "Accuracy\n(higher is better)",
-*                          metric == "auc" ~ "Area Under Curve\n(higher is better)",
-*                          metric == "log_loss" ~ "Log Loss\n(lower is better)")) %&gt;%
-  ggplot(aes(fill = model, y = value, x = model)) + 
+metrics_all %&gt;%
+* mutate(label = case_when(.metric == "accuracy" ~ "Accuracy\n(higher is better)",
+*                          .metric == "roc_auc" ~ "Area Under Curve\n(higher is better)",
+*                          .metric == "mn_log_loss" ~ "Log Loss\n(lower is better)")) %&gt;%
+  ggplot(aes(fill = model, y = .estimate, x = model)) + 
   geom_bar(stat = "identity") +
   scale_fill_brewer(type = "qual", palette = 2) +
   scale_y_continuous(expand = expansion(mult = c(0, .1))) +
@@ -1878,7 +1865,7 @@ metrics_compare %&gt;%
   labs(y = "Value", x = NULL, fill = NULL,
        title = "Comparing Our Models") + 
   facet_wrap(~label) +
-* geom_text(aes(label = round(value, 3)), vjust = -0.5,
+* geom_text(aes(label = round(.estimate, 3)), vjust = -0.5,
 *           size = 5, position = position_dodge(width= 0.9)) +
   theme(legend.position = "bottom",
         axis.text.x = element_blank(),
