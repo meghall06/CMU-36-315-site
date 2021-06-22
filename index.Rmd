@@ -53,6 +53,7 @@ Lab slides are available below in html format, and the .Rmd files are available 
 + [Lab 4](slides/36-315_Summer2021_Lab4_lec.html)
 + [Lab 5](slides/36-315_Summer2021_Lab5_lec.html)
 + [Lab 6](slides/36-315_Summer2021_Lab6_lec.html)
++ [Lab 8](slides/36-315_Summer2021_Lab8_lec.html)
 
 ## Resources
 
