@@ -1,0 +1,2307 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec13</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 13
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 23, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# Logistics
+
+&lt;br&gt;
+
+.large[Group project assignments]
+&lt;br&gt;
+.medium[check-in due Friday]
+
+&lt;br&gt;
+
+.large[Assignments left]
+&lt;br&gt;
+.medium[two labs &amp; one HW]
+
+&lt;br&gt;
+
+.large[Dropping second graphic critique]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Text analysis]
+&lt;br&gt;
+.medium[text mining &amp; natural language processing is an entire field]
+&lt;br&gt;
+.medium[just touching a piece with the `tidytext` package]
+&lt;br&gt;
+.medium[and more data manipulation practice]
+
+&lt;br&gt;
+
+.large[Tables]
+&lt;br&gt;
+.medium[for presentations and for reports]
+&lt;br&gt;
+.medium[using `gt` and `kableExtra`]
+
+---
+
+# The `tidytext` package
+
+&lt;br&gt;
+
+.large[We've used the `separate` function before]
+
+---
+
+# `separate`
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; dessert &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; prunes, animal crackers, cream cheese &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; phyllo dough, gorgonzola cheese, pineapple rings, blueberries &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; brioche, cantaloupe, pecans, avocados &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+--
+
+
+```r
+separate(dessert, into = c("ingredient 1", "ingredient 2", 
+                           "ingredient 3", "ingredient 4"), 
+         sep = ", ")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; ingredient 1 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; ingredient 2 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; ingredient 3 &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; ingredient 4 &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; prunes &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; animal crackers &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cream cheese &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; phyllo dough &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; gorgonzola cheese &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pineapple rings &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; blueberries &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; brioche &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; cantaloupe &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; pecans &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; avocados &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Today's data
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; price &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; description &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; title &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Much like the regular bottling from 2012, this comes across as rather rough and tannic, with rustic, earthy, herbal characteristics. Nonetheless, if you think of it as a pleasantly unfussy country wine, it's a good companion to a hearty winter stew. &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Soft, supple plum envelopes an oaky structure in this Cabernet, supported by 15% Merlot. Coffee and chocolate complete the picture, finishing strong at the end, resulting in a value-priced wine of attractive flavor and immediate accessibility. &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature 2011 Mountain Cuvée Cabernet Sauvignon (Napa Valley) &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Slightly reduced, this wine offers a chalky, tannic backbone to an otherwise juicy explosion of rich black cherry, the whole accented throughout by firm oak and cigar box. &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini 2012 Cabernet Sauvignon (Alexander Valley) &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# The `tidytext` package
+
+&lt;br&gt;
+
+.large[We've used the `separate` function before]
+&lt;br&gt;
+.medium[but that becomes unwieldy very quickly]
+
+&lt;br&gt;
+
+.large[`tidytext` has `unnest_tokens`]
+&lt;br&gt;
+.medium[token: a meaningful unit of text (here, a word)]
+&lt;br&gt;
+.medium["tidy text" has one row per token]
+
+---
+
+# Tokens
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(word, description)
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; price &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; title &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; much &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; like &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; the &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; regular &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bottling &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# The `tidytext` package
+
+&lt;br&gt;
+
+.large[We've used the `separate` function before]
+&lt;br&gt;
+.medium[but that becomes unwieldy very quickly]
+
+&lt;br&gt;
+
+.large[`tidytext` has `unnest_tokens`]
+&lt;br&gt;
+.medium[token: a meaningful unit of text (here, a word)]
+&lt;br&gt;
+.medium["tidy text" has one row per token]
+
+&lt;br&gt;
+
+.large[What about "stop words"]
+
+---
+
+# Stop words
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(word, description) %&gt;% 
+  count(word, sort = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; and &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 85755 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; the &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 56821 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; a &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46048 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; of &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41492 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; with &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28442 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; this &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28259 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; is &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22377 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; in &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19742 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; wine &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19195 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; flavors &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17075 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Stop words
+
+`anti_join` is a **filtering join**: drops all observations in the initial data frame that have a match in the second data frame
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words) %&gt;% 
+  count(word, sort = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; wine &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19195 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; flavors &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17075 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fruit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12242 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cherry &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8531 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; acidity &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8337 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; finish &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7888 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Stop words
+
+`stop_words`
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; lexicon &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; a &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; a's &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; able &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; about &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; above &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; according &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; accordingly &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; across &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; actually &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; after &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; SMART &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Custom stop words
+
+
+```r
+wine_stop_words &lt;- tribble(
+  ~"word", ~"lexicon",
+  "aromas", "custom",
+  "drink", "custom",
+  "finish", "custom",
+  "flavors", "custom",
+  "wine", "custom",
+  "acidity", "custom",
+  "notes", "custom",
+  "palate", "custom",
+  "red", "custom",
+  "chardonnay", "custom",
+  "nose", "custom",
+  "vineyard", "custom",
+  "pinot", "custom",
+  "noir", "custom",
+  "cabernet", "custom",
+  "black", "custom"
+)
+```
+
+---
+
+# Custom stop words
+
+`bind_rows` stacks data frames together if they have the same variables
+
+
+```r
+stop_words_custom &lt;- 
+  bind_rows(wine_stop_words, stop_words)
+```
+
+---
+
+# Custom stop words
+
+
+```r
+wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+  count(word, sort = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fruit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12242 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cherry &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8531 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; oak &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7194 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tannins &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6440 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ripe &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6224 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; rich &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4783 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; apple &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3712 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; dry &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3661 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; spice &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3633 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; texture &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3594 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Graphing word frequency
+
+use `slice_max` (new version of `top_n`) to filter by `n`
+
+
+```r
+top_15 &lt;- wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+  count(word) %&gt;% 
+* slice_max(n, n = 15)
+```
+
+--
+
+
+```r
+top_15 %&gt;% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count") +
+  labs(y = NULL,
+       title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot")
+```
+
+---
+
+# Graphing word frequency
+
+&lt;img src="figs/Lec13/wine-14-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Graphing word frequency
+
+`slice_max` respects `group_by`
+
+
+```r
+top_15_variety &lt;- wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+* group_by(variety) %&gt;%
+  count(word) %&gt;% 
+  slice_max(n, n = 15)
+```
+
+--
+
+
+```r
+top_15_variety %&gt;% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count") +
+* facet_wrap(~variety) +
+  labs(y = NULL, title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot")
+```
+
+---
+
+# Graphing word frequency
+
+&lt;img src="figs/Lec13/wine-16-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Graphing word frequency
+
+add `scales = "free"` as an argument to `facet_wrap`
+
+
+```r
+top_15_variety %&gt;% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count") +
+* facet_wrap(~variety, scales = "free") +
+  labs(y = NULL,
+       title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Graphing word frequency
+
+&lt;img src="figs/Lec13/wine-17-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Graphing word frequency
+
+`reorder_within` is a nifty function within `tidytext`
+
+
+```r
+top_15_variety %&gt;% 
+  ggplot(aes(x = n, 
+*            y = reorder_within(word, n, variety))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+*                    labels = label_number_si()) +
+* scale_y_reordered(sep = "___") +
+  facet_wrap(~variety, scales = "free") +
+  labs(y = NULL,
+       title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Graphing word frequency
+
+&lt;img src="figs/Lec13/wine-18-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Comparing proportions
+
+
+```r
+wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+* mutate(word = str_extract(word, "[a-z']+")) %&gt;%
+  count(word, variety) %&gt;% 
+  filter(n &gt; 10)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abound &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abound &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abrasive &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; absolutely &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; absolutely &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Comparing proportions
+
+
+```r
+wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+  mutate(word = str_extract(word, "[a-z']+")) %&gt;% 
+  count(word, variety) %&gt;% 
+  filter(n &gt; 10) %&gt;% 
+* group_by(variety) %&gt;%
+* mutate(proportion = n / sum(n)) %&gt;%
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; proportion &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 14 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000903 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000727 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000497 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abound &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 31 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001735 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abound &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 18 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000813 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abrasive &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 15 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000967 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; absolutely &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001418 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Comparing proportions
+
+
+```r
+proportions &lt;- wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+  mutate(word = str_extract(word, "[a-z']+")) %&gt;% 
+  count(word, variety) %&gt;% 
+  filter(n &gt; 10) %&gt;% 
+  group_by(variety) %&gt;% 
+  mutate(proportion = n / sum(n)) %&gt;% 
+  select(-c(n)) %&gt;% 
+  pivot_wider(names_from = variety, values_from = proportion)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Cabernet Sauvignon &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Chardonnay &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Pinot Noir &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; ability &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000903 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000727 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000497 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abound &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001735 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000813 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abrasive &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000967 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; absolutely &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001418 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0000727 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001627 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abundance &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001287 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0001175 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Comparing proportions
+
+
+```r
+proportions %&gt;% 
+  ggplot(aes(x = Chardonnay, y = `Pinot Noir`)) +
+  geom_jitter(alpha = 0.2) +
+  geom_text(aes(label = word), check_overlap = TRUE) +
+  geom_abline(color = "light gray", linetype = 2) +
+  cmu_theme()
+```
+
+---
+
+# Comparing proportions
+
+&lt;img src="figs/Lec13/wine-25-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Sentiment analysis
+
+
+```r
+sentiment &lt;- 
+  get_sentiments("bing")
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sentiment &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; 2-faces &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abnormal &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abolish &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abominable &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abominably &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abominate &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abomination &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; abort &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; aborted &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; aborts &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; negative &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Sentiment analysis
+
+`inner_join` drops unmatched observations (so be careful)
+
+
+```r
+word_sentiment &lt;- wine_ratings %&gt;%
+  unnest_tokens(word, description) %&gt;% 
+  anti_join(stop_words_custom) %&gt;% 
+  mutate(word = str_extract(word, "[a-z']+")) %&gt;%
+  inner_join(sentiment) %&gt;%
+  count(word, sentiment, sort = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sentiment &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; rich &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; positive &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4783 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; soft &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; positive &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3552 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; sweet &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; positive &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3228 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fresh &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; positive &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3019 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; crisp &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; positive &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2928 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Sentiment analysis
+
+
+```r
+word_sentiment %&gt;% 
+* group_by(sentiment) %&gt;%
+* slice_max(n, n = 15) %&gt;%
+  mutate(sentiment = factor(sentiment, 
+                            levels = c("positive","negative"))) %&gt;% 
+  ggplot(aes(x = n, 
+*            y = reorder_within(word, n, sentiment))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) +
+* scale_y_reordered(sep = "___") +
+  facet_wrap(~sentiment, scales = "free") +
+  labs(y = NULL,
+       title = "Common words in wine reviews, by sentiment") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Sentiment analysis
+
+&lt;img src="figs/Lec13/sentiment-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Sentiment analysis
+
+
+```r
+word_sentiment %&gt;% 
+  slice_max(n, n = 15) %&gt;% 
+  ggplot(aes(x = n, 
+             y = reorder(word, n),
+*            fill = sentiment)) +
+  geom_bar(stat = "identity") +
+* scale_fill_brewer(type = "qual", name = NULL,
+*                   guide = guide_legend(reverse = TRUE)) +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) +
+  labs(y = NULL,
+       title = "Common words in wine reviews, by sentiment") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        legend.position = c(0.8, 0.2))
+```
+
+---
+
+# Sentiment analysis
+
+&lt;img src="figs/Lec13/sentiment-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bigrams
+
+some of text analysis (including sentiment analysis) is more effective if the "token" is larger
+
+bigram: two words
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %&gt;% 
+  count(bigram, sort = TRUE)
+```
+
+--
+
+
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bigram &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; on the &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8445 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; this is &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5934 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; with a &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5734 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; the palate &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5278 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; this wine &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4896 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; is a &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4777 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; in the &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4694 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bigrams
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %&gt;% 
+  separate(bigram, into = c("first_word", "second_word"), 
+           remove = FALSE, sep = " ")
+```
+
+--
+
+
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; price &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; title &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bigram &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; first_word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; second_word &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; much like &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; much &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; like &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; like the &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; like &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; the &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; the regular &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; the &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; regular &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; regular bottling &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; regular &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bottling &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bottling from &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bottling &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; from &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bigrams
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %&gt;% 
+  separate(bigram, into = c("first_word", "second_word"), 
+           remove = FALSE, sep = " ") %&gt;% 
+  filter(!first_word %in% stop_words_custom$word &amp; 
+           !second_word %in% stop_words_custom$word)
+```
+
+--
+
+
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; price &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; title &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bigram &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; first_word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; second_word &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; regular bottling &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; regular &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; bottling &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; rustic earthy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; rustic &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; earthy &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; earthy herbal &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; earthy &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; herbal &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; herbal characteristics &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; herbal &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; characteristics &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bigrams
+
+
+```r
+wine_ratings %&gt;% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %&gt;% 
+  separate(bigram, into = c("first_word", "second_word"), 
+           remove = FALSE, sep = " ") %&gt;% 
+  filter(!first_word %in% stop_words_custom$word &amp; 
+           !second_word %in% stop_words_custom$word) %&gt;% 
+  count(bigram, sort = TRUE)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bigram &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; medium bodied &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1073 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cherry fruit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1009 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; buttered toast &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 792 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; french oak &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 760 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; tropical fruit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 641 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+.h1[# Bigrams]
+
+.tiny[
+
+```r
+display %&gt;% 
+  filter(variety != "Cabernet Sauvignon") %&gt;% 
+  count(bigram, variety) %&gt;% 
+* group_by(variety) %&gt;%
+* slice_max(n, n = 15) %&gt;%
+  ggplot(aes(x = n, 
+             y = reorder_within(bigram, n, variety))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) +
+* scale_y_reordered(sep = "___") +
+  facet_wrap(~variety, scales = "free") +
+  labs(y = NULL,
+       title = "Common bigrams in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+]
+
+---
+
+# Bigrams
+
+&lt;img src="figs/Lec13/bigram-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Another example
+
+**what elements are in the bakes of those who were eliminated and those who were star baker?**
+
+.center[![bakeoff](figs/Lec13/bakeoff.png)]
+
+---
+
+# Bake Off
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; series &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; episode &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; baker &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; result &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; signature &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; showstopper &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Lea &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cranberry and Pistachio Cakewith Orange Flower Water Icing &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Raspberries and Cream filled Chocolatewith Chocolate-dipped Fresh Fruit &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mark &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sticky Marmalade Tea Loaf &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Heart-shaped Chocolate and Beetroot Cake with Store-Bought silver chocolate hearts and chocolate red and white roses. &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Annetha &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Rose Petal Shortbread &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pink Swirl Macarons / Eclairs &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louise &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Stained Glass Window Shortbread &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Strawberry, Mint, and Cream Meringues  Chocolate Eclairs / Orange, Yellow and Pink Macarons &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Jonathan &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Anchovy, Sweet Paprika and Oregano Bread &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sticky Lemon Honey Bun Olive and Anchovy RollSundried Tomatoes and Fresh Herbs RollStilton, Walnut and Apple RollCinnamon and Cardamom Chelsea Bun &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bake Off
+
+
+```r
+challenge_results %&gt;% 
+  filter(result == "STAR BAKER") %&gt;% 
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %&gt;% 
+  unnest_tokens(word, bake) %&gt;% 
+  anti_join(stop_words) %&gt;% 
+  count(word, sort = TRUE) %&gt;% 
+  slice_max(n, n = 15)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cake &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chocolate &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 21 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; orange &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 11 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pie &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 10 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; apple &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 9 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; caramel &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 8 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; hazelnut &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bake Off
+
+
+```r
+plot &lt;- challenge_results %&gt;% 
+* filter(result %in% c("STAR BAKER","OUT")) %&gt;%
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %&gt;% 
+  unnest_tokens(word, bake) %&gt;% 
+  anti_join(stop_words) %&gt;% 
+* count(word, result, sort = TRUE) %&gt;%
+* group_by(result) %&gt;%
+  slice_max(n, n = 15)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; result &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cake &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chocolate &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; orange &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 13 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fruit &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; pie &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; OUT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 12 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bake Off
+
+
+```r
+plot %&gt;% 
+* mutate(result = factor(result, levels = c("STAR BAKER","OUT"))) %&gt;%
+  ggplot(aes(x = n, 
+*            y = reorder_within(word, n, result))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+*                    labels = label_number_si()) +
+* scale_y_reordered(sep = "___") +
+  facet_wrap(~result, scales = "free") +
+  labs(y = NULL,
+       title = "Bake details by result") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Bake Off
+
+&lt;img src="figs/Lec13/bake-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Bake Off
+
+
+```r
+compare &lt;- challenge_results %&gt;% 
+  filter(result %in% c("STAR BAKER","OUT")) %&gt;% 
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %&gt;% 
+  unnest_tokens(word, bake) %&gt;% 
+  anti_join(stop_words) %&gt;% 
+  count(word, result, sort = TRUE) %&gt;% 
+  group_by(result) %&gt;% 
+  mutate(proportion = n / sum(n)) %&gt;% 
+  select(-c(n)) %&gt;% 
+  pivot_wider(names_from = result, values_from = proportion)
+```
+
+--
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; word &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; OUT &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; STAR BAKER &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; cake &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0334572 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0324484 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; chocolate &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0334572 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0309735 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; orange &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0161090 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0162242 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; fruit &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0148699 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0.0058997 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# Bake Off
+
+
+```r
+compare %&gt;% 
+  ggplot(aes(x = OUT, y = `STAR BAKER`)) +
+  geom_jitter(alpha = 0.2) +
+  geom_text(aes(label = word), check_overlap = TRUE) +
+  geom_abline(color = "light gray", linetype = 2) +
+  labs(x = "Eliminated", y = "Star Baker") +
+  cmu_theme()
+```
+
+---
+
+# Bake Off
+
+&lt;img src="figs/Lec13/bake-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# Tables
+
+.large[When are plots necessary?]
+&lt;br&gt;
+.medium[when position &amp; shape is important (to spot trends, outliers, etc)]
+&lt;br&gt;
+.medium[when you need to see the data as a whole]
+
+&lt;br&gt;
+
+--
+
+.large[When can tables be useful?]
+&lt;br&gt;
+.medium[when you want to look up a specific value]
+&lt;br&gt;
+.medium[example: qualitative value against 2 categorical variables]
+
+--
+
+&lt;br&gt;
+
+.large[Package options (my preference)]
+&lt;br&gt;
+.medium[`kableExtra` for presentations]
+&lt;br&gt;
+.medium[`gt` for reports/documents]
+&lt;br&gt;
+.medium[both use `%&gt;%`]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  select(title, winery, variety, points, price) %&gt;% 
+  head(3) %&gt;% 
+  kable("html") %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; title &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; winery &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature 2011 Mountain Cuvée Cabernet Sauvignon (Napa Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini 2012 Cabernet Sauvignon (Alexander Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  select(title, winery, variety, points, price) %&gt;% 
+  head(3) %&gt;% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Wine Name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Winery &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Rating &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature 2011 Mountain Cuvée Cabernet Sauvignon (Napa Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini 2012 Cabernet Sauvignon (Alexander Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  select(title, winery, variety, points, price) %&gt;% 
+  head(3) %&gt;% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %&gt;% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Wine Name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Winery &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Rating &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature 2011 Mountain Cuvée Cabernet Sauvignon (Napa Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini 2012 Cabernet Sauvignon (Alexander Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 34 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Data from WineEnthusiast, via #TidyTuesday.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  select(title, winery, variety, points, price) %&gt;% 
+  mutate(price = dollar(price)) %&gt;% 
+  head(3) %&gt;% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %&gt;% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Wine Name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Winery &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature 2011 Mountain Cuvée Cabernet Sauvignon (Napa Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini 2012 Cabernet Sauvignon (Alexander Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $34 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Data from WineEnthusiast, via #TidyTuesday.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  select(title, winery, variety, points, price) %&gt;% 
+  mutate(price = dollar(price)) %&gt;% 
+  head(5) %&gt;% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %&gt;% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.") %&gt;% 
+  scroll_box(width = "800px", height = "200px")
+```
+
+&lt;div style="border: 1px solid #ddd; padding: 0px; overflow-y: scroll; height:200px; overflow-x: scroll; width:800px; "&gt;&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;position: sticky; top:0; background-color: #FFFFFF;"&gt; Wine Name &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;position: sticky; top:0; background-color: #FFFFFF;"&gt; Winery &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;position: sticky; top:0; background-color: #FFFFFF;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;position: sticky; top:0; background-color: #FFFFFF;"&gt; Rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;position: sticky; top:0; background-color: #FFFFFF;"&gt; Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks 2012 Vintner's Reserve Wild Child Block Pinot Noir (Willamette Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Sweet Cheeks &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $65 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature 2011 Mountain Cuvée Cabernet Sauvignon (Napa Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Kirkland Signature &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $19 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini 2012 Cabernet Sauvignon (Alexander Valley) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Louis M. Martini &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $34 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Mirassou 2012 Chardonnay (Central Coast) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Mirassou &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $12 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Acrobat 2013 Pinot Noir (Oregon) &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Acrobat &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 87 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $20 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Data from WineEnthusiast, via #TidyTuesday.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;&lt;/div&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  group_by(variety) %&gt;% 
+  summarize(avg_rating = mean(points, na.rm = TRUE),
+            avg_price = mean(price, na.rm = TRUE)) %&gt;% 
+  mutate(avg_rating = round(avg_rating, 1),
+         avg_price = dollar(avg_price)) %&gt;% 
+  kable("html", col.names = c("Variety", "Avg. Rating", "Avg. Price")) %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %&gt;% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Avg. Rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Avg. Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $48.25 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $34.70 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 89.4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $47.88 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Data from WineEnthusiast, via #TidyTuesday.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  group_by(variety) %&gt;% 
+  summarize(avg_rating = mean(points, na.rm = TRUE),
+            avg_price = mean(price, na.rm = TRUE)) %&gt;% 
+  mutate(avg_rating = round(avg_rating, 1),
+         avg_price = dollar(avg_price)) %&gt;% 
+  kable("html", col.names = c("Variety", "Avg. Rating", "Avg. Price")) %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(c(0, 3), bold = T, color = "white", background = "#bb0000") %&gt;% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Avg. Rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Avg. Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $48.25 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $34.70 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 89.4 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; $47.88 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Data from WineEnthusiast, via #TidyTuesday.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+
+```r
+wine_ratings %&gt;% 
+  group_by(variety) %&gt;% 
+  summarize(avg_rating = mean(points, na.rm = TRUE),
+            avg_price = mean(price, na.rm = TRUE)) %&gt;% 
+  mutate(avg_rating = round(avg_rating, 1),
+         avg_price = dollar(avg_price)) %&gt;% 
+  kable("html", col.names = c("Variety", "Avg. Rating", "Avg. Price"),
+        caption = "Pinot Noir is, on average, the highest-rated wine") %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(c(0, 3), bold = T, color = "white", background = "#bb0000") %&gt;% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;border-bottom: 0;"&gt;
+&lt;caption style="font-size: initial !important;"&gt;Pinot Noir is, on average, the highest-rated wine&lt;/caption&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Variety &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Avg. Rating &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Avg. Price &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Cabernet Sauvignon &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.6 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $48.25 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chardonnay &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 88.3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; $34.70 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; Pinot Noir &lt;/td&gt;
+   &lt;td style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; 89.4 &lt;/td&gt;
+   &lt;td style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; $47.88 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;tfoot&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;&lt;span style="font-style: italic;"&gt;Note: &lt;/span&gt;&lt;/td&gt;&lt;/tr&gt;
+&lt;tr&gt;&lt;td style="padding: 0; " colspan="100%"&gt;
+&lt;sup&gt;&lt;/sup&gt; Data from WineEnthusiast, via #TidyTuesday.&lt;/td&gt;&lt;/tr&gt;
+&lt;/tfoot&gt;
+&lt;/table&gt;
+]
+
+---
+
+# `gt`
+
+.center[![gt](figs/Lec13/gt.svg)]
+
+.right[image source: [https://gt.rstudio.com/](https://gt.rstudio.com/)]
+
+.left[*more details in the .html!*]
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lab 9 on Thursday June 24]
+
+&lt;br&gt;
+
+.large[Lecture 14 on Friday June 25]
+&lt;br&gt;
+.medium[presentations with `xaringan`]
+
+&lt;br&gt;
+
+.large[Group project check-in due Friday]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

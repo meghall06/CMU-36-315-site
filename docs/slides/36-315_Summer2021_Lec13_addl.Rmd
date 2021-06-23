@@ -1,0 +1,362 @@
+---
+title: "36-315 Lecture 13"
+subtitle: "Tables in html with `gt`"
+author: "Meghan Hall"
+output: 
+  html_document
+---
+
+```{r setup, include=FALSE}
+
+# normally you'll want to include this with the libraries at the beginning of your document
+knitr::opts_chunk$set(message = FALSE, # markdown won't knit messages
+                      warning = FALSE, # markdown won't knit warnings
+                      echo = TRUE)     # code will be included
+
+library(tidyverse)
+library(tidymodels)
+library(palmerpenguins)
+library(gt)
+library(paletteer)
+library(gtsummary)
+
+wine_ratings <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-28/winemag-data-130k-v2.csv") %>% 
+  select(-c(X1, taster_name, taster_twitter_handle)) %>% 
+  unique() %>% 
+  filter(variety %in% c("Pinot Noir","Chardonnay","Cabernet Sauvignon"))
+
+penguins <- palmerpenguins::penguins %>% 
+  drop_na()
+
+set.seed(1234)
+
+split_data <- initial_split(penguins, prop = 0.7)
+
+training_data <- training(split_data)
+
+testing_data <- testing(split_data)
+
+linear <-
+  linear_reg(mode = "regression") %>%
+  set_engine("lm")
+
+linear_recipe <- 
+  recipe(body_mass_g ~ sex + species + flipper_length_mm + bill_length_mm + bill_depth_mm, 
+         data = training_data) %>% 
+  step_dummy(all_nominal_predictors()) %>% 
+  prep()
+
+workflow_linear <- 
+  workflow() %>% 
+  add_model(linear) %>% 
+  add_recipe(linear_recipe)
+
+linear_fit <- 
+  workflow_linear %>% 
+  fit(data = training_data)
+```
+
+## Example 1: `wine_ratings`
+
+```{r gt-1}
+wine_table <- wine_ratings %>% 
+  group_by(variety) %>% 
+  summarize(mean_price = mean(price, na.rm = TRUE),
+            mean_rating = mean(points, na.rm = TRUE),
+            wines_rated = n())
+
+wine_table %>% 
+  gt()
+```
+
+
+
+```{r gt-2}
+wine_table %>% 
+  gt() %>% 
+  tab_header(title = "Most Popular Wine Varieties",
+             subtitle = "Rating and Price")
+```
+
+
+
+```{r gt-3}
+wine_table %>% 
+  gt() %>% 
+  tab_header(title = "Most Popular Wine Varieties",
+             md("**Rating** *and* **Price**"))
+```
+
+
+
+```{r gt-4}
+wine_table %>% 
+  gt() %>% 
+  tab_header(title = "Most Popular Wine Varieties",
+             md("**Rating** *and* **Price**")) %>% 
+  tab_source_note(source_note = 
+                   md("*Data source: WineEnthusiast via #TidyTuesday*"))
+```
+
+
+
+```{r gt-5}
+wine_table %>% 
+  gt() %>% 
+  tab_header(title = "Most Popular Wine Varieties",
+             md("**Rating** *and* **Price**")) %>% 
+  tab_source_note(source_note = 
+                   md("*Data source: WineEnthusiast via #TidyTuesday*")) %>% 
+  cols_label(variety = md("**Variety**"),
+    mean_price = "Avg. Price",
+    mean_rating = "Avg. Rating",
+    wines_rated = "# Rated") 
+```
+
+
+
+```{r gt-6}
+wine_table %>% 
+  gt() %>% 
+  tab_header(title = "Most Popular Wine Varieties",
+             md("**Rating** *and* **Price**")) %>% 
+  tab_source_note(source_note = 
+                   md("*Data source: WineEnthusiast via #TidyTuesday*")) %>% 
+  cols_label(variety = md("**Variety**"),
+    mean_price = "Avg. Price",
+    mean_rating = "Avg. Rating",
+    wines_rated = "# Rated") %>% 
+  fmt_currency(mean_price) %>% 
+  fmt_number(mean_rating, decimals = 1) %>% 
+  fmt_number(wines_rated, use_seps = TRUE, decimals = 0)
+```
+
+## Example 2: `mpg`
+
+```{r gt-7}
+mpg_gt <- mpg %>% 
+  filter(manufacturer %in% c("audi","ford","hyundai","toyota","volkswagen")) %>% 
+  group_by(manufacturer, class, year) %>% 
+  summarize(hwy = mean(hwy),
+            cty = mean(cty)) %>% 
+  pivot_wider(names_from = year, values_from = c(hwy, cty)) %>% 
+  na.omit() %>% 
+  ungroup()
+
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt()
+```
+
+
+
+```{r gt-8}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008))
+```
+
+
+
+```{r gt-9}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008)) %>% 
+  cols_label(manufacturer = md("*Manufacturer*"),
+             class = md("*Class*"),
+             hwy_1999 = "Hwy MPG",
+             hwy_2008 = "Hwy MPG",
+             cty_1999 = "City MPG",
+             cty_2008 = "City MPG")
+```
+
+
+
+```{r gt-10}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008)) %>% 
+  cols_label(manufacturer = md("*Manufacturer*"),
+             class = md("*Class*"),
+             hwy_1999 = "Hwy MPG",
+             hwy_2008 = "Hwy MPG",
+             cty_1999 = "City MPG",
+             cty_2008 = "City MPG") %>% 
+  fmt_number(contains("1999") | contains("2008"), decimals = 1)
+```
+
+
+
+```{r gt-11}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008)) %>% 
+  cols_label(manufacturer = md("*Manufacturer*"),
+             class = md("*Class*"),
+             hwy_1999 = "Hwy MPG",
+             hwy_2008 = "Hwy MPG",
+             cty_1999 = "City MPG",
+             cty_2008 = "City MPG") %>% 
+  fmt_number(contains("1999") | contains("2008"), decimals = 1) %>% 
+  tab_row_group(label = "Efficient!",
+                rows = hwy_2008 >= 25) %>%
+  tab_row_group(label = "Less efficient",
+                rows = hwy_2008 < 25) %>% 
+  row_group_order(groups = c("Efficient!", "Less efficient"))
+```
+
+
+
+```{r gt-12}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008)) %>% 
+  cols_label(manufacturer = md("*Manufacturer*"),
+             class = md("*Class*"),
+             hwy_1999 = "Hwy MPG",
+             hwy_2008 = "Hwy MPG",
+             cty_1999 = "City MPG",
+             cty_2008 = "City MPG") %>% 
+  fmt_number(contains("1999") | contains("2008"), decimals = 1) %>% 
+  tab_row_group(label = "Efficient!",
+                rows = hwy_2008 >= 25) %>%
+  tab_row_group(label = "Less efficient",
+                rows = hwy_2008 < 25) %>% 
+  row_group_order(groups = c("Efficient!", "Less efficient")) %>% 
+  tab_footnote(footnote = "Defined as highway mpg >= 25 in 2008",
+               locations = cells_row_groups(groups = "Efficient!"))
+```
+
+
+
+```{r gt-13}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008)) %>% 
+  cols_label(manufacturer = md("*Manufacturer*"),
+             class = md("*Class*"),
+             hwy_1999 = "Hwy MPG",
+             hwy_2008 = "Hwy MPG",
+             cty_1999 = "City MPG",
+             cty_2008 = "City MPG") %>% 
+  fmt_number(contains("1999") | contains("2008"), decimals = 1) %>% 
+  tab_row_group(label = "Efficient!",
+                rows = hwy_2008 >= 25) %>%
+  tab_row_group(label = "Less efficient",
+                rows = hwy_2008 < 25) %>% 
+  row_group_order(groups = c("Efficient!", "Less efficient")) %>% 
+  tab_footnote(footnote = "Defined as highway mpg >= 25 in 2008",
+               locations = cells_row_groups(groups = "Efficient!")) %>% 
+  data_color(columns = hwy_2008,
+             colors = scales::col_numeric(paletteer::paletteer_d(
+               palette = "ggsci::red_material") %>% as.character(),
+               domain = NULL))
+```
+
+
+
+```{r gt-14}
+mpg_gt %>% 
+  arrange(desc(hwy_2008)) %>% 
+  gt() %>% 
+  tab_spanner(label = md("**1999**"),
+    columns = c(hwy_1999, cty_1999)) %>%
+  tab_spanner(label = md("**2008**"),
+    columns = c(hwy_2008, cty_2008)) %>% 
+  cols_label(manufacturer = md("*Manufacturer*"),
+             class = md("*Class*"),
+             hwy_1999 = "Hwy MPG",
+             hwy_2008 = "Hwy MPG",
+             cty_1999 = "City MPG",
+             cty_2008 = "City MPG") %>% 
+  fmt_number(contains("1999") | contains("2008"), decimals = 1) %>% 
+  tab_row_group(label = "Efficient!",
+                rows = hwy_2008 >= 25) %>%
+  tab_row_group(label = "Less efficient",
+                rows = hwy_2008 < 25) %>% 
+  row_group_order(groups = c("Efficient!", "Less efficient")) %>% 
+  tab_footnote(footnote = "Defined as highway mpg >= 25 in 2008",
+               locations = cells_row_groups(groups = "Efficient!")) %>% 
+  data_color(columns = hwy_2008,
+             colors = scales::col_numeric(paletteer::paletteer_d(
+               palette = "ggsci::red_material") %>% as.character(),
+               domain = NULL)) %>% 
+  tab_options(heading.subtitle.font.size = 12,
+              heading.align = "left",
+              table.border.top.color = "black",
+              table.border.bottom.color = "black",
+              column_labels.border.top.color = "black",
+              column_labels.border.bottom.color = "black",
+              column_labels.border.bottom.width = px(2))
+```
+
+
+
+## `gtsummary`
+
+```{r gtsummary-1}
+tbl_regression(linear_fit)
+```
+
+
+```{r gtsummary-2}
+tbl_regression(linear_fit,
+               label = list(flipper_length_mm = "Flipper Length (mm)",
+                            bill_length_mm = "Bill Length (mm)",
+                            bill_depth_mm = "Bill Depth (mm)"))
+```
+
+
+```{r gtsummary-3}
+tbl_regression(linear_fit,
+               label = list(flipper_length_mm = "Flipper Length (mm)",
+                            bill_length_mm = "Bill Length (mm)",
+                            bill_depth_mm = "Bill Depth (mm)")) %>% 
+  bold_labels()
+```
+
+
+```{r gtsummary-4}
+gt_theme <- function(data) {
+  tab_options(data = data,
+              heading.subtitle.font.size = 12,
+              heading.align = "left",
+              table.border.top.color = "black",
+              table.border.bottom.color = "black",
+              column_labels.border.top.color = "black",
+              column_labels.border.bottom.color = "black",
+              column_labels.border.bottom.width = px(2))
+}
+
+tbl_regression(linear_fit,
+               label = list(flipper_length_mm = "Flipper Length (mm)",
+                            bill_length_mm = "Bill Length (mm)",
+                            bill_depth_mm = "Bill Depth (mm)")) %>% 
+  bold_labels() %>% 
+  as_gt() %>%
+  gt_theme()
+```

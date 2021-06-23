@@ -1,0 +1,1234 @@
+---
+title: "36-315-Lec13"
+subtitle: ""  
+author: "Meghan Hall"
+date: 
+output:
+  xaringan::moon_reader:
+    seal: false
+    css: ["xaringan-themer.css", "custom.css"]
+    lib_dir: libs
+    nature:
+      titleSlideClass: ["left", "middle"]
+      highlightStyle: github
+      highlightLines: true
+#      highlightSpans: true
+      countIncrementalSlides: false
+      slideNumberFormat: "%current%"
+---
+```{r setup, include=FALSE}
+library(emo)
+#library(icons)
+library(kableExtra)
+#library(betweenthepipes)
+library(showtext)
+library(tidyverse)
+library(tidymodels)
+library(palmerpenguins)
+library(tidytext)
+library(gt)
+library(gtsummary)
+library(bakeoff)
+
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec13/")
+
+font_add_google(name = "Open Sans",   # Name of the font on the Google Fonts site
+                family = "open_sans")
+font_add_google(name = "Source Serif Pro",   # Name of the font on the Google Fonts site
+                family = "source_serif_pro")
+showtext_auto()
+
+cmu_theme <- function () { 
+  theme_linedraw(base_size=11, base_family="source_serif_pro") %+replace% 
+    theme(
+      panel.background  = element_blank(),
+      plot.background = element_rect(fill = "transparent", color = NA), 
+      legend.background = element_rect(fill = "transparent", color = NA),
+      legend.key = element_rect(fill = "transparent", color = NA),
+      axis.ticks = element_blank(),
+      panel.grid.major = element_line(color = "grey90", size = 0.3), 
+      panel.grid.minor = element_blank(),
+      plot.title = element_text(size = 18, hjust = 0, vjust = 0.5, face = "bold", margin = margin(b = 0.2, unit = "cm")),
+      plot.subtitle = element_text(size = 12, hjust = 0, vjust = 0.5, margin = margin(b = 0.2, unit = "cm")),
+      plot.caption = element_text(size = 7, hjust = 1, face = "italic", margin = margin(t = 0.1, unit = "cm")),
+      axis.text.x = element_text(size = 13),
+      axis.text.y = element_text(size = 13)
+    )
+}
+
+wine_ratings <- readr::read_csv("https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2019/2019-05-28/winemag-data-130k-v2.csv") %>% 
+  select(-c(X1, taster_name, taster_twitter_handle)) %>% 
+  unique() %>% 
+  filter(variety %in% c("Pinot Noir","Chardonnay","Cabernet Sauvignon"))
+
+chopped <- read_tsv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/master/data/2020/2020-08-25/chopped.tsv')
+```
+
+```{r xaringan-themer, include=FALSE, warning=FALSE}
+library(xaringanthemer)
+
+style_mono_accent(
+  header_font_google = xaringanthemer::google_font("Open Sans"),
+  text_font_google   = xaringanthemer:: google_font("Source Serif Pro", "400", "400i"),
+  code_font_google   = xaringanthemer::google_font("Roboto Mono"),
+  link_color = "#bb0000",
+  base_color = "#bb0000",
+  extra_fonts = list(
+    google_font("Lato")
+  ),
+  extra_css = list(
+    ".title-slide h2" = list("font-family" = "Source Serif Pro"),
+    ".title-slide h3" = list("font-family" = "Source Serif Pro")
+  )
+)
+```
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 13
+
+Meghan Hall <br> Department of Statistics & Data Science <br> Carnegie Mellon University <br> June 23, 2021
+
+---
+layout: true
+<div class="my-footer"><span>cmu-36315.netlify.app</span></div>
+---
+
+# Logistics
+
+<br>
+
+.large[Group project assignments]
+<br>
+.medium[check-in due Friday]
+
+<br>
+
+.large[Assignments left]
+<br>
+.medium[two labs & one HW]
+
+<br>
+
+.large[Dropping second graphic critique]
+
+---
+
+# Today
+
+<br>
+
+.large[Text analysis]
+<br>
+.medium[text mining & natural language processing is an entire field]
+<br>
+.medium[just touching a piece with the `tidytext` package]
+<br>
+.medium[and more data manipulation practice]
+
+<br>
+
+.large[Tables]
+<br>
+.medium[for presentations and for reports]
+<br>
+.medium[using `gt` and `kableExtra`]
+
+---
+
+# The `tidytext` package
+
+<br>
+
+.large[We've used the `separate` function before]
+
+---
+
+# `separate`
+
+```{r separate-1, echo = FALSE}
+chopped %>% 
+  select(dessert) %>% 
+  head(3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+--
+
+```{r eval = FALSE}
+separate(dessert, into = c("ingredient 1", "ingredient 2", 
+                           "ingredient 3", "ingredient 4"), 
+         sep = ", ")
+```
+
+```{r separate-2, echo = FALSE}
+chopped %>% 
+  select(dessert) %>% 
+  separate(dessert, into = c("ingredient 1", "ingredient 2", "ingredient 3", "ingredient 4"), sep = ", ") %>% 
+  head(3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Today's data
+
+```{r wine-1, echo = FALSE}
+wine_ratings %>% 
+  select(points, price, variety, description, title) %>% 
+  head(3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# The `tidytext` package
+
+<br>
+
+.large[We've used the `separate` function before]
+<br>
+.medium[but that becomes unwieldy very quickly]
+
+<br>
+
+.large[`tidytext` has `unnest_tokens`]
+<br>
+.medium[token: a meaningful unit of text (here, a word)]
+<br>
+.medium["tidy text" has one row per token]
+
+---
+
+# Tokens
+
+```{r wine-2, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(word, description)
+```
+
+```{r wine-3, echo = FALSE}
+wine_ratings %>% 
+  select(points, price, variety, description, title) %>% 
+  head(1) %>% 
+  unnest_tokens(word, description) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# The `tidytext` package
+
+<br>
+
+.large[We've used the `separate` function before]
+<br>
+.medium[but that becomes unwieldy very quickly]
+
+<br>
+
+.large[`tidytext` has `unnest_tokens`]
+<br>
+.medium[token: a meaningful unit of text (here, a word)]
+<br>
+.medium["tidy text" has one row per token]
+
+<br>
+
+.large[What about "stop words"]
+
+---
+
+# Stop words
+
+```{r wine-4, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(word, description) %>% 
+  count(word, sort = TRUE)
+```
+
+--
+
+```{r wine-5, echo = FALSE}
+wine_ratings %>% 
+  unnest_tokens(word, description) %>% 
+  count(word, sort = TRUE) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Stop words
+
+`anti_join` is a **filtering join**: drops all observations in the initial data frame that have a match in the second data frame
+
+```{r wine-6, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words) %>% 
+  count(word, sort = TRUE)
+```
+
+--
+
+```{r wine-7, echo = FALSE}
+wine_ratings %>% 
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words) %>% 
+  count(word, sort = TRUE) %>% 
+  head(6) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Stop words
+
+`stop_words`
+
+```{r wine-8, echo = FALSE}
+stop_words %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Custom stop words
+
+```{r wine-9, eval = TRUE}
+wine_stop_words <- tribble(
+  ~"word", ~"lexicon",
+  "aromas", "custom",
+  "drink", "custom",
+  "finish", "custom",
+  "flavors", "custom",
+  "wine", "custom",
+  "acidity", "custom",
+  "notes", "custom",
+  "palate", "custom",
+  "red", "custom",
+  "chardonnay", "custom",
+  "nose", "custom",
+  "vineyard", "custom",
+  "pinot", "custom",
+  "noir", "custom",
+  "cabernet", "custom",
+  "black", "custom"
+)
+```
+
+---
+
+# Custom stop words
+
+`bind_rows` stacks data frames together if they have the same variables
+
+```{r wine-10, eval = TRUE}
+stop_words_custom <- 
+  bind_rows(wine_stop_words, stop_words)
+```
+
+---
+
+# Custom stop words
+
+```{r wine-11, eval = FALSE}
+wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  count(word, sort = TRUE)
+```
+
+--
+
+```{r wine-12, echo = FALSE}
+wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  count(word, sort = TRUE) %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Graphing word frequency
+
+use `slice_max` (new version of `top_n`) to filter by `n`
+
+```{r wine-13, eval = TRUE}
+top_15 <- wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  count(word) %>% 
+  slice_max(n, n = 15) #<<
+```
+
+--
+
+```{r wine-14, eval = FALSE}
+top_15 %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count") +
+  labs(y = NULL,
+       title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot")
+```
+
+---
+
+# Graphing word frequency
+
+```{r wine-14, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Graphing word frequency
+
+`slice_max` respects `group_by`
+
+```{r wine-15, eval = TRUE}
+top_15_variety <- wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  group_by(variety) %>% #<<
+  count(word) %>% 
+  slice_max(n, n = 15)
+```
+
+--
+
+```{r wine-16, eval = FALSE}
+top_15_variety %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count") +
+  facet_wrap(~variety) + #<<
+  labs(y = NULL, title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot")
+```
+
+---
+
+# Graphing word frequency
+
+```{r wine-16, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Graphing word frequency
+
+add `scales = "free"` as an argument to `facet_wrap`
+
+```{r wine-17, eval = FALSE}
+top_15_variety %>% 
+  ggplot(aes(x = n, y = reorder(word, n))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count") +
+  facet_wrap(~variety, scales = "free") + #<<
+  labs(y = NULL,
+       title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Graphing word frequency
+
+```{r wine-17, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Graphing word frequency
+
+`reorder_within` is a nifty function within `tidytext`
+
+```{r wine-18, eval = FALSE}
+top_15_variety %>% 
+  ggplot(aes(x = n, 
+             y = reorder_within(word, n, variety))) + #<<
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) + #<<
+  scale_y_reordered(sep = "___") + #<<
+  facet_wrap(~variety, scales = "free") +
+  labs(y = NULL,
+       title = "Common words in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Graphing word frequency
+
+```{r wine-18, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Comparing proportions
+
+```{r wine-19, eval = FALSE}
+wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>% #<<
+  count(word, variety) %>% 
+  filter(n > 10)
+```
+
+--
+
+```{r wine-20, echo = FALSE}
+wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(word, variety) %>% 
+  filter(n > 10) %>% 
+  head(8) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Comparing proportions
+
+```{r wine-21, eval = FALSE}
+wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>% 
+  count(word, variety) %>% 
+  filter(n > 10) %>% 
+  group_by(variety) %>% #<<
+  mutate(proportion = n / sum(n)) %>% #<<
+```
+
+--
+
+```{r wine-22, echo = FALSE}
+wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  count(word, variety) %>% 
+  filter(n > 10) %>% 
+  group_by(variety) %>% 
+  mutate(proportion = n / sum(n)) %>% 
+  head(7) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Comparing proportions
+
+```{r wine-23, eval = TRUE}
+proportions <- wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>% 
+  count(word, variety) %>% 
+  filter(n > 10) %>% 
+  group_by(variety) %>% 
+  mutate(proportion = n / sum(n)) %>% 
+  select(-c(n)) %>% 
+  pivot_wider(names_from = variety, values_from = proportion)
+```
+
+--
+
+```{r wine-24, echo = FALSE}
+proportions %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Comparing proportions
+
+```{r wine-25, eval = FALSE}
+proportions %>% 
+  ggplot(aes(x = Chardonnay, y = `Pinot Noir`)) +
+  geom_jitter(alpha = 0.2) +
+  geom_text(aes(label = word), check_overlap = TRUE) +
+  geom_abline(color = "light gray", linetype = 2) +
+  cmu_theme()
+```
+
+---
+
+# Comparing proportions
+
+```{r wine-25, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Sentiment analysis
+
+```{r sentiment-1}
+sentiment <- 
+  get_sentiments("bing")
+```
+
+--
+
+```{r sentiment-2, echo = FALSE}
+sentiment %>% 
+  head(10) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Sentiment analysis
+
+`inner_join` drops unmatched observations (so be careful)
+
+```{r sentiment-3, eval = TRUE}
+word_sentiment <- wine_ratings %>%
+  unnest_tokens(word, description) %>% 
+  anti_join(stop_words_custom) %>% 
+  mutate(word = str_extract(word, "[a-z']+")) %>%
+  inner_join(sentiment) %>%
+  count(word, sentiment, sort = TRUE)
+```
+
+--
+
+```{r sentiment-4, echo = FALSE}
+word_sentiment %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Sentiment analysis
+
+```{r sentiment-5, eval = FALSE}
+word_sentiment %>% 
+  group_by(sentiment) %>% #<<
+  slice_max(n, n = 15) %>% #<<
+  mutate(sentiment = factor(sentiment, 
+                            levels = c("positive","negative"))) %>% 
+  ggplot(aes(x = n, 
+             y = reorder_within(word, n, sentiment))) + #<<
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) +
+  scale_y_reordered(sep = "___") + #<<
+  facet_wrap(~sentiment, scales = "free") +
+  labs(y = NULL,
+       title = "Common words in wine reviews, by sentiment") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Sentiment analysis
+
+```{r sentiment-5, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Sentiment analysis
+
+```{r sentiment-6, eval = FALSE}
+word_sentiment %>% 
+  slice_max(n, n = 15) %>% 
+  ggplot(aes(x = n, 
+             y = reorder(word, n),
+             fill = sentiment)) + #<<
+  geom_bar(stat = "identity") +
+  scale_fill_brewer(type = "qual", name = NULL, #<<
+                    guide = guide_legend(reverse = TRUE)) + #<<
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) +
+  labs(y = NULL,
+       title = "Common words in wine reviews, by sentiment") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        legend.position = c(0.8, 0.2))
+```
+
+---
+
+# Sentiment analysis
+
+```{r sentiment-6, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Bigrams
+
+some of text analysis (including sentiment analysis) is more effective if the "token" is larger
+
+bigram: two words
+
+```{r bigram-1, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %>% 
+  count(bigram, sort = TRUE)
+```
+
+--
+
+```{r display-1, eval = TRUE, echo = FALSE}
+display <- wine_ratings %>% 
+  select(points, price, variety, description, title) %>% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2)
+```
+
+```{r bigram-2, echo = FALSE}
+display %>% 
+  count(bigram, sort = TRUE) %>% 
+  head(7) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bigrams
+
+```{r bigram-3, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %>% 
+  separate(bigram, into = c("first_word", "second_word"), 
+           remove = FALSE, sep = " ")
+```
+
+--
+
+```{r display-2, eval = TRUE, echo = FALSE}
+display <- display %>% 
+  separate(bigram, into = c("first_word", "second_word"), remove = FALSE, sep = " ")
+```
+
+```{r bigram-4, echo = FALSE}
+display %>%  
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bigrams
+
+```{r bigram-5, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %>% 
+  separate(bigram, into = c("first_word", "second_word"), 
+           remove = FALSE, sep = " ") %>% 
+  filter(!first_word %in% stop_words_custom$word & 
+           !second_word %in% stop_words_custom$word)
+```
+
+--
+
+```{r display-3, eval = TRUE, echo = FALSE}
+display <- display %>% 
+  filter(!first_word %in% stop_words_custom$word & !second_word %in% stop_words_custom$word)
+```
+
+```{r bigram-6, echo = FALSE}
+display %>% 
+  head(4) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bigrams
+
+```{r bigram-7, eval = FALSE}
+wine_ratings %>% 
+  unnest_tokens(bigram, description, token = "ngrams", n = 2) %>% 
+  separate(bigram, into = c("first_word", "second_word"), 
+           remove = FALSE, sep = " ") %>% 
+  filter(!first_word %in% stop_words_custom$word & 
+           !second_word %in% stop_words_custom$word) %>% 
+  count(bigram, sort = TRUE)
+```
+
+--
+
+```{r bigram-8, echo = FALSE}
+display %>% 
+  count(bigram, sort = TRUE) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+.h1[# Bigrams]
+
+.tiny[
+```{r bigram-9, eval = FALSE}
+display %>% 
+  filter(variety != "Cabernet Sauvignon") %>% 
+  count(bigram, variety) %>% 
+  group_by(variety) %>% #<<
+  slice_max(n, n = 15) %>% #<<
+  ggplot(aes(x = n, 
+             y = reorder_within(bigram, n, variety))) +
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) +
+  scale_y_reordered(sep = "___") + #<<
+  facet_wrap(~variety, scales = "free") +
+  labs(y = NULL,
+       title = "Common bigrams in wine reviews") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+]
+
+---
+
+# Bigrams
+
+```{r bigram-9, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Another example
+
+**what elements are in the bakes of those who were eliminated and those who were star baker?**
+
+.center[![bakeoff](figs/Lec13/bakeoff.png)]
+
+---
+
+# Bake Off
+
+```{r bake-1, echo = FALSE}
+challenge_results %>% 
+  filter(result %in% c("OUT","STAR BAKER")) %>% 
+  select(-c(technical)) %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bake Off
+
+```{r bake-2, eval = FALSE}
+challenge_results %>% 
+  filter(result == "STAR BAKER") %>% 
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %>% 
+  unnest_tokens(word, bake) %>% 
+  anti_join(stop_words) %>% 
+  count(word, sort = TRUE) %>% 
+  slice_max(n, n = 15)
+```
+
+--
+
+```{r bake-3, echo = FALSE}
+challenge_results %>% 
+  filter(result == "STAR BAKER") %>% 
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %>% 
+  unnest_tokens(word, bake) %>% 
+  anti_join(stop_words) %>% 
+  count(word, sort = TRUE) %>% 
+  slice_max(n, n = 15) %>% 
+  head(7) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bake Off
+
+```{r bake-4, eval = TRUE}
+plot <- challenge_results %>% 
+  filter(result %in% c("STAR BAKER","OUT")) %>% #<<
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %>% 
+  unnest_tokens(word, bake) %>% 
+  anti_join(stop_words) %>% 
+  count(word, result, sort = TRUE) %>% #<<
+  group_by(result) %>% #<<
+  slice_max(n, n = 15)
+```
+
+--
+
+```{r bake-5, echo = FALSE}
+plot %>% 
+  head(5) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bake Off
+
+```{r bake-6, eval = FALSE}
+plot %>% 
+  mutate(result = factor(result, levels = c("STAR BAKER","OUT"))) %>% #<<
+  ggplot(aes(x = n, 
+             y = reorder_within(word, n, result))) + #<<
+  geom_bar(stat = "identity") +
+  scale_x_continuous(expand = expansion(mult = c(0, .1)),
+                     name = "Count",
+                     labels = label_number_si()) + #<<
+  scale_y_reordered(sep = "___") + #<<
+  facet_wrap(~result, scales = "free") +
+  labs(y = NULL,
+       title = "Bake details by result") +
+  cmu_theme() +
+  theme(panel.grid.major.y = element_blank(),
+        plot.title.position = "plot",
+        strip.background = element_rect(fill = "light gray"),
+        strip.text = element_text(color = "black"))
+```
+
+---
+
+# Bake Off
+
+```{r bake-6, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Bake Off
+
+```{r bake-7, eval = TRUE}
+compare <- challenge_results %>% 
+  filter(result %in% c("STAR BAKER","OUT")) %>% 
+  pivot_longer(c(signature, showstopper), 
+               names_to = NULL, values_to = "bake") %>% 
+  unnest_tokens(word, bake) %>% 
+  anti_join(stop_words) %>% 
+  count(word, result, sort = TRUE) %>% 
+  group_by(result) %>% 
+  mutate(proportion = n / sum(n)) %>% 
+  select(-c(n)) %>% 
+  pivot_wider(names_from = result, values_from = proportion)
+```
+
+--
+
+```{r bake-8, echo = FALSE}
+compare %>% 
+  head(4) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+
+---
+
+# Bake Off
+
+```{r bake-9, eval = FALSE}
+compare %>% 
+  ggplot(aes(x = OUT, y = `STAR BAKER`)) +
+  geom_jitter(alpha = 0.2) +
+  geom_text(aes(label = word), check_overlap = TRUE) +
+  geom_abline(color = "light gray", linetype = 2) +
+  labs(x = "Eliminated", y = "Star Baker") +
+  cmu_theme()
+```
+
+---
+
+# Bake Off
+
+```{r bake-9, echo = FALSE, fig.align = "center", fig.height = 6.5}
+```
+
+---
+
+# Tables
+
+.large[When are plots necessary?]
+<br>
+.medium[when position & shape is important (to spot trends, outliers, etc)]
+<br>
+.medium[when you need to see the data as a whole]
+
+<br>
+
+--
+
+.large[When can tables be useful?]
+<br>
+.medium[when you want to look up a specific value]
+<br>
+.medium[example: qualitative value against 2 categorical variables]
+
+--
+
+<br>
+
+.large[Package options (my preference)]
+<br>
+.medium[`kableExtra` for presentations]
+<br>
+.medium[`gt` for reports/documents]
+<br>
+.medium[both use `%>%`]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-1}
+wine_ratings %>% 
+  select(title, winery, variety, points, price) %>% 
+  head(3) %>% 
+  kable("html") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-2}
+wine_ratings %>% 
+  select(title, winery, variety, points, price) %>% 
+  head(3) %>% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-3}
+wine_ratings %>% 
+  select(title, winery, variety, points, price) %>% 
+  head(3) %>% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %>% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-4}
+wine_ratings %>% 
+  select(title, winery, variety, points, price) %>% 
+  mutate(price = dollar(price)) %>% 
+  head(3) %>% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %>% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-5}
+wine_ratings %>% 
+  select(title, winery, variety, points, price) %>% 
+  mutate(price = dollar(price)) %>% 
+  head(5) %>% 
+  kable("html", col.names = c("Wine Name", "Winery",
+                              "Variety", "Rating", "Price")) %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %>% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.") %>% 
+  scroll_box(width = "800px", height = "200px")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-6}
+wine_ratings %>% 
+  group_by(variety) %>% 
+  summarize(avg_rating = mean(points, na.rm = TRUE),
+            avg_price = mean(price, na.rm = TRUE)) %>% 
+  mutate(avg_rating = round(avg_rating, 1),
+         avg_price = dollar(avg_price)) %>% 
+  kable("html", col.names = c("Variety", "Avg. Rating", "Avg. Price")) %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(0, bold = T, color = "white", background = "#bb0000") %>% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-7}
+wine_ratings %>% 
+  group_by(variety) %>% 
+  summarize(avg_rating = mean(points, na.rm = TRUE),
+            avg_price = mean(price, na.rm = TRUE)) %>% 
+  mutate(avg_rating = round(avg_rating, 1),
+         avg_price = dollar(avg_price)) %>% 
+  kable("html", col.names = c("Variety", "Avg. Rating", "Avg. Price")) %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(c(0, 3), bold = T, color = "white", background = "#bb0000") %>% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+]
+
+---
+
+.h1[# `kableExtra`]
+
+.tiny[
+```{r kable-8}
+wine_ratings %>% 
+  group_by(variety) %>% 
+  summarize(avg_rating = mean(points, na.rm = TRUE),
+            avg_price = mean(price, na.rm = TRUE)) %>% 
+  mutate(avg_rating = round(avg_rating, 1),
+         avg_price = dollar(avg_price)) %>% 
+  kable("html", col.names = c("Variety", "Avg. Rating", "Avg. Price"),
+        caption = "Pinot Noir is, on average, the highest-rated wine") %>%
+  kable_styling(font_size = 16, position = "center", full_width = F) %>%
+  row_spec(c(0, 3), bold = T, color = "white", background = "#bb0000") %>% 
+  footnote(general = "Data from WineEnthusiast, via #TidyTuesday.")
+```
+]
+
+---
+
+# `gt`
+
+.center[![gt](figs/Lec13/gt.svg)]
+
+.right[image source: [https://gt.rstudio.com/](https://gt.rstudio.com/)]
+
+.left[*more details in the .html!*]
+---
+
+# Upcoming
+
+<br>
+
+.large[Lab 9 on Thursday June 24]
+
+<br>
+
+.large[Lecture 14 on Friday June 25]
+<br>
+.medium[presentations with `xaringan`]
+
+<br>
+
+.large[Group project check-in due Friday]
