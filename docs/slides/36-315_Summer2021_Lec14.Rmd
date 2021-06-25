@@ -20,7 +20,6 @@ output:
 library(emo)
 #library(icons)
 library(kableExtra)
-#library(betweenthepipes)
 library(showtext)
 library(tidyverse)
 library(palmerpenguins)
