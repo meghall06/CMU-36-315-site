@@ -44,6 +44,7 @@ Lecture slides are available below in html format, and the .Rmd files are availa
 + [Lecture 12](slides/36-315_Summer2021_Lec12.html): model output visualizations from `tidymodels` & user-defined functions
 + [Lecture 13](slides/36-315_Summer2021_Lec13.html): text analysis with `tidytext` and tables with `kableExtra`
 + [Lecture 13](slides/36-315_Summer2021_Lec13_addl.html): tables with `gt` and `gtsummary`
++ [Lecture 14](slides/36-315_Summer2021_Lec14.html): presentations with `xaringan`
 
 ## Labs
 

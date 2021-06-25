@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec14</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <link href="libs/panelset/panelset.css" rel="stylesheet" />
+    <script src="libs/panelset/panelset.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 14
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 25, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Presentations with `xaringan`]
+&lt;br&gt;
+.medium[making slides with .Rmd]
+
+&lt;br&gt;
+
+.large[Tips for the final report]
+&lt;br&gt;
+.medium[what needs to be included]
+&lt;br&gt;
+.medium[how to get a great grade]
+
+---
+
+# Final report: what to include
+
+.large[An overview of the data]
+&lt;br&gt;
+.medium[what's included, what's not included, what's missing]
+&lt;br&gt;
+.medium[at the appropriate level of detail]
+
+--
+
+&lt;br&gt;
+
+.large[Your questions]
+&lt;br&gt;
+.medium[plots *and* summaries]
+&lt;br&gt;
+.medium[be thorough! a very short summary will *not* suffice]
+&lt;br&gt;
+.medium[describe the conclusion, not the graph]
+
+--
+
+&lt;br&gt;
+
+.large[Conclusions]
+&lt;br&gt;
+.medium[limitations &amp; ideas for future work]
+&lt;br&gt;
+.medium[what other data do you think could be useful?]
+
+---
+
+# Final report: tips to make it great
+
+.large[Take care with your plots]
+&lt;br&gt;
+.medium[consistent colors, plot themes, customize beyond the standard, etc.]
+&lt;br&gt;
+.medium[if plots go together, use `cowplot`!]
+
+--
+
+&lt;br&gt;
+
+.large[Show what you've learned in the class]
+&lt;br&gt;
+.medium[use plots appropriately]
+&lt;br&gt;
+.medium[use a variety of plot types (and tables!)]
+
+--
+
+&lt;br&gt;
+
+.large[Leave the .html output code-free]
+&lt;br&gt;
+.medium[edit your setup chunk to `echo = FALSE`]
+
+---
+
+# Tips for the presentation
+
+.large[Each team member needs to speak]
+
+--
+
+&lt;br&gt;
+
+.large[Introduce the data set, briefly cover each question]
+&lt;br&gt;
+.medium[probably not time to discuss each plot]
+
+--
+
+&lt;br&gt;
+
+.large[Touch on limitations &amp; ideas for further work]
+&lt;br&gt;
+.medium[what other data would you like access to?]
+
+--
+
+&lt;br&gt;
+
+.large[My recommendation: practice but don't memorize]
+
+---
+
+# `xaringan`
+
+.large[Presentations with R Markdown]
+&lt;br&gt;
+.medium[.html output]
+&lt;br&gt;
+.medium[easy to incorporate plots &amp; code]
+&lt;br&gt;
+.medium[other options: ioslides, Slidy, Beamer]
+
+&lt;br&gt;
+
+.large[Pros:]
+&lt;br&gt;
+.medium[easy to customize]
+&lt;br&gt;
+.medium[looks great]
+
+&lt;br&gt;
+
+.large[Cons:]
+&lt;br&gt;
+.medium[hard to share without hosting it somewhere]
+&lt;br&gt;
+.medium[easiest with a web connection]
+
+---
+
+# `xaringan`
+
+&lt;br&gt;
+
+.large[Get started:]
+&lt;br&gt;
+.medium[install the `xaringan` package]
+&lt;br&gt;
+.medium[File &gt; New File &gt; R Markdown &gt; From Template &gt; Ninja Presentation]
+&lt;br&gt;
+.medium[template file has lots of examples]
+
+&lt;br&gt;
+
+.large[[Chapter 7 of R Markdown: The Definitive Guide](https://bookdown.org/yihui/rmarkdown/xaringan.html)]
+
+---
+
+# `xaringan` basics
+
+&lt;br&gt;
+
+.large[Slide formatting made possible by [Markdown](https://commonmark.org/help/tutorial/)]
+&lt;br&gt;
+.medium[headings, bullet points, etc.]
+&lt;br&gt;
+.medium[can add links &amp; images]
+
+---
+
+.left[
+
+# Basic markdown
+
+<style>.panelset{--panel-tab-active-foreground: white;--panel-tab-active-background: #bb0000;}</style>
+
+.panelset[
+.panel[.panel-name[What you code]
+````
+*Hello* my name is **Meghan**
+
+- This
+- makes
+- bullet points
+
+````
+]
+
+.panel[.panel-name[What you get]
+*Hello* my name is **Meghan**
+
+- This
+- makes
+- bullet points
+]
+
+
+]
+]
+
+---
+
+.left[
+
+# Headings
+
+.panelset[
+.panel[.panel-name[What you code]
+````
+# This is a slide heading
+
+## This is a smaller heading
+
+### This is yet a smaller heading
+````
+]
+
+.panel[.panel-name[What you get]
+# This is a slide heading
+
+## This is a smaller heading
+
+### This is yet a smaller heading
+]
+
+
+]
+]
+
+---
+
+.left[
+
+# Links &amp; images
+
+.panelset[
+.panel[.panel-name[What you code]
+````
+The course website is linked [here](http://cmu-36315.netlify.app/)
+
+.center[![logo](figs/Lec2/penguins.png)]
+
+.right[*Art by Allison Horst*]
+````
+]
+
+.panel[.panel-name[What you get]
+The course website is linked [here](http://cmu-36315.netlify.app/)
+
+.center[![logo](figs/Lec14/penguins.png)]
+
+.right[*Art by Allison Horst*]
+]
+
+
+]
+]
+
+---
+
+# `xaringan` basics
+
+&lt;br&gt;
+
+.large[Slide formatting made possible by [Markdown](https://commonmark.org/help/tutorial/)]
+&lt;br&gt;
+.medium[headings, bullet points, etc.]
+&lt;br&gt;
+.medium[can add links &amp; images]
+
+&lt;br&gt;
+
+.large[Can add code &amp; plots with *chunk options*]
+&lt;br&gt;
+.medium[all thanks to `knitr`]
+
+&lt;br&gt;
+
+.large[Resources:]
+&lt;br&gt;
+.medium[[R Markdown reference guide](https://www.rstudio.com/wp-content/uploads/2015/03/rmarkdown-reference.pdf?_ga=2.12010684.900091959.1624621011-959280118.1606761615)]
+&lt;br&gt;
+.medium[[R Markdown cookbook](https://bookdown.org/yihui/rmarkdown-cookbook/chunk-options.html)]
+&lt;br&gt;
+.medium[[chunk option details](https://yihui.org/knitr/options/)]
+
+---
+
+.left[
+
+# Code
+
+.panelset[
+.panel[.panel-name[What you code]
+````
+```{r penguins-1, eval = FALSE}
+penguins %&gt;% 
+  count(species) %&gt;% 
+  ggplot(aes(x = reorder(species, -n), y = n, fill = species)) + 
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  scale_fill_viridis_d(option = "E") + 
+  labs(x = NULL, y = NULL) + 
+  theme_linedraw()
+```
+````
+]
+
+.panel[.panel-name[What you get]
+
+```r
+penguins %&gt;% 
+  count(species) %&gt;% 
+  ggplot(aes(x = reorder(species, -n), y = n, fill = species)) + 
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  scale_fill_viridis_d(option = "E") + 
+  labs(x = NULL, y = NULL) + 
+  theme_linedraw()
+```
+]
+
+
+]
+]
+
+---
+
+.left[
+
+# Plots
+
+.panelset[
+.panel[.panel-name[What you code]
+````
+```{r penguins-2, echo = FALSE, fig.height = 5, fig.align = "center"}
+penguins %&gt;% 
+  count(species) %&gt;% 
+  ggplot(aes(x = reorder(species, -n), y = n, fill = species)) + 
+  geom_bar(stat = "identity", show.legend = FALSE) + 
+  scale_fill_viridis_d(option = "E") + 
+  labs(x = NULL, y = NULL) + 
+  theme_linedraw()
+```
+````
+]
+
+.panel[.panel-name[What you get]
+&lt;img src="figs/Lec14/penguins-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+]
+
+
+]
+]
+
+---
+
+.left[
+
+# Tables
+
+.panelset[
+.panel[.panel-name[What you code]
+````
+### .center[the `penguins` data set]
+
+```{r kable-1, echo = FALSE}
+penguins %&gt;% 
+  count(species) %&gt;% 
+  kable("html") %&gt;%
+  kable_styling(font_size = 16, position = "center", full_width = F) %&gt;%
+  row_spec(0, bold = T, color = "white", background = "#bb0000")
+```
+````
+]
+
+.panel[.panel-name[What you get]
+
+### .center[the `penguins` data set]
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; n &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Adelie &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 152 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Chinstrap &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 68 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; Gentoo &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 124 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+]
+
+
+]
+]
+
+---
+
+# YAML
+
+````
+---
+title: "Our Sample Presentation"
+subtitle: "for learning xaringan"
+author: "Meghan Hall"
+institute: "Carnegie Mellon University"
+date: "2021-06-25"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+````
+
+---
+
+# Your `setup` chunk
+
+.large[Similar to that in other .Rmd documents]
+&lt;br&gt;
+.medium[load packages, add themes]
+&lt;br&gt;
+.medium[can set global chunk options]
+
+````
+```{r setup, include = FALSE}
+library(kableExtra)
+library(tidyverse)
+library(palmerpenguins)
+
+options(knitr.kable.NA = '')
+options(htmltools.dir.version = FALSE, htmltools.preserve.raw = FALSE)
+knitr::opts_chunk$set(fig.retina = 3, 
+                      warning = FALSE, 
+                      message = FALSE,
+                      fig.path = "figs/Lec14/")
+```
+````
+
+---
+
+# Customizing `xaringan`
+
+&lt;br&gt;
+
+.large[Some built-in themes]
+&lt;br&gt;
+.medium[list here: [https://github.com/yihui/xaringan/wiki/Themes](https://github.com/yihui/xaringan/wiki/Themes)]
+
+&lt;br&gt;
+
+.large[[`xaringanthemer`](https://pkg.garrickadenbuie.com/xaringanthemer/articles/xaringanthemer.html)]
+&lt;br&gt;
+.medium[can easily create a custom color palette based on one color]
+
+&lt;br&gt;
+
+.large[Or add even more css if you prefer!]
+&lt;br&gt;
+.medium[not at *all* required]
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Lecture 15 Monday]
+&lt;br&gt;
+.medium[interactive options]
+&lt;br&gt;
+.medium[also: presentation sign-ups]
+
+&lt;br&gt;
+
+.large[Homework 5 due Tuesday]
+
+&lt;br&gt;
+
+.large[Lab 10 on Tuesday]
+
+---
+
+class: inverse, center, middle
+
+# To RStudio!
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
