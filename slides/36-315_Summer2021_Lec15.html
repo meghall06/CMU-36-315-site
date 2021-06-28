@@ -1,0 +1,1244 @@
+<!DOCTYPE html>
+<html lang="" xml:lang="">
+  <head>
+    <title>36-315-Lec15</title>
+    <meta charset="utf-8" />
+    <meta name="author" content="Meghan Hall" />
+    <script src="libs/header-attrs/header-attrs.js"></script>
+    <script src="libs/htmlwidgets/htmlwidgets.js"></script>
+    <script src="libs/plotly-binding/plotly.js"></script>
+    <script src="libs/typedarray/typedarray.min.js"></script>
+    <script src="libs/jquery/jquery.min.js"></script>
+    <link href="libs/crosstalk/css/crosstalk.css" rel="stylesheet" />
+    <script src="libs/crosstalk/js/crosstalk.min.js"></script>
+    <link href="libs/plotly-htmlwidgets-css/plotly-htmlwidgets.css" rel="stylesheet" />
+    <script src="libs/plotly-main/plotly-latest.min.js"></script>
+    <script src="libs/kePrint/kePrint.js"></script>
+    <link href="libs/lightable/lightable.css" rel="stylesheet" />
+    <link rel="stylesheet" href="xaringan-themer.css" type="text/css" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+
+
+
+
+
+class: inverse, center, middle
+
+# 36-315: Statistical Graphics and Visualization
+## Lecture 15
+
+Meghan Hall &lt;br&gt; Department of Statistics &amp; Data Science &lt;br&gt; Carnegie Mellon University &lt;br&gt; June 28, 2021
+
+---
+layout: true
+&lt;div class="my-footer"&gt;&lt;span&gt;cmu-36315.netlify.app&lt;/span&gt;&lt;/div&gt;
+---
+
+# Schedule
+
+&lt;br&gt;
+
+.large[Presentation sign-ups this AM]
+
+&lt;br&gt;
+
+.large[Lab 10 tomorrow, due Wednesday]
+&lt;br&gt;
+.medium[HW 5 due tomorrow]
+
+&lt;br&gt;
+
+.large[Last live lecture today]
+&lt;br&gt;
+.medium[Wednesday: special topics]
+
+---
+
+# What do you turn in?
+
+&lt;br&gt;
+
+.large[Final report: 11:30am EDT Friday]
+&lt;br&gt;
+.medium[.html]
+&lt;br&gt;
+.medium[.Rmd (don't forget `echo = FALSE` to suppress code)]
+
+&lt;br&gt;
+
+.large[Final presentation: right after]
+&lt;br&gt;
+.medium[.Rmd file only]
+&lt;br&gt;
+.medium[probably won't knit, that's fine! just to check]
+
+---
+
+# Today
+
+&lt;br&gt;
+
+.large[Adding another layer to our plots]
+&lt;br&gt;
+.medium[animation with `gganimate`]
+&lt;br&gt;
+.medium[interactivity with `plotly`]
+
+&lt;br&gt;
+
+.large[Functional programming with `purrr`]
+&lt;br&gt;
+.medium[`map` functions as an alternative to for loops]
+
+---
+
+# `gganimate`
+
+&lt;br&gt;
+
+.large[Adds animation to existing plots]
+&lt;br&gt;
+.medium[[https://gganimate.com/](https://gganimate.com/)]
+&lt;br&gt;
+.medium[using various `transition_*` functions]
+
+&lt;br&gt;
+
+.large[Many other options we won't discuss today]
+&lt;br&gt;
+.medium[can specify how data &amp; aesthetics fade, change, etc.]
+
+&lt;br&gt;
+
+.large[Can run plots like usual or:]
+&lt;br&gt;
+.medium[use `anim_save("filepath")` to save as gif]
+&lt;br&gt;
+.medium[will save last-run animation]
+
+---
+
+# `gganimate`
+
+.large[When should you *not* animate?]
+&lt;br&gt;
+.medium[when it doesn't add anything to the plot]
+&lt;br&gt;
+
+--
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.7, size = 4) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Body Mass (g)",
+       y = "Bill Length (mm)") +
+  lab_theme() +
+  theme(legend.position = c(0.8, 0.2),
+        legend.text = element_text(size = 14),
+        axis.title = element_text(size = 13))
+```
+
+---
+
+# `gganimate`
+
+&lt;img src="figs/Lec15/animate-1-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `gganimate`
+
+.large[When should you *not* animate?]
+&lt;br&gt;
+.medium[when it doesn't add anything to the plot]
+&lt;br&gt;
+
+
+```r
+penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = bill_length_mm, color = species)) +
+  geom_point(alpha = 0.7, size = 4) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Body Mass (g)",
+       y = "Bill Length (mm)") +
+  lab_theme() +
+  theme(legend.position = c(0.8, 0.2),
+        legend.text = element_text(size = 14),
+        axis.title = element_text(size = 13)) %&gt;% 
+* transition_states(species,
+*                   transition_length = 0.5,
+*                   state_length = 1)
+```
+
+---
+
+# `gganimate`
+
+.center[![logo](figs/Lec15/scatter.gif)]
+
+---
+
+# `gganimate`
+
+.large[When can you add animation?]
+&lt;br&gt;
+.medium[when it adds depth &amp; emphasis to your story/conclusion]
+&lt;br&gt;
+
+--
+
+
+```r
+third_place %&gt;%
+  ggplot(aes(x = round, y = points, group = name, color = name)) +
+  geom_line(size = 2) +
+  scale_color_manual(values = c("#E0610E","#F596C8","#FFF500"),
+                     name = NULL) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(title = "The race for third place in the 2020 F1 season",
+       y = "Accumulated points", x = NULL) +
+  lab_theme() +
+  theme(legend.position = c(0.3, 0.7),
+        panel.grid.major.x = element_blank(),
+        legend.text = element_text(size = 13))
+```
+
+---
+
+# `gganimate`
+
+&lt;img src="figs/Lec15/animate-3-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `gganimate`
+
+.large[When can you add animation?]
+&lt;br&gt;
+.medium[when it adds depth &amp; emphasis to your story/conclusion]
+&lt;br&gt;
+
+
+```r
+third_place %&gt;%
+  ggplot(aes(x = round, y = points, group = name, color = name)) +
+  geom_line(size = 2) +
+  scale_color_manual(values = c("#E0610E","#F596C8","#FFF500"),
+                     name = NULL) +
+  scale_x_continuous(breaks = seq(1, 17, 1)) +
+  labs(title = "The race for third place in the 2020 F1 season",
+       y = "Accumulated points",
+       x = NULL) +
+  lab_theme() +
+  theme(legend.position = c(0.3, 0.7),
+        panel.grid.major.x = element_blank(),
+        legend.text = element_text(size = 13)) +
+* transition_reveal(round)
+```
+
+---
+
+# `gganimate`
+
+.center[![logo](figs/Lec15/line-graph.gif)]
+
+---
+
+# `gganimate`
+
+.large[When can you add animation?]
+&lt;br&gt;
+.medium[when it adds another useful dimension (usually time)]
+&lt;br&gt;
+
+--
+
+
+```r
+txhousing %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE),
+            listings = mean(listings, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(x = median, y = listings, color = city == "Houston",
+             size = city == "Houston")) +
+  geom_point(show.legend = FALSE) +
+  scale_color_manual(values = c("black","#bb0000")) +
+  scale_size_manual(values = c(2, 4)) +
+  scale_x_continuous(labels = dollar, name = "Median Price") +
+  scale_y_continuous(labels = label_number_si()) +
+  lab_theme() +
+  labs(x = "Median Price", y = "Avg. of Monthly Listings",
+       subtitle = "Houston in red")
+```
+
+---
+
+# `gganimate`
+
+&lt;img src="figs/Lec15/animate-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `gganimate`
+
+.large[When can you add animation?]
+&lt;br&gt;
+.medium[when it adds another useful dimension (usually time)]
+&lt;br&gt;
+
+
+```r
+txhousing %&gt;% 
+  group_by(city, year) %&gt;% 
+  summarize(median = mean(median, na.rm = TRUE),
+            listings = mean(listings, na.rm = TRUE)) %&gt;% 
+  ggplot(aes(x = median, y = listings, color = city == "Houston",
+             size = city == "Houston")) +
+  geom_point(show.legend = FALSE) +
+  scale_color_manual(values = c("black","#bb0000")) +
+  scale_size_manual(values = c(2, 4)) +
+  scale_x_continuous(labels = dollar, name = "Median Price") +
+  scale_y_continuous(labels = label_number_si()) +
+  lab_theme() +
+  labs(x = "Median Price", y = "Avg. of Monthly Listings",
+*      title = 'Year: {frame_time}',
+       subtitle = "Houston in red") +
+* transition_time(year)
+```
+
+---
+
+# `gganimate`
+
+.center[![logo](figs/Lec15/scatter-year.gif)]
+
+---
+
+# `plotly`
+
+&lt;br&gt;
+
+.large[Adds interactivity (namely tooltips) to existing plots]
+&lt;br&gt;
+.medium[[https://plotly.com/ggplot2/](https://plotly.com/ggplot2/)]
+
+&lt;br&gt;
+
+.large[Assign your plot to an object]
+&lt;br&gt;
+.medium[and call within `ggplotly`]
+
+---
+
+# `plotly`
+
+
+```r
+scatter_plain &lt;- penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm, 
+             color = species)) +
+  geom_jitter(size = 3, alpha = 0.8) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Body Mass (g)", y = "Flipper Length (mm)") +
+  lab_theme()
+```
+
+&lt;img src="figs/Lec15/plotly-2-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `plotly`
+
+
+```r
+ggplotly(scatter_plain)
+```
+
+<div id="htmlwidget-6f6da03e6c80dccaf77b" style="width:504px;height:396px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-6f6da03e6c80dccaf77b">{"x":{"data":[{"x":[3747.02046481892,3797.60508127045,3240.39624227677,null,3450.80022677314,3648.40022889897,3625.44627176132,4683.20338572375,3473.55465685483,4255.44895473868,3306.68475633021,3707.19957157969,3207.59838066529,3796.495693326,4397.80520931352,3694.56343851052,3458.65220317617,4506.33950787131,3324.70438984688,4202.46290726587,3390.41932213586,3594.40949431621,3802.12465192657,3954.66771641281,3805.46837590635,3805.66234032623,3543.74959857669,3190.99623563234,3147.20720351208,3958.28994025476,3255.74047897477,3907.71975209005,3302.8885436384,3908.6646228563,3324.33502101805,4150.6709330203,3943.89370017685,3550.02298697364,3305.98665302619,4650.76856568921,3156.61989721004,3902.21361114644,3094.78480133228,4404.67986025847,2999.51026508585,4594.10777103156,3434.6956078615,2978.39647084009,3443.81608628202,4154.19766904786,3496.51071697008,4290.93585550319,3443.14135012683,4049.07769856509,2903.98560517933,3707.22297282424,3544.16175480466,3804.78190362919,2846.41624835785,3754.21779097524,3158.71284805704,4395.83714962937,3594.80075687636,4056.04635068681,2854.96709636413,3940.66924892366,3354.23697214108,4095.57780076284,3047.30155087542,4449.17517630383,3597.06248897593,3902.76936161797,3558.30737870652,4159.98030783609,3699.18373522349,4244.25513404887,3698.66643819027,3894.56619098783,3553.80590145942,3994.32916502468,3194.74085073452,4705.44224114623,3793.22353561874,4200.81518137362,3340.06011801306,3555.09965811856,3793.21147624403,3494.5437564142,3944.47152825072,3603.04749940522,3543.9954365883,4302.80329611618,3399.89598751068,4455.65066589043,3299.8226388311,4304.47628662456,3702.86891545635,4351.80185188074,2902.67481015529,4091.8749577878,3733.38765872642,4733.35859856568,3079.15745274629,4259.56371285021,2928.14523327164,3549.34253441636,3754.40501018427,3899.16482130997,3181.49213679601,4771.39343467541,3829.18129785918,4593.44311477616,3195.85689206608,4274.48395891115,3909.11333649885,4072.62811516877,2902.73556289729,3784.2509434931,3340.58289841749,3316.57970304135,3158.476734492,3498.158633844,3456.78161455784,3866.44708459266,3040.28324543498,3998.26506097801,3268.37931815535,4295.18263277598,3059.28860128392,4004.02133255266,3333.71375554241,3508.87689537369,3493.39000658598,4477.39456228446,3420.55352962576,3891.18010114413,3179.91748253815,3974.71796303056,3396.58041188028,4257.21909382846,3394.35449957382,3472.97229722608,3053.84754647501,3730.95123333856,3007.50613200944,3654.74807400256,4240.13789332472,3480.50774353091,3441.32155141328,3742.49575064983,3691.29502915777,4002.36550950911],"y":[181.102450705506,186.297783627734,195.041553234868,null,192.673663689196,190.353402447142,181.313715309091,195.28396993503,193.103689700738,190.232227166183,185.918834064156,180.211470224522,181.807978262752,191.081165450066,197.901469731145,184.697351547889,194.864152160846,197.323727153055,183.647314414382,194.134853007831,173.64941876214,179.956955190189,189.38989399597,185.380569613166,179.876417232491,187.188843237609,183.181928204186,186.652652497403,171.820640010573,180.022193208523,177.824695323966,177.968730172329,187.612465843,184.367770157568,195.146288011409,195.78619853165,190.261206912249,179.928082297929,180.733432756178,184.333438801579,181.660992730595,194.915417735092,186.194585409202,196.290113106184,185.179051856138,190.328514808044,182.044915171713,178.685576359741,189.847553072497,191.085429294035,186.058689321205,188.178881336562,189.766627454571,200.041054942086,187.191229042038,190.800750132836,186.05100541506,193.032783980854,181.123693596199,194.020899082907,184.838771628961,195.104549404047,185.35885053277,191.65884470325,183.972521908581,192.084773378447,195.009895113483,187.928383384645,190.351028418913,197.636304502748,189.689215288311,190.195479763672,196.005141623132,197.279449382611,189.858712325245,195.360085424222,190.987798264064,183.814230258763,187.121320105903,194.934463527054,189.105846532248,195.80627241414,186.849448129162,193.200083624013,190.646997725219,193.780288322642,189.650444053113,189.3438792862,188.745257608779,189.681540895067,202.316592534818,205.171296237782,185.274400318973,185.833558571525,186.841144004278,207.977605703287,189.80096685905,195.607862463035,177.844549291953,191.982376287878,192.21310024038,203.056034859642,182.981950328685,190.243298400193,193.205846251175,183.674818618596,199.200324321538,190.062572311051,181.024908884056,196.929939143546,197.79264620319,190.657212036289,192.68218557518,196.745942646079,191.239441191219,195.908994740061,188.05298869852,198.862899507023,189.155549561232,188.719421267882,186.779074541107,197.670231442712,175.783634024113,202.112556061894,185.84055100847,198.999518822879,190.958535685018,195.359792343713,191.004787374288,210.057373902202,190.123947696201,196.974425344914,193.170538861863,199.158143073134,187.228543721512,190.209046741575,191.317111275345,200.07402748391,185.324328844063,192.663595854677,193.192094463669,186.802165032737,187.909515094571,189.926836908795,192.166036920063,185.353066268936,190.177321802825,184.321540885232,194.640702679381,192.75939177759,186.669341050647,201.171520371549],"text":["body_mass_g: 3750<br />flipper_length_mm: 181<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 3250<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g:   NA<br />flipper_length_mm:  NA<br />species: Adelie","body_mass_g: 3450<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 3650<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3625<br />flipper_length_mm: 181<br />species: Adelie","body_mass_g: 4675<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3475<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 4250<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3300<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 180<br />species: Adelie","body_mass_g: 3200<br />flipper_length_mm: 182<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 4400<br />flipper_length_mm: 198<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 3450<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 4500<br />flipper_length_mm: 197<br />species: Adelie","body_mass_g: 3325<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 4200<br />flipper_length_mm: 194<br />species: Adelie","body_mass_g: 3400<br />flipper_length_mm: 174<br />species: Adelie","body_mass_g: 3600<br />flipper_length_mm: 180<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 189<br />species: Adelie","body_mass_g: 3950<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 180<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 183<br />species: Adelie","body_mass_g: 3200<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 3150<br />flipper_length_mm: 172<br />species: Adelie","body_mass_g: 3950<br />flipper_length_mm: 180<br />species: Adelie","body_mass_g: 3250<br />flipper_length_mm: 178<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 178<br />species: Adelie","body_mass_g: 3300<br />flipper_length_mm: 188<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 3325<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 4150<br />flipper_length_mm: 196<br />species: Adelie","body_mass_g: 3950<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 180<br />species: Adelie","body_mass_g: 3300<br />flipper_length_mm: 181<br />species: Adelie","body_mass_g: 4650<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 3150<br />flipper_length_mm: 182<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3100<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 4400<br />flipper_length_mm: 196<br />species: Adelie","body_mass_g: 3000<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 4600<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3425<br />flipper_length_mm: 182<br />species: Adelie","body_mass_g: 2975<br />flipper_length_mm: 179<br />species: Adelie","body_mass_g: 3450<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 4150<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 3500<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 4300<br />flipper_length_mm: 188<br />species: Adelie","body_mass_g: 3450<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 4050<br />flipper_length_mm: 200<br />species: Adelie","body_mass_g: 2900<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 2850<br />flipper_length_mm: 181<br />species: Adelie","body_mass_g: 3750<br />flipper_length_mm: 194<br />species: Adelie","body_mass_g: 3150<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 4400<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3600<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 4050<br />flipper_length_mm: 192<br />species: Adelie","body_mass_g: 2850<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 3950<br />flipper_length_mm: 192<br />species: Adelie","body_mass_g: 3350<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 4100<br />flipper_length_mm: 188<br />species: Adelie","body_mass_g: 3050<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 4450<br />flipper_length_mm: 198<br />species: Adelie","body_mass_g: 3600<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 196<br />species: Adelie","body_mass_g: 4150<br />flipper_length_mm: 197<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 4250<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 4000<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3200<br />flipper_length_mm: 189<br />species: Adelie","body_mass_g: 4700<br />flipper_length_mm: 196<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 4200<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 3350<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 194<br />species: Adelie","body_mass_g: 3800<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3500<br />flipper_length_mm: 189<br />species: Adelie","body_mass_g: 3950<br />flipper_length_mm: 189<br />species: Adelie","body_mass_g: 3600<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 202<br />species: Adelie","body_mass_g: 4300<br />flipper_length_mm: 205<br />species: Adelie","body_mass_g: 3400<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 4450<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 3300<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 4300<br />flipper_length_mm: 208<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 4350<br />flipper_length_mm: 196<br />species: Adelie","body_mass_g: 2900<br />flipper_length_mm: 178<br />species: Adelie","body_mass_g: 4100<br />flipper_length_mm: 192<br />species: Adelie","body_mass_g: 3725<br />flipper_length_mm: 192<br />species: Adelie","body_mass_g: 4725<br />flipper_length_mm: 203<br />species: Adelie","body_mass_g: 3075<br />flipper_length_mm: 183<br />species: Adelie","body_mass_g: 4250<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 2925<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 3550<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 3750<br />flipper_length_mm: 199<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3175<br />flipper_length_mm: 181<br />species: Adelie","body_mass_g: 4775<br />flipper_length_mm: 197<br />species: Adelie","body_mass_g: 3825<br />flipper_length_mm: 198<br />species: Adelie","body_mass_g: 4600<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 3200<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 4275<br />flipper_length_mm: 197<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 4075<br />flipper_length_mm: 196<br />species: Adelie","body_mass_g: 2900<br />flipper_length_mm: 188<br />species: Adelie","body_mass_g: 3775<br />flipper_length_mm: 199<br />species: Adelie","body_mass_g: 3350<br />flipper_length_mm: 189<br />species: Adelie","body_mass_g: 3325<br />flipper_length_mm: 189<br />species: Adelie","body_mass_g: 3150<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 3500<br />flipper_length_mm: 198<br />species: Adelie","body_mass_g: 3450<br />flipper_length_mm: 176<br />species: Adelie","body_mass_g: 3875<br />flipper_length_mm: 202<br />species: Adelie","body_mass_g: 3050<br />flipper_length_mm: 186<br />species: Adelie","body_mass_g: 4000<br />flipper_length_mm: 199<br />species: Adelie","body_mass_g: 3275<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 4300<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3050<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 4000<br />flipper_length_mm: 210<br />species: Adelie","body_mass_g: 3325<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3500<br />flipper_length_mm: 197<br />species: Adelie","body_mass_g: 3500<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 4475<br />flipper_length_mm: 199<br />species: Adelie","body_mass_g: 3425<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 3900<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3175<br />flipper_length_mm: 191<br />species: Adelie","body_mass_g: 3975<br />flipper_length_mm: 200<br />species: Adelie","body_mass_g: 3400<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 4250<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 3400<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 3475<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 3050<br />flipper_length_mm: 188<br />species: Adelie","body_mass_g: 3725<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3000<br />flipper_length_mm: 192<br />species: Adelie","body_mass_g: 3650<br />flipper_length_mm: 185<br />species: Adelie","body_mass_g: 4250<br />flipper_length_mm: 190<br />species: Adelie","body_mass_g: 3475<br />flipper_length_mm: 184<br />species: Adelie","body_mass_g: 3450<br />flipper_length_mm: 195<br />species: Adelie","body_mass_g: 3750<br />flipper_length_mm: 193<br />species: Adelie","body_mass_g: 3700<br />flipper_length_mm: 187<br />species: Adelie","body_mass_g: 4000<br />flipper_length_mm: 201<br />species: Adelie"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,201,127,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(127,201,127,1)"}},"hoveron":"points","name":"Adelie","legendgroup":"Adelie","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3503.43186117243,3903.32931760233,3644.4964620471,3527.42636962794,3733.78686878365,3945.74681846425,3254.36910503544,3743.20185295772,4146.78760358132,3703.17812198307,3809.43972421344,3770.99928993266,3709.38745982945,4051.54745794367,3570.88237345219,4056.89366585575,3305.62059914693,3697.0352849178,3453.28034760896,4406.67641439009,3596.06630400289,3397.54052013159,2895.02517060842,3791.07262270525,3293.21649794001,4155.26454790495,3391.25110675115,3807.24632213823,3698.58390742447,4557.88242083043,3204.98836368788,4304.38799019903,3349.77934994269,4090.75629967265,3602.89803374093,3900.43482052162,3854.27174282726,4801.58298732713,2705.70104860235,4490.30338042416,3949.20630683657,3644.13827304263,3540.92636784539,3496.72770790756,3672.05326035153,4455.90234647505,3401.82566724252,4300.36485777702,3255.16191161238,3666.1581117427,3327.20950189047,3948.94803058356,3609.35872877017,4051.91706463229,3347.21887102351,3451.44865040202,3244.64090710506,4052.40919317119,3809.99102633912,3522.72966403514,3947.7894842485,3641.39483849984,3653.58431802597,4009.58826125134,3400.06749072112,3773.32147366833,4102.53429676872,3777.33795544598],"y":[191.791112824716,196.215483099967,193.24644350782,188.0780087566,196.705287242308,197.828882134147,177.963553547114,197.12290762458,195.096944358945,198.053725844063,193.027863630094,194.263680575415,185.388408307545,200.982593082078,190.079651296325,200.840616377443,197.213156959787,180.616180132143,189.720838666707,195.386812280677,181.106832862087,191.272684901208,186.662353326194,193.097308806889,194.85856254492,197.266125975549,200.008781041019,200.381326528825,191.019176204316,205.186632681452,186.710672273673,201.06070770137,187.367498318478,202.809438495524,195.142266320996,199.345054350793,195.318609517254,209.998671907745,192.034088887647,204.60288133435,210.365973767266,187.024139001034,196.368884321861,196.293171189167,195.830734735355,201.30653854683,189.865580490232,211.656071107462,187.26353382729,198.245187960193,199.067180217989,200.744289407134,192.971135035157,203.129616561532,186.842729871161,197.003866221756,190.640956217051,203.047766780853,202.149600584991,193.750431325287,206.350551906414,188.771602940187,194.877216892876,207.32361025773,202.339415564015,192.84087205492,209.65497048758,197.798031539097],"text":["body_mass_g: 3500<br />flipper_length_mm: 192<br />species: Chinstrap","body_mass_g: 3900<br />flipper_length_mm: 196<br />species: Chinstrap","body_mass_g: 3650<br />flipper_length_mm: 193<br />species: Chinstrap","body_mass_g: 3525<br />flipper_length_mm: 188<br />species: Chinstrap","body_mass_g: 3725<br />flipper_length_mm: 197<br />species: Chinstrap","body_mass_g: 3950<br />flipper_length_mm: 198<br />species: Chinstrap","body_mass_g: 3250<br />flipper_length_mm: 178<br />species: Chinstrap","body_mass_g: 3750<br />flipper_length_mm: 197<br />species: Chinstrap","body_mass_g: 4150<br />flipper_length_mm: 195<br />species: Chinstrap","body_mass_g: 3700<br />flipper_length_mm: 198<br />species: Chinstrap","body_mass_g: 3800<br />flipper_length_mm: 193<br />species: Chinstrap","body_mass_g: 3775<br />flipper_length_mm: 194<br />species: Chinstrap","body_mass_g: 3700<br />flipper_length_mm: 185<br />species: Chinstrap","body_mass_g: 4050<br />flipper_length_mm: 201<br />species: Chinstrap","body_mass_g: 3575<br />flipper_length_mm: 190<br />species: Chinstrap","body_mass_g: 4050<br />flipper_length_mm: 201<br />species: Chinstrap","body_mass_g: 3300<br />flipper_length_mm: 197<br />species: Chinstrap","body_mass_g: 3700<br />flipper_length_mm: 181<br />species: Chinstrap","body_mass_g: 3450<br />flipper_length_mm: 190<br />species: Chinstrap","body_mass_g: 4400<br />flipper_length_mm: 195<br />species: Chinstrap","body_mass_g: 3600<br />flipper_length_mm: 181<br />species: Chinstrap","body_mass_g: 3400<br />flipper_length_mm: 191<br />species: Chinstrap","body_mass_g: 2900<br />flipper_length_mm: 187<br />species: Chinstrap","body_mass_g: 3800<br />flipper_length_mm: 193<br />species: Chinstrap","body_mass_g: 3300<br />flipper_length_mm: 195<br />species: Chinstrap","body_mass_g: 4150<br />flipper_length_mm: 197<br />species: Chinstrap","body_mass_g: 3400<br />flipper_length_mm: 200<br />species: Chinstrap","body_mass_g: 3800<br />flipper_length_mm: 200<br />species: Chinstrap","body_mass_g: 3700<br />flipper_length_mm: 191<br />species: Chinstrap","body_mass_g: 4550<br />flipper_length_mm: 205<br />species: Chinstrap","body_mass_g: 3200<br />flipper_length_mm: 187<br />species: Chinstrap","body_mass_g: 4300<br />flipper_length_mm: 201<br />species: Chinstrap","body_mass_g: 3350<br />flipper_length_mm: 187<br />species: Chinstrap","body_mass_g: 4100<br />flipper_length_mm: 203<br />species: Chinstrap","body_mass_g: 3600<br />flipper_length_mm: 195<br />species: Chinstrap","body_mass_g: 3900<br />flipper_length_mm: 199<br />species: Chinstrap","body_mass_g: 3850<br />flipper_length_mm: 195<br />species: Chinstrap","body_mass_g: 4800<br />flipper_length_mm: 210<br />species: Chinstrap","body_mass_g: 2700<br />flipper_length_mm: 192<br />species: Chinstrap","body_mass_g: 4500<br />flipper_length_mm: 205<br />species: Chinstrap","body_mass_g: 3950<br />flipper_length_mm: 210<br />species: Chinstrap","body_mass_g: 3650<br />flipper_length_mm: 187<br />species: Chinstrap","body_mass_g: 3550<br />flipper_length_mm: 196<br />species: Chinstrap","body_mass_g: 3500<br />flipper_length_mm: 196<br />species: Chinstrap","body_mass_g: 3675<br />flipper_length_mm: 196<br />species: Chinstrap","body_mass_g: 4450<br />flipper_length_mm: 201<br />species: Chinstrap","body_mass_g: 3400<br />flipper_length_mm: 190<br />species: Chinstrap","body_mass_g: 4300<br />flipper_length_mm: 212<br />species: Chinstrap","body_mass_g: 3250<br />flipper_length_mm: 187<br />species: Chinstrap","body_mass_g: 3675<br />flipper_length_mm: 198<br />species: Chinstrap","body_mass_g: 3325<br />flipper_length_mm: 199<br />species: Chinstrap","body_mass_g: 3950<br />flipper_length_mm: 201<br />species: Chinstrap","body_mass_g: 3600<br />flipper_length_mm: 193<br />species: Chinstrap","body_mass_g: 4050<br />flipper_length_mm: 203<br />species: Chinstrap","body_mass_g: 3350<br />flipper_length_mm: 187<br />species: Chinstrap","body_mass_g: 3450<br />flipper_length_mm: 197<br />species: Chinstrap","body_mass_g: 3250<br />flipper_length_mm: 191<br />species: Chinstrap","body_mass_g: 4050<br />flipper_length_mm: 203<br />species: Chinstrap","body_mass_g: 3800<br />flipper_length_mm: 202<br />species: Chinstrap","body_mass_g: 3525<br />flipper_length_mm: 194<br />species: Chinstrap","body_mass_g: 3950<br />flipper_length_mm: 206<br />species: Chinstrap","body_mass_g: 3650<br />flipper_length_mm: 189<br />species: Chinstrap","body_mass_g: 3650<br />flipper_length_mm: 195<br />species: Chinstrap","body_mass_g: 4000<br />flipper_length_mm: 207<br />species: Chinstrap","body_mass_g: 3400<br />flipper_length_mm: 202<br />species: Chinstrap","body_mass_g: 3775<br />flipper_length_mm: 193<br />species: Chinstrap","body_mass_g: 4100<br />flipper_length_mm: 210<br />species: Chinstrap","body_mass_g: 3775<br />flipper_length_mm: 198<br />species: Chinstrap"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(190,174,212,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(190,174,212,1)"}},"hoveron":"points","name":"Chinstrap","legendgroup":"Chinstrap","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4509.39987330697,5702.18828640413,4442.55339446012,5692.67904565204,5399.19662748929,4545.44287395664,4801.95202791132,5191.13645125646,4390.406981376,5149.04185866471,4647.9411465209,5544.15696141776,4647.11966255214,5845.01348057296,4205.20092450548,5858.0326622026,4140.85440336261,6295.15632215422,4803.70222069789,5350.37034002133,5701.84083040338,5004.85726443119,4399.19230516534,5049.58218817133,4998.31774793565,5094.26359335892,4094.97545134276,5640.62612148002,4592.47729981784,5550.465814122,5254.39620245248,4696.11893894151,5053.82800193969,6043.04251124617,5159.28475483786,5401.32379591465,4947.26669352036,5255.13909397647,4349.58771630656,5354.95998817496,3947.05697123427,5694.68295919243,4296.74134481698,4753.07359542698,5549.16963905562,4903.6717486009,4193.4581590211,5396.03191641159,5095.19142287783,5308.37621417362,4855.95980808139,5309.71106934361,4404.63178835344,4997.33618438244,4893.35306790657,5052.0664176764,4293.0884535471,4994.50947967358,4449.39682655502,5554.83041005675,4206.76963024307,5300.02224769443,4399.63060724549,5652.62789700646,4693.06089407764,5705.28140955139,4653.83718762547,5790.45303101651,4707.00192607008,5558.73987506609,4755.74335891753,5008.49505189341,5099.62342990097,5190.32770290505,4701.12052907702,5802.57798218168,4601.0284142429,6004.67780647799,4757.64831344131,5959.05951387715,4630.72759546805,5454.23290306702,4715.62484021764,5356.22027342673,4751.34483812377,5600.79740303103,4607.84002104774,5298.81846005563,4872.57389843464,5544.74044193048,4944.41543995403,5398.9579848107,4744.01445338968,5659.12121285219,4848.36141427979,5196.09876346774,4921.50666581001,4869.67327421065,4629.11769889295,5249.43027999252,4858.17541795317,5593.5620337911,4978.40033649467,5501.54352123849,4723.36702896282,5495.04170661792,4700.64205519855,5493.16372228786,4581.34754375555,5495.00596798491,4997.23716738168,5946.25773269683,4640.59055888094,5496.74210878089,4365.01246919855,5853.77669378184,4869.44312954322,6001.61969641224,4927.38702019211,null,4859.17532003019,5755.03437765874,5208.23732246645,5409.48394140694],"y":[211.284104163572,229.760068227164,209.821641873009,217.838190052472,214.915516198985,210.07637553364,210.835409251973,219.350261331163,209.210861639865,215.290517728403,214.056277753413,215.818785680272,214.107518632896,213.3452918984,210.188474457897,217.35618498493,209.844402739778,221.039073055796,208.663699164428,222.345508996956,218.306877485663,214.953339509293,212.845315325074,214.672973290645,215.130911936983,214.79164942652,215.861098442227,215.258816781826,209.895233950578,219.731858061627,222.269827836193,208.76672094129,206.996444001049,230.026575324312,220.18550358545,220.177394973487,212.957753257081,219.172309216857,208.268224937655,208.051106950827,207.882798243128,225.142094899155,209.996307566762,216.196694129333,221.958782494441,217.313477120921,209.733580545522,224.826950910874,213.235160704516,215.091953407042,209.614214503765,219.888825126737,210.001934347861,224.887334857695,217.318919575587,220.082796177641,208.007209318876,219.888294776902,207.817825402878,223.805110498518,208.280439186096,220.849418962561,214.318859967589,230.653368461691,219.033879153244,230.00094616469,213.888010396436,229.241502340697,219.756141730957,222.736881584674,216.195226388425,220.68247516267,221.394258643687,216.657720411196,216.290576078556,229.999155239761,209.34542940408,220.195669568516,214.939959016442,222.844063927606,211.746963822842,220.936478722282,211.73555677142,223.728099717759,211.82165367268,228.217907928117,218.103354664892,217.601935828105,211.845855528861,230.065507495962,217.679308675602,227.92838046141,212.044948966801,224.189093591273,213.709594833478,225.98089648094,216.07523518689,222.280883341283,202.654202042148,225.055868990906,218.772176373005,228.308867195249,214.719118874334,228.298352806084,216.003474333324,214.680288264528,210.063535047509,219.159702479467,208.195542993397,208.993062191829,215.628611929342,229.213829026371,212.769335289113,230.365093464777,216.942705750465,230.372020287626,217.22527659554,221.714658795483,214.072680830956,null,214.67652916871,222.095541268215,211.991504222155,213.000920650177],"text":["body_mass_g: 4500<br />flipper_length_mm: 211<br />species: Gentoo","body_mass_g: 5700<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 4450<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5700<br />flipper_length_mm: 218<br />species: Gentoo","body_mass_g: 5400<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4550<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 4800<br />flipper_length_mm: 211<br />species: Gentoo","body_mass_g: 5200<br />flipper_length_mm: 219<br />species: Gentoo","body_mass_g: 4400<br />flipper_length_mm: 209<br />species: Gentoo","body_mass_g: 5150<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4650<br />flipper_length_mm: 214<br />species: Gentoo","body_mass_g: 5550<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 4650<br />flipper_length_mm: 214<br />species: Gentoo","body_mass_g: 5850<br />flipper_length_mm: 213<br />species: Gentoo","body_mass_g: 4200<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5850<br />flipper_length_mm: 217<br />species: Gentoo","body_mass_g: 4150<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 6300<br />flipper_length_mm: 221<br />species: Gentoo","body_mass_g: 4800<br />flipper_length_mm: 209<br />species: Gentoo","body_mass_g: 5350<br />flipper_length_mm: 222<br />species: Gentoo","body_mass_g: 5700<br />flipper_length_mm: 218<br />species: Gentoo","body_mass_g: 5000<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4400<br />flipper_length_mm: 213<br />species: Gentoo","body_mass_g: 5050<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 5000<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 5100<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4100<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 5650<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4600<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5550<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 5250<br />flipper_length_mm: 222<br />species: Gentoo","body_mass_g: 4700<br />flipper_length_mm: 209<br />species: Gentoo","body_mass_g: 5050<br />flipper_length_mm: 207<br />species: Gentoo","body_mass_g: 6050<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 5150<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 5400<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 4950<br />flipper_length_mm: 213<br />species: Gentoo","body_mass_g: 5250<br />flipper_length_mm: 219<br />species: Gentoo","body_mass_g: 4350<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 5350<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 3950<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 5700<br />flipper_length_mm: 225<br />species: Gentoo","body_mass_g: 4300<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 4750<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 5550<br />flipper_length_mm: 222<br />species: Gentoo","body_mass_g: 4900<br />flipper_length_mm: 217<br />species: Gentoo","body_mass_g: 4200<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5400<br />flipper_length_mm: 225<br />species: Gentoo","body_mass_g: 5100<br />flipper_length_mm: 213<br />species: Gentoo","body_mass_g: 5300<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4850<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5300<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 4400<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5000<br />flipper_length_mm: 225<br />species: Gentoo","body_mass_g: 4900<br />flipper_length_mm: 217<br />species: Gentoo","body_mass_g: 5050<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 4300<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 5000<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 4450<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 5550<br />flipper_length_mm: 224<br />species: Gentoo","body_mass_g: 4200<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 5300<br />flipper_length_mm: 221<br />species: Gentoo","body_mass_g: 4400<br />flipper_length_mm: 214<br />species: Gentoo","body_mass_g: 5650<br />flipper_length_mm: 231<br />species: Gentoo","body_mass_g: 4700<br />flipper_length_mm: 219<br />species: Gentoo","body_mass_g: 5700<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 4650<br />flipper_length_mm: 214<br />species: Gentoo","body_mass_g: 5800<br />flipper_length_mm: 229<br />species: Gentoo","body_mass_g: 4700<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 5550<br />flipper_length_mm: 223<br />species: Gentoo","body_mass_g: 4750<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 5000<br />flipper_length_mm: 221<br />species: Gentoo","body_mass_g: 5100<br />flipper_length_mm: 221<br />species: Gentoo","body_mass_g: 5200<br />flipper_length_mm: 217<br />species: Gentoo","body_mass_g: 4700<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 5800<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 4600<br />flipper_length_mm: 209<br />species: Gentoo","body_mass_g: 6000<br />flipper_length_mm: 220<br />species: Gentoo","body_mass_g: 4750<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 5950<br />flipper_length_mm: 223<br />species: Gentoo","body_mass_g: 4625<br />flipper_length_mm: 212<br />species: Gentoo","body_mass_g: 5450<br />flipper_length_mm: 221<br />species: Gentoo","body_mass_g: 4725<br />flipper_length_mm: 212<br />species: Gentoo","body_mass_g: 5350<br />flipper_length_mm: 224<br />species: Gentoo","body_mass_g: 4750<br />flipper_length_mm: 212<br />species: Gentoo","body_mass_g: 5600<br />flipper_length_mm: 228<br />species: Gentoo","body_mass_g: 4600<br />flipper_length_mm: 218<br />species: Gentoo","body_mass_g: 5300<br />flipper_length_mm: 218<br />species: Gentoo","body_mass_g: 4875<br />flipper_length_mm: 212<br />species: Gentoo","body_mass_g: 5550<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 4950<br />flipper_length_mm: 218<br />species: Gentoo","body_mass_g: 5400<br />flipper_length_mm: 228<br />species: Gentoo","body_mass_g: 4750<br />flipper_length_mm: 212<br />species: Gentoo","body_mass_g: 5650<br />flipper_length_mm: 224<br />species: Gentoo","body_mass_g: 4850<br />flipper_length_mm: 214<br />species: Gentoo","body_mass_g: 5200<br />flipper_length_mm: 226<br />species: Gentoo","body_mass_g: 4925<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 4875<br />flipper_length_mm: 222<br />species: Gentoo","body_mass_g: 4625<br />flipper_length_mm: 203<br />species: Gentoo","body_mass_g: 5250<br />flipper_length_mm: 225<br />species: Gentoo","body_mass_g: 4850<br />flipper_length_mm: 219<br />species: Gentoo","body_mass_g: 5600<br />flipper_length_mm: 228<br />species: Gentoo","body_mass_g: 4975<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 5500<br />flipper_length_mm: 228<br />species: Gentoo","body_mass_g: 4725<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 5500<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 4700<br />flipper_length_mm: 210<br />species: Gentoo","body_mass_g: 5500<br />flipper_length_mm: 219<br />species: Gentoo","body_mass_g: 4575<br />flipper_length_mm: 208<br />species: Gentoo","body_mass_g: 5500<br />flipper_length_mm: 209<br />species: Gentoo","body_mass_g: 5000<br />flipper_length_mm: 216<br />species: Gentoo","body_mass_g: 5950<br />flipper_length_mm: 229<br />species: Gentoo","body_mass_g: 4650<br />flipper_length_mm: 213<br />species: Gentoo","body_mass_g: 5500<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 4375<br />flipper_length_mm: 217<br />species: Gentoo","body_mass_g: 5850<br />flipper_length_mm: 230<br />species: Gentoo","body_mass_g: 4875<br />flipper_length_mm: 217<br />species: Gentoo","body_mass_g: 6000<br />flipper_length_mm: 222<br />species: Gentoo","body_mass_g: 4925<br />flipper_length_mm: 214<br />species: Gentoo","body_mass_g:   NA<br />flipper_length_mm:  NA<br />species: Gentoo","body_mass_g: 4850<br />flipper_length_mm: 215<br />species: Gentoo","body_mass_g: 5750<br />flipper_length_mm: 222<br />species: Gentoo","body_mass_g: 5200<br />flipper_length_mm: 212<br />species: Gentoo","body_mass_g: 5400<br />flipper_length_mm: 213<br />species: Gentoo"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(253,192,134,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(253,192,134,1)"}},"hoveron":"points","name":"Gentoo","legendgroup":"Gentoo","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":25.2984640929846,"r":7.30593607305936,"b":44.8318804483188,"l":51.4736405147364},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2526.22828492476,6474.62908583181],"tickmode":"array","ticktext":["3000","4000","5000","6000"],"tickvals":[3000,4000,5000,6000],"categoryorder":"array","categoryarray":["3000","4000","5000","6000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":17.2685761726858},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(0,0,0,1)","gridwidth":0.066417600664176,"zeroline":false,"anchor":"y","title":{"text":"Body Mass (g)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[168.879003588017,233.595004884247],"tickmode":"array","ticktext":["170","180","190","200","210","220","230"],"tickvals":[170,180,190,200,210,220,230],"categoryorder":"array","categoryarray":["170","180","190","200","210","220","230"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":17.2685761726858},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(0,0,0,1)","gridwidth":0.066417600664176,"zeroline":false,"anchor":"x","title":{"text":"Flipper Length (mm)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(0,0,0,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"transparent","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"y":1},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"ec602d4247d8":{"x":{},"y":{},"colour":{},"type":"scatter"}},"cur_data":"ec602d4247d8","visdat":{"ec602d4247d8":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# `plotly`
+
+
+```r
+scatter_sex &lt;- penguins %&gt;% 
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm, color = species,
+*            text = paste("sex:", sex))) +
+  geom_jitter(size = 3, alpha = 0.8) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Body Mass (g)", y = "Flipper Length (mm)") +
+  lab_theme()
+```
+
+&lt;img src="figs/Lec15/plotly-5-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `plotly`
+
+
+```r
+ggplotly(scatter_sex, tooltip = c("text", "species"))
+```
+
+<div id="htmlwidget-edc56f94c24a6755508b" style="width:504px;height:396px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-edc56f94c24a6755508b">{"x":{"data":[{"x":[3748.80522826687,3802.75099907536,3254.94008193724,null,3450.45712632593,3646.43568960018,3623.77714299597,4673.42282898258,3477.9751068633,4256.00357672665,3294.00164935272,3705.1506249886,3190.69971617777,3803.76769361086,4399.89521124866,3706.9757920783,3449.35565625783,4509.73706680816,3330.99183570128,4194.48253586423,3400.17364813946,3595.81256204285,3799.42908457015,3953.12719976995,3807.74442436174,3804.21972988173,3557.82674815506,3204.86493993551,3148.49409000948,3952.48942659702,3244.55827791709,3906.42935596406,3296.68000149541,3906.3776856428,3324.07560840249,4156.62039130926,3952.93053362053,3547.32416821178,3300.64512568526,4655.29752028175,3151.8166501727,3905.97058480605,3100.57727386244,4393.49661414977,2997.73704916704,4594.21767855063,3418.56871596072,2971.18757769931,3451.43155207392,4145.44578043278,3490.58826482855,4292.18885281123,3454.81186411344,4043.0896513816,2902.17109311838,3701.12482802942,3543.63254772499,3801.71232661698,2844.12100879475,3747.89209437557,3157.70977623295,4406.34106647223,3607.21226501279,4040.56160238571,2856.76214118954,3955.86640197784,3351.33281844668,4101.5717209829,3052.58053488098,4458.35636397358,3600.49468203448,3890.84210082423,3554.67363446951,4149.67110310216,3695.25360581465,4243.83137294091,3706.26726669725,3898.24858128093,3541.10531701241,3992.13595036417,3201.77553752903,4696.48865270894,3806.51751287747,4192.98657024279,3348.40110705234,3543.26110913418,3808.94065647852,3505.8741824422,3948.82889514323,3603.66113421042,3542.35808361322,4302.62244685087,3409.73519511521,4459.01694292668,3297.37164823338,4309.05905674677,3697.99986165948,4354.5523613086,2890.95627670176,4106.55959479976,3733.65005312022,4729.15582817513,3075.44064781163,4254.14870524779,2922.37112951465,3558.19414020982,3749.21890115365,3901.55137445778,3180.62361014541,4778.46896016039,3817.37064459361,4594.15797354188,3197.01097402256,4281.88367013354,3898.34907643031,4083.35445055738,2909.53216422815,3775.79274950549,3358.3534633182,3329.88229820505,3145.69211496972,3505.07362179924,3440.87659738492,3870.1574585028,3048.46414452419,3995.02045450732,3272.01362237334,4291.91490993369,3050.8910054341,4008.57546248008,3321.06471924111,3509.93340161163,3509.06360186636,4479.58426645026,3433.37879603729,3902.02197792009,3184.47480779141,3983.45576812513,3409.21576822642,4256.35388365947,3404.96614228003,3471.74804593436,3057.50602756627,3727.23389369436,3000.81523007713,3641.22612440493,4247.72735090461,3479.15888902731,3457.0929708425,3745.99301854614,3695.90234002564,3998.42366359662],"y":[180.896876472607,185.622685118765,195.175740632229,null,193.212128501758,190.012731170654,181.331131205708,194.784317763522,192.693612949364,189.683956343308,186.325687386468,180.010907600075,182.058925595134,191.072568001784,198.068261547759,184.988144575059,194.644916777499,197.329765393212,183.913986968063,194.048297253996,173.942926757224,179.631063232198,188.643230545148,184.862933831103,179.859829230607,186.852923063003,183.105210421048,186.749697078392,171.941508311033,180.288202872686,178.39316136539,178.182935163006,188.240148556791,184.04941640161,194.951351833157,196.16803867165,190.368158345856,180.028564810567,180.754258460738,183.717425326258,181.733901384845,195.22684757188,186.325438893586,195.6930357337,184.867382306792,190.397158562951,182.394748394005,178.804386213236,190.167219491117,191.282801330276,185.979845320992,188.285494621284,189.926669530943,200.148598499969,186.862449572794,190.843135371059,186.126314726472,193.149206353538,180.806211155653,193.634094381519,184.671996791847,194.759912904911,185.165028627962,191.943553503975,183.695458481088,191.645212506317,195.317641017772,187.944778270647,190.341909640469,198.015059000067,190.228178751282,190.139639262483,196.283687532879,197.352312641405,190.294806325063,195.188672484271,190.833147815429,184.291356324591,186.912371793948,194.683705055714,189.10583307445,196.079475543834,187.255668088421,193.075964770094,191.037967883982,193.981753064319,190.141839668155,188.612024533749,189.3874049142,189.787806489319,201.70556355007,205.157324001752,185.054850739054,185.883063595928,186.79220249299,207.973772183433,190.358166296221,195.600363338925,177.828411480598,192.356461269781,191.98760398142,203.250129469298,183.185019152239,190.153042954393,193.142870731279,184.285959442705,199.068103030697,189.89779439941,181.16595465634,196.605067381449,198.131259840354,190.834046229534,193.244479689561,196.744943938777,191.258955505863,195.760111400113,187.76025544554,198.857042744942,189.124042481184,188.783813885972,186.974512549862,198.251985758729,175.668199591339,202.360673899017,185.966457574628,198.818282527477,190.682783847116,194.602542184293,190.835935158283,210.274011329934,189.66293459814,197.167719011381,192.628085776418,198.943099913932,186.68955661431,189.870590627938,191.161602742225,199.89084415976,185.314568115957,193.233617719263,193.030349369906,187.007368007861,187.863324614242,190.246005802974,191.703755698912,184.769819076359,189.634830225073,184.392874131538,195.105723462068,193.105938046053,187.35623008199,201.28945511505],"text":["species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: female","species: Adelie<br />sex: NA","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: NA","species: Adelie<br />sex: NA","species: Adelie<br />sex: NA","species: Adelie<br />sex: NA","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: male","species: Adelie<br />sex: NA","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: female","species: Adelie<br />sex: male","species: Adelie<br />sex: female","species: Adelie<br />sex: male"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,201,127,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(127,201,127,1)"}},"hoveron":"points","name":"Adelie","legendgroup":"Adelie","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3493.56629927177,3908.36898952723,3656.73726817127,3534.17968046851,3731.65918414481,3952.40903633181,3251.93330423906,3752.82941404264,4150.81581305247,3707.88929053582,3804.24889939371,3781.44447546918,3701.3515316369,4044.92619554512,3582.92525123339,4040.47318940051,3295.57724453043,3693.83406763896,3454.22101216391,4393.70752801187,3603.83643792477,3394.55002668779,2903.42476326041,3801.04959761724,3299.6050973516,4149.27410849836,3399.77759175003,3797.9034496611,3692.64277887065,4554.73192874342,3206.47742989007,4293.66751560476,3342.69638315775,4090.9207224194,3597.29046404362,3890.09506331291,3855.53883925546,4795.23547900375,2709.32449923828,4503.43475583941,3945.04588680808,3647.6931611402,3540.009012511,3503.43782441691,3683.30075675622,4453.3890021313,3402.37890440039,4293.57554913964,3246.56652296893,3683.19276061375,3315.06828298327,3941.49880498648,3590.13037333265,4040.07150254678,3344.75613115355,3449.53875176609,3257.64230022207,4046.03638598695,3800.05902951583,3530.77754904516,3954.54623381607,3641.86502269469,3645.83702041768,3999.3532650359,3394.10394377075,3770.93176926486,4103.11515297741,3780.85296214093],"y":[192.279727691412,195.827758595161,193.246856047213,188.265021024458,197.309774770215,197.948217175715,178.294055249728,197.263228838705,195.257144886628,197.665380655043,192.635980493762,193.995043858886,185.231888634712,200.859236272983,190.166069260612,201.347941895947,196.832399453782,181.383679333515,189.663527657837,195.129134560935,180.979513117671,191.004724419676,187.152948995493,192.674597575329,195.082180288807,197.176680356264,200.179675599746,199.833080637269,191.369270625338,205.372124585882,186.722759644128,200.833805475757,187.269345075078,203.119103910588,194.68473151885,198.914549570903,194.789599568769,210.253362616897,191.655646631494,205.076434698887,210.124563040957,187.161354319751,196.225519602001,196.194902875274,196.146356404945,200.935757863708,190.049093998224,212.090198921598,186.695749500208,197.873567940854,199.381856833398,201.222865523025,192.701755136438,202.606914689578,186.90647920277,196.87048815731,191.05760261137,202.751267527975,201.890566399507,193.835708727688,205.747372388467,189.048771342821,195.130258779414,207.293054467067,202.324183041044,192.775568836555,210.319908858091,197.830433067866],"text":["species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: male","species: Chinstrap<br />sex: female"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(190,174,212,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(190,174,212,1)"}},"hoveron":"points","name":"Chinstrap","legendgroup":"Chinstrap","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4499.48547635227,5690.30387445353,4443.73455089983,5703.92535104882,5406.42486791592,4556.72818178311,4804.37145732343,5205.66509673838,4402.7129218867,5143.01124298945,4641.62707017735,5540.04657476209,4646.30217348225,5854.30371625815,4204.05424096622,5849.03414364439,4155.15492532402,6290.40835642722,4805.17147537321,5342.24425213877,5690.1959274197,5002.04565832857,4399.26559919491,5058.98266153876,4992.42081916425,5099.7125502117,4091.11035423353,5651.67545225937,4600.21001340356,5554.59289575927,5253.65898622666,4696.77876366302,5054.99530653935,6046.49668999016,5152.33154432848,5394.45246390533,4952.675812901,5242.30469176546,4355.38102793507,5354.36167250387,3942.87275011651,5706.7448928114,4294.17043976486,4740.92733344994,5555.66287917551,4891.92280034535,4191.73688912764,5400.01234204974,5093.82603815757,5290.03450310789,4840.8903167164,5293.7281987723,4406.75903199241,5006.15509278141,4908.80664091092,5046.95136600174,4298.04523896892,4992.89004587103,4453.04701104295,5552.23714247812,4202.37861174159,5297.67235563137,4393.69136258028,5642.53162551206,4702.83910009544,5697.05733294133,4654.791684472,5795.15563552734,4706.85394465923,5544.93301427923,4753.50574450567,4994.85179562122,5091.634175051,5202.67816463951,4708.25585570186,5805.1064543752,4596.3180307718,5994.33703103103,4753.74315693509,5957.74616354611,4620.18639304675,5459.21970432159,4733.05345622357,5351.75844723824,4752.56320572458,5595.2435048297,4603.18417939823,5290.41070557665,4878.36192434188,5557.52028016839,4947.55002328195,5399.96092849877,4754.77701838594,5643.09420133475,4855.06561233662,5206.53083112091,4928.15615706146,4876.16260176525,4616.47085888777,5258.51312091108,4845.92861210927,5590.9042147873,4975.79359941185,5491.33908437565,4724.43159131799,5505.95128446817,4697.53696688451,5499.6843528701,4565.01991789322,5502.05505107064,5008.6340958206,5958.74231149442,4656.61368181929,5499.6900269296,4372.53876743373,5850.39568018634,4866.15820551757,5995.08508241735,4924.42859230097,null,4845.78658630606,5743.07206551079,5204.59708542097,5406.00527171046],"y":[211.193756985851,229.684592766874,210.085513706692,217.98557974752,215.1481461877,209.77235495355,210.818878534622,219.095575794391,208.811790614761,215.255335402116,214.000042717345,215.647628613748,214.338948894292,212.80082098525,210.177007572539,216.806363361888,210.274090451002,221.031168668531,209.254750992917,222.243984110467,218.033107168227,214.819641223922,213.282367190905,215.213937212154,214.986062875204,214.607420159318,216.183000624925,214.866159976088,210.114134457149,219.636670309305,221.75226608254,209.356389431655,207.106930908002,230.355485150777,219.83708306998,220.38747066129,212.692922629602,218.889706091769,208.153456385806,207.983262988925,207.802113350108,224.975486956909,210.089980794489,216.277282814123,222.19348629564,217.020136466809,209.632135893404,224.743810000271,212.929753764346,214.902214153297,210.260249302909,220.383980715461,209.743779694475,224.824799200892,216.681829367951,220.319571609609,208.186256350204,220.06604895182,208.175177788734,224.085660132766,208.300857134722,221.075201695971,213.753620214574,231.094889327325,219.125555908494,229.801898833364,213.910517137684,228.984409201331,220.028354650922,222.639398194477,216.207078986242,220.860704759136,221.182157628611,216.877874973603,216.341364600882,230.10557953082,209.073159998655,220.377434565127,215.293910391815,223.053955015168,212.251513399743,221.338623670489,211.806124347448,224.106234555691,212.002664621547,228.370962036029,217.796225186437,217.916246153787,212.298502977937,229.937946766615,217.879782290012,227.928636365011,211.923730285279,223.816597550176,214.11671262607,226.145752117783,216.062426340766,222.215586864203,202.769894854538,225.054518548772,219.093658452667,227.604165250063,214.745635144971,227.633476875536,216.097579349205,215.254790729098,209.836955425516,218.923455354385,208.097368664108,208.978313874267,215.928747063316,229.09297678899,213.251008296199,229.90794337187,217.382592490129,230.248227464594,216.772334570624,222.277981293574,213.889531839639,null,215.184840673953,222.397192596272,211.634184270911,212.879763936251],"text":["species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: NA","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: NA","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: NA","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: NA","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: NA","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male","species: Gentoo<br />sex: female","species: Gentoo<br />sex: male"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(253,192,134,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(253,192,134,1)"}},"hoveron":"points","name":"Gentoo","legendgroup":"Gentoo","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":25.2984640929846,"r":7.30593607305936,"b":44.8318804483188,"l":51.4736405147364},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2530.27030637884,6469.46254928666],"tickmode":"array","ticktext":["3000","4000","5000","6000"],"tickvals":[3000,4000,5000,6000],"categoryorder":"array","categoryarray":["3000","4000","5000","6000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":17.2685761726858},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(0,0,0,1)","gridwidth":0.066417600664176,"zeroline":false,"anchor":"y","title":{"text":"Body Mass (g)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[168.983839260219,234.05255837814],"tickmode":"array","ticktext":["170","180","190","200","210","220","230"],"tickvals":[170,180,190,200,210,220,230],"categoryorder":"array","categoryarray":["170","180","190","200","210","220","230"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":17.2685761726858},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(0,0,0,1)","gridwidth":0.066417600664176,"zeroline":false,"anchor":"x","title":{"text":"Flipper Length (mm)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(0,0,0,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"transparent","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"y":1},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"ec6025eefcee":{"x":{},"y":{},"colour":{},"text":{},"type":"scatter"}},"cur_data":"ec6025eefcee","visdat":{"ec6025eefcee":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# `plotly`
+
+
+```r
+scatter_more &lt;- penguins %&gt;% 
+* mutate(`Body mass` = paste(body_mass_g, "grams"),
+*        `Flipper length` = paste0(flipper_length_mm, "mm")) %&gt;%
+  ggplot(aes(x = body_mass_g, y = flipper_length_mm, color = species,
+*            text = paste("sex:", sex), label = `Body mass`,
+*            label1 = `Flipper length`)) +
+  geom_jitter(size = 3, alpha = 0.8) +
+  scale_color_brewer(type = "qual", name = NULL) +
+  labs(x = "Body Mass (g)",
+       y = "Flipper Length (mm)") +
+  lab_theme()
+```
+
+---
+
+# `plotly`
+
+
+```r
+ggplotly(scatter_more, 
+         tooltip = c("text", "species", "Body mass", "Flipper length"))
+```
+
+<div id="htmlwidget-7a3a939ef8f17c135c67" style="width:504px;height:396px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-7a3a939ef8f17c135c67">{"x":{"data":[{"x":[3751.07595540117,3808.44744115602,3258.93347706646,null,3457.16593044344,3656.06769995298,3630.38349205628,4673.98755052127,3465.99938301835,4247.56852171849,3306.07515612617,3692.32709337957,3207.18843542039,3797.70615285262,4403.29910826404,3702.25658103358,3443.23344649747,4509.31827698834,3320.44994744007,4190.23367523681,3398.28100841027,3607.60222215205,3803.48359126132,3944.98456008732,3803.27001018915,3808.91943130642,3558.54370949324,3191.72136531211,3140.43163509108,3951.16046626586,3249.93408458307,3893.02378808148,3296.85446409974,3891.11765822861,3333.80859927274,4147.92047971394,3946.9256940484,3557.51457493287,3297.28387808427,4642.96692411415,3144.73950135056,3895.94357215334,3090.8754824521,4397.66564197838,3003.62452819478,4600.60361130163,3433.91328457743,2971.96221949067,3453.08647625614,4155.18228803296,3508.84522771928,4296.21454992332,3453.31644152291,4045.00602042302,2905.50343239214,3702.52437355462,3550.37027567625,3790.02991708927,2856.70321856625,3745.71709592827,3140.11004890781,4391.93674190436,3601.404593396,4042.07107232884,2848.07496909052,3959.04577916954,3340.90563181322,4099.88844415173,3046.39614801388,4441.77259848453,3592.58863352239,3891.34047464002,3557.34869361855,4158.07381137274,3702.41376662627,4241.68397464789,3696.21645543259,3895.36322234664,3554.63558655698,4005.99768273532,3197.84047661815,4707.19258652069,3798.0089509394,4207.32847355772,3346.19327440858,3544.17398401536,3796.28334228415,3495.42770256288,3959.16580530349,3590.81923806574,3550.44996179175,4304.10181483254,3396.97938117664,4457.09228226915,3302.31129060034,4302.2795400722,3705.43458605185,4346.99051150121,2893.43973543029,4091.62133717909,3733.24363786262,4731.93594924174,3080.31624233816,4241.7699472513,2923.01572140306,3552.29928304907,3759.90472072735,3903.2061662944,3181.49938095361,4772.77396649588,3832.57259124424,4591.00541798864,3204.8289845651,4283.01649135072,3899.14008018561,4084.83373163268,2890.31916147564,3781.48768753745,3344.69058780931,3317.68381341826,3144.52175253537,3497.10603655782,3446.83176958002,3881.53820327949,3055.33641014714,3998.40592002496,3280.52541233134,4294.12000066601,3041.02881773841,3990.29408349656,3327.53264353611,3500.45309714042,3499.66514627449,4473.29707782716,3421.48241710383,3905.86899551097,3179.85467353836,3969.91311433259,3392.28580844589,4258.77710041124,3407.1733136056,3480.04266630858,3047.30453128926,3726.03327511344,3007.90245383512,3658.15260962117,4251.49530102964,3465.23501545656,3447.84060820006,3753.31482175272,3708.33566124085,4003.67011008319],"y":[181.383623481356,185.799804116972,195.045457487367,null,192.949776247144,189.642641745508,180.866537704878,194.773568177596,192.768375851214,190.14676913023,185.773327379301,179.891482715122,182.156542836688,190.737317649089,198.197679066099,185.319448802993,195.307294682786,197.049539331533,184.036157677695,193.623993858136,173.880626274645,180.254123546556,188.921721042693,185.060581287742,180.366903587431,187.190348014049,183.130704436451,187.145031248592,172.128765453026,179.876340542547,177.613512328081,177.732545963302,187.799113623984,183.882207123563,194.636458575353,195.90407776963,189.91452191323,179.920014652796,181.054964916594,184.353033865243,182.218940187618,195.18456650842,186.332100167312,195.797227198444,184.82271457389,190.340841017477,182.046034494042,179.223016128875,189.733196391352,191.32049331367,185.722316732258,187.920287266932,189.838649746217,200.355709432624,187.066696659289,191.316659388877,186.149249432236,192.87493307516,181.262124925107,194.153449928015,184.766423230804,195.238324276917,184.868133397028,192.031068261527,184.388213274255,191.642365772091,195.025700892881,187.878008868545,190.347136183642,197.822173823416,190.083593738265,190.371772968397,195.85816300828,196.75703799054,189.937111728452,194.955757848546,190.625216057897,184.126236360334,186.763181099854,195.156519860215,189.221835206822,196.220532745868,186.990838049911,192.944263841026,191.390658472478,193.783316100575,190.109044040926,188.925515368953,188.691322509758,190.114706413075,202.056940426305,204.944587590359,185.078383173607,186.301631661505,187.350995587185,207.91267870646,189.818832846731,195.867881728522,178.306802687421,192.006761831604,192.158131443895,203.167056047544,182.771829469688,190.367435044423,192.685557183437,184.222193312459,199.229941971414,190.378231792897,181.111046633869,196.783942889795,198.187375808693,191.108799551427,192.728836106323,197.137245687284,191.089262460358,196.288381636143,188.342004340142,199.051816068776,188.700585497171,188.705995317362,186.69790244922,197.763964389637,175.68716217801,202.06363802962,185.893014462851,198.724699115567,190.834904250875,195.14341183342,190.992803211883,210.051604408585,190.143974077143,197.097243496776,193.163894696534,199.007108666748,187.381653989293,190.114696425758,191.195929865353,200.265579061024,185.366925428435,193.064260079712,192.95576363802,186.916288745776,188.213399094529,189.617446758598,192.071634191088,184.816978072561,189.804419921525,183.787604399212,195.261175316572,193.061444277689,187.128200580552,200.613243331574],"text":["species: Adelie<br />sex: male<br />Body mass: 3750 grams<br />Flipper length: 181mm","species: Adelie<br />sex: female<br />Body mass: 3800 grams<br />Flipper length: 186mm","species: Adelie<br />sex: female<br />Body mass: 3250 grams<br />Flipper length: 195mm","species: Adelie<br />sex: NA<br />Body mass: NA grams<br />Flipper length: NAmm","species: Adelie<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 193mm","species: Adelie<br />sex: male<br />Body mass: 3650 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3625 grams<br />Flipper length: 181mm","species: Adelie<br />sex: male<br />Body mass: 4675 grams<br />Flipper length: 195mm","species: Adelie<br />sex: NA<br />Body mass: 3475 grams<br />Flipper length: 193mm","species: Adelie<br />sex: NA<br />Body mass: 4250 grams<br />Flipper length: 190mm","species: Adelie<br />sex: NA<br />Body mass: 3300 grams<br />Flipper length: 186mm","species: Adelie<br />sex: NA<br />Body mass: 3700 grams<br />Flipper length: 180mm","species: Adelie<br />sex: female<br />Body mass: 3200 grams<br />Flipper length: 182mm","species: Adelie<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 4400 grams<br />Flipper length: 198mm","species: Adelie<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 185mm","species: Adelie<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 195mm","species: Adelie<br />sex: male<br />Body mass: 4500 grams<br />Flipper length: 197mm","species: Adelie<br />sex: female<br />Body mass: 3325 grams<br />Flipper length: 184mm","species: Adelie<br />sex: male<br />Body mass: 4200 grams<br />Flipper length: 194mm","species: Adelie<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 174mm","species: Adelie<br />sex: male<br />Body mass: 3600 grams<br />Flipper length: 180mm","species: Adelie<br />sex: female<br />Body mass: 3800 grams<br />Flipper length: 189mm","species: Adelie<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 180mm","species: Adelie<br />sex: female<br />Body mass: 3800 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 3550 grams<br />Flipper length: 183mm","species: Adelie<br />sex: female<br />Body mass: 3200 grams<br />Flipper length: 187mm","species: Adelie<br />sex: female<br />Body mass: 3150 grams<br />Flipper length: 172mm","species: Adelie<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 180mm","species: Adelie<br />sex: female<br />Body mass: 3250 grams<br />Flipper length: 178mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 178mm","species: Adelie<br />sex: female<br />Body mass: 3300 grams<br />Flipper length: 188mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 184mm","species: Adelie<br />sex: female<br />Body mass: 3325 grams<br />Flipper length: 195mm","species: Adelie<br />sex: male<br />Body mass: 4150 grams<br />Flipper length: 196mm","species: Adelie<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3550 grams<br />Flipper length: 180mm","species: Adelie<br />sex: female<br />Body mass: 3300 grams<br />Flipper length: 181mm","species: Adelie<br />sex: male<br />Body mass: 4650 grams<br />Flipper length: 184mm","species: Adelie<br />sex: female<br />Body mass: 3150 grams<br />Flipper length: 182mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 195mm","species: Adelie<br />sex: female<br />Body mass: 3100 grams<br />Flipper length: 186mm","species: Adelie<br />sex: male<br />Body mass: 4400 grams<br />Flipper length: 196mm","species: Adelie<br />sex: female<br />Body mass: 3000 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 4600 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 3425 grams<br />Flipper length: 182mm","species: Adelie<br />sex: NA<br />Body mass: 2975 grams<br />Flipper length: 179mm","species: Adelie<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 4150 grams<br />Flipper length: 191mm","species: Adelie<br />sex: female<br />Body mass: 3500 grams<br />Flipper length: 186mm","species: Adelie<br />sex: male<br />Body mass: 4300 grams<br />Flipper length: 188mm","species: Adelie<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 4050 grams<br />Flipper length: 200mm","species: Adelie<br />sex: female<br />Body mass: 2900 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 3700 grams<br />Flipper length: 191mm","species: Adelie<br />sex: female<br />Body mass: 3550 grams<br />Flipper length: 186mm","species: Adelie<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 193mm","species: Adelie<br />sex: female<br />Body mass: 2850 grams<br />Flipper length: 181mm","species: Adelie<br />sex: male<br />Body mass: 3750 grams<br />Flipper length: 194mm","species: Adelie<br />sex: female<br />Body mass: 3150 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 4400 grams<br />Flipper length: 195mm","species: Adelie<br />sex: female<br />Body mass: 3600 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 4050 grams<br />Flipper length: 192mm","species: Adelie<br />sex: female<br />Body mass: 2850 grams<br />Flipper length: 184mm","species: Adelie<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 192mm","species: Adelie<br />sex: female<br />Body mass: 3350 grams<br />Flipper length: 195mm","species: Adelie<br />sex: male<br />Body mass: 4100 grams<br />Flipper length: 188mm","species: Adelie<br />sex: female<br />Body mass: 3050 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 4450 grams<br />Flipper length: 198mm","species: Adelie<br />sex: female<br />Body mass: 3600 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3550 grams<br />Flipper length: 196mm","species: Adelie<br />sex: male<br />Body mass: 4150 grams<br />Flipper length: 197mm","species: Adelie<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 4250 grams<br />Flipper length: 195mm","species: Adelie<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 184mm","species: Adelie<br />sex: female<br />Body mass: 3550 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 4000 grams<br />Flipper length: 195mm","species: Adelie<br />sex: female<br />Body mass: 3200 grams<br />Flipper length: 189mm","species: Adelie<br />sex: male<br />Body mass: 4700 grams<br />Flipper length: 196mm","species: Adelie<br />sex: female<br />Body mass: 3800 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 4200 grams<br />Flipper length: 193mm","species: Adelie<br />sex: female<br />Body mass: 3350 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 3550 grams<br />Flipper length: 194mm","species: Adelie<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3500 grams<br />Flipper length: 189mm","species: Adelie<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 189mm","species: Adelie<br />sex: female<br />Body mass: 3600 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3550 grams<br />Flipper length: 202mm","species: Adelie<br />sex: male<br />Body mass: 4300 grams<br />Flipper length: 205mm","species: Adelie<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 4450 grams<br />Flipper length: 186mm","species: Adelie<br />sex: female<br />Body mass: 3300 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 4300 grams<br />Flipper length: 208mm","species: Adelie<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 4350 grams<br />Flipper length: 196mm","species: Adelie<br />sex: female<br />Body mass: 2900 grams<br />Flipper length: 178mm","species: Adelie<br />sex: male<br />Body mass: 4100 grams<br />Flipper length: 192mm","species: Adelie<br />sex: female<br />Body mass: 3725 grams<br />Flipper length: 192mm","species: Adelie<br />sex: male<br />Body mass: 4725 grams<br />Flipper length: 203mm","species: Adelie<br />sex: female<br />Body mass: 3075 grams<br />Flipper length: 183mm","species: Adelie<br />sex: male<br />Body mass: 4250 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 2925 grams<br />Flipper length: 193mm","species: Adelie<br />sex: male<br />Body mass: 3550 grams<br />Flipper length: 184mm","species: Adelie<br />sex: female<br />Body mass: 3750 grams<br />Flipper length: 199mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3175 grams<br />Flipper length: 181mm","species: Adelie<br />sex: male<br />Body mass: 4775 grams<br />Flipper length: 197mm","species: Adelie<br />sex: female<br />Body mass: 3825 grams<br />Flipper length: 198mm","species: Adelie<br />sex: male<br />Body mass: 4600 grams<br />Flipper length: 191mm","species: Adelie<br />sex: female<br />Body mass: 3200 grams<br />Flipper length: 193mm","species: Adelie<br />sex: male<br />Body mass: 4275 grams<br />Flipper length: 197mm","species: Adelie<br />sex: female<br />Body mass: 3900 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 4075 grams<br />Flipper length: 196mm","species: Adelie<br />sex: female<br />Body mass: 2900 grams<br />Flipper length: 188mm","species: Adelie<br />sex: male<br />Body mass: 3775 grams<br />Flipper length: 199mm","species: Adelie<br />sex: female<br />Body mass: 3350 grams<br />Flipper length: 189mm","species: Adelie<br />sex: male<br />Body mass: 3325 grams<br />Flipper length: 189mm","species: Adelie<br />sex: female<br />Body mass: 3150 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 3500 grams<br />Flipper length: 198mm","species: Adelie<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 176mm","species: Adelie<br />sex: male<br />Body mass: 3875 grams<br />Flipper length: 202mm","species: Adelie<br />sex: female<br />Body mass: 3050 grams<br />Flipper length: 186mm","species: Adelie<br />sex: male<br />Body mass: 4000 grams<br />Flipper length: 199mm","species: Adelie<br />sex: female<br />Body mass: 3275 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 4300 grams<br />Flipper length: 195mm","species: Adelie<br />sex: female<br />Body mass: 3050 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 4000 grams<br />Flipper length: 210mm","species: Adelie<br />sex: female<br />Body mass: 3325 grams<br />Flipper length: 190mm","species: Adelie<br />sex: male<br />Body mass: 3500 grams<br />Flipper length: 197mm","species: Adelie<br />sex: female<br />Body mass: 3500 grams<br />Flipper length: 193mm","species: Adelie<br />sex: male<br />Body mass: 4475 grams<br />Flipper length: 199mm","species: Adelie<br />sex: female<br />Body mass: 3425 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3175 grams<br />Flipper length: 191mm","species: Adelie<br />sex: male<br />Body mass: 3975 grams<br />Flipper length: 200mm","species: Adelie<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 4250 grams<br />Flipper length: 193mm","species: Adelie<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 193mm","species: Adelie<br />sex: male<br />Body mass: 3475 grams<br />Flipper length: 187mm","species: Adelie<br />sex: female<br />Body mass: 3050 grams<br />Flipper length: 188mm","species: Adelie<br />sex: male<br />Body mass: 3725 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3000 grams<br />Flipper length: 192mm","species: Adelie<br />sex: male<br />Body mass: 3650 grams<br />Flipper length: 185mm","species: Adelie<br />sex: male<br />Body mass: 4250 grams<br />Flipper length: 190mm","species: Adelie<br />sex: female<br />Body mass: 3475 grams<br />Flipper length: 184mm","species: Adelie<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 195mm","species: Adelie<br />sex: male<br />Body mass: 3750 grams<br />Flipper length: 193mm","species: Adelie<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 187mm","species: Adelie<br />sex: male<br />Body mass: 4000 grams<br />Flipper length: 201mm"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(127,201,127,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(127,201,127,1)"}},"hoveron":"points","name":"Adelie","legendgroup":"Adelie","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[3491.10567149706,3894.54307666514,3641.76006140653,3527.19933036249,3733.39913218748,3952.13134280406,3252.53802316263,3750.55571598466,4144.12664044648,3704.25908653066,3796.12150991336,3772.33238852583,3702.82912090886,4044.3213527929,3579.75387505256,4054.55812989268,3298.91033826862,3702.03275131527,3450.27990277391,4391.72855250072,3598.83508082014,3404.3409513263,2908.33083334845,3808.56795366388,3303.62260573078,4159.55314573366,3397.0415359037,3794.02561945375,3699.91152732633,4553.84238486644,3198.22642238811,4290.79957688227,3348.33372580353,4093.28662910499,3603.56631280854,3894.73230171017,3859.83925852925,4790.76522597112,2706.33943096735,4500.60906423721,3947.78419479262,3652.69770181738,3552.37870350946,3493.99956500158,3668.28560563736,4456.22088070493,3403.5892932117,4308.80094763823,3250.79754946753,3671.66489424184,3315.90762916952,3956.05615811422,3604.6590403514,4057.83708928619,3343.88826396782,3456.47079969756,3255.08461680263,4050.44195433613,3809.34397668578,3526.34805958718,3947.51998608932,3647.53630709834,3641.58739422448,3998.63490516786,3405.90537235141,3780.14448071364,4109.30182388052,3779.00509115774],"y":[192.349159532413,195.779010896198,192.613303684071,188.340352040343,196.645958779939,198.275684600882,177.78657235913,197.216970609501,195.127147080936,198.357562354207,192.83005432412,194.365003572591,184.925961428694,201.159988856688,189.634418397211,200.850200648792,197.112156862579,181.252576362155,190.143305229582,195.00627001524,181.37916716747,191.358934855834,186.888263792731,192.899626659229,195.361208515801,197.063719164208,200.305745920166,200.141069890559,190.945441413112,205.060025068372,187.360087256506,200.836812145449,186.717475778423,203.390504691936,194.962612115592,199.37840639893,195.011775101721,209.929360778816,191.839951932244,205.284185019322,209.792231988162,186.791887300462,195.638132262602,195.997325809486,195.837810865231,200.809308326617,189.812290980667,212.202563694678,186.986107318476,197.917282050475,199.125043416396,200.98267535232,193.220149401017,203.056255702488,187.032055808231,197.048514830507,191.078687506728,202.999573845044,202.088349010982,193.724016572908,205.912922665104,189.151889004372,194.929179175384,207.0110045854,202.021591476165,193.24957308732,209.970829730108,198.331789633073],"text":["species: Chinstrap<br />sex: female<br />Body mass: 3500 grams<br />Flipper length: 192mm","species: Chinstrap<br />sex: male<br />Body mass: 3900 grams<br />Flipper length: 196mm","species: Chinstrap<br />sex: male<br />Body mass: 3650 grams<br />Flipper length: 193mm","species: Chinstrap<br />sex: female<br />Body mass: 3525 grams<br />Flipper length: 188mm","species: Chinstrap<br />sex: male<br />Body mass: 3725 grams<br />Flipper length: 197mm","species: Chinstrap<br />sex: female<br />Body mass: 3950 grams<br />Flipper length: 198mm","species: Chinstrap<br />sex: female<br />Body mass: 3250 grams<br />Flipper length: 178mm","species: Chinstrap<br />sex: male<br />Body mass: 3750 grams<br />Flipper length: 197mm","species: Chinstrap<br />sex: female<br />Body mass: 4150 grams<br />Flipper length: 195mm","species: Chinstrap<br />sex: male<br />Body mass: 3700 grams<br />Flipper length: 198mm","species: Chinstrap<br />sex: female<br />Body mass: 3800 grams<br />Flipper length: 193mm","species: Chinstrap<br />sex: male<br />Body mass: 3775 grams<br />Flipper length: 194mm","species: Chinstrap<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 185mm","species: Chinstrap<br />sex: male<br />Body mass: 4050 grams<br />Flipper length: 201mm","species: Chinstrap<br />sex: female<br />Body mass: 3575 grams<br />Flipper length: 190mm","species: Chinstrap<br />sex: male<br />Body mass: 4050 grams<br />Flipper length: 201mm","species: Chinstrap<br />sex: male<br />Body mass: 3300 grams<br />Flipper length: 197mm","species: Chinstrap<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 181mm","species: Chinstrap<br />sex: female<br />Body mass: 3450 grams<br />Flipper length: 190mm","species: Chinstrap<br />sex: male<br />Body mass: 4400 grams<br />Flipper length: 195mm","species: Chinstrap<br />sex: female<br />Body mass: 3600 grams<br />Flipper length: 181mm","species: Chinstrap<br />sex: male<br />Body mass: 3400 grams<br />Flipper length: 191mm","species: Chinstrap<br />sex: female<br />Body mass: 2900 grams<br />Flipper length: 187mm","species: Chinstrap<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 193mm","species: Chinstrap<br />sex: female<br />Body mass: 3300 grams<br />Flipper length: 195mm","species: Chinstrap<br />sex: male<br />Body mass: 4150 grams<br />Flipper length: 197mm","species: Chinstrap<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 200mm","species: Chinstrap<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 200mm","species: Chinstrap<br />sex: female<br />Body mass: 3700 grams<br />Flipper length: 191mm","species: Chinstrap<br />sex: male<br />Body mass: 4550 grams<br />Flipper length: 205mm","species: Chinstrap<br />sex: female<br />Body mass: 3200 grams<br />Flipper length: 187mm","species: Chinstrap<br />sex: male<br />Body mass: 4300 grams<br />Flipper length: 201mm","species: Chinstrap<br />sex: female<br />Body mass: 3350 grams<br />Flipper length: 187mm","species: Chinstrap<br />sex: male<br />Body mass: 4100 grams<br />Flipper length: 203mm","species: Chinstrap<br />sex: male<br />Body mass: 3600 grams<br />Flipper length: 195mm","species: Chinstrap<br />sex: female<br />Body mass: 3900 grams<br />Flipper length: 199mm","species: Chinstrap<br />sex: female<br />Body mass: 3850 grams<br />Flipper length: 195mm","species: Chinstrap<br />sex: male<br />Body mass: 4800 grams<br />Flipper length: 210mm","species: Chinstrap<br />sex: female<br />Body mass: 2700 grams<br />Flipper length: 192mm","species: Chinstrap<br />sex: male<br />Body mass: 4500 grams<br />Flipper length: 205mm","species: Chinstrap<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 210mm","species: Chinstrap<br />sex: female<br />Body mass: 3650 grams<br />Flipper length: 187mm","species: Chinstrap<br />sex: male<br />Body mass: 3550 grams<br />Flipper length: 196mm","species: Chinstrap<br />sex: female<br />Body mass: 3500 grams<br />Flipper length: 196mm","species: Chinstrap<br />sex: female<br />Body mass: 3675 grams<br />Flipper length: 196mm","species: Chinstrap<br />sex: male<br />Body mass: 4450 grams<br />Flipper length: 201mm","species: Chinstrap<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 190mm","species: Chinstrap<br />sex: male<br />Body mass: 4300 grams<br />Flipper length: 212mm","species: Chinstrap<br />sex: male<br />Body mass: 3250 grams<br />Flipper length: 187mm","species: Chinstrap<br />sex: female<br />Body mass: 3675 grams<br />Flipper length: 198mm","species: Chinstrap<br />sex: female<br />Body mass: 3325 grams<br />Flipper length: 199mm","species: Chinstrap<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 201mm","species: Chinstrap<br />sex: female<br />Body mass: 3600 grams<br />Flipper length: 193mm","species: Chinstrap<br />sex: male<br />Body mass: 4050 grams<br />Flipper length: 203mm","species: Chinstrap<br />sex: female<br />Body mass: 3350 grams<br />Flipper length: 187mm","species: Chinstrap<br />sex: male<br />Body mass: 3450 grams<br />Flipper length: 197mm","species: Chinstrap<br />sex: female<br />Body mass: 3250 grams<br />Flipper length: 191mm","species: Chinstrap<br />sex: male<br />Body mass: 4050 grams<br />Flipper length: 203mm","species: Chinstrap<br />sex: male<br />Body mass: 3800 grams<br />Flipper length: 202mm","species: Chinstrap<br />sex: female<br />Body mass: 3525 grams<br />Flipper length: 194mm","species: Chinstrap<br />sex: male<br />Body mass: 3950 grams<br />Flipper length: 206mm","species: Chinstrap<br />sex: female<br />Body mass: 3650 grams<br />Flipper length: 189mm","species: Chinstrap<br />sex: female<br />Body mass: 3650 grams<br />Flipper length: 195mm","species: Chinstrap<br />sex: male<br />Body mass: 4000 grams<br />Flipper length: 207mm","species: Chinstrap<br />sex: female<br />Body mass: 3400 grams<br />Flipper length: 202mm","species: Chinstrap<br />sex: male<br />Body mass: 3775 grams<br />Flipper length: 193mm","species: Chinstrap<br />sex: male<br />Body mass: 4100 grams<br />Flipper length: 210mm","species: Chinstrap<br />sex: female<br />Body mass: 3775 grams<br />Flipper length: 198mm"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(190,174,212,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(190,174,212,1)"}},"hoveron":"points","name":"Chinstrap","legendgroup":"Chinstrap","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[4503.46225091256,5697.81818077434,4442.9378813738,5701.8123404216,5408.62207815517,4558.26303848065,4799.9992739968,5202.26841262076,4393.45806139056,5151.98861391749,4655.13768630568,5555.99268149585,4643.08166701812,5842.83479587175,4191.93880344275,5857.97841710504,4151.03277626447,6308.12313413713,4805.12134121265,5352.84213158302,5692.81783566345,4995.71587403305,4407.47094316408,5049.08629820682,5004.2952868389,5096.66938704439,4103.31182254478,5640.48211686313,4606.81613510475,5558.06905515492,5257.68921736628,4692.4167511519,5055.81836230587,6055.44394693803,5155.2749414416,5396.04213332292,4950.1235202048,5259.19183713384,4340.49930782989,5343.9947762154,3955.73008685838,5709.30742706638,4291.92709545139,4749.12429674063,5544.00755708572,4894.87060880754,4203.18767636549,5397.08295669407,5095.74252433144,5291.95430864114,4846.08253569808,5307.30585915036,4392.19241602346,4999.86760922708,4901.00920956116,5045.25623325258,4309.54713901971,4990.1857118262,4459.68111779075,5553.8657441223,4199.21299837995,5299.61666602641,4405.28101493604,5652.49082393944,4699.34221446514,5704.64813192841,4655.23726385552,5800.26131230872,4697.64955782332,5546.37370318174,4758.69116698392,4993.38356941938,5097.03516883776,5193.48271676805,4690.28559085913,5794.88325218204,4605.56196614634,5990.33335225657,4757.44806014467,5947.43966056965,4622.78508769348,5446.04311849922,4722.37814161461,5357.83984942827,4749.12761388812,5597.40686213132,4595.37415356375,5291.2439748086,4882.88827931508,5555.40316552855,4945.61088087037,5398.59151767101,4744.8599313153,5657.44614725932,4853.29120914452,5198.82936408743,4927.54604426213,4878.66091808304,4628.64067732822,5255.71844715159,4843.90903580934,5608.31205297727,4971.84463543817,5496.89628906082,4720.04259123001,5496.97337319143,4697.62387626804,5499.61265058722,4571.7822954664,5508.5667376034,5004.62780312169,5959.50895575341,4648.900686712,5503.19316937588,4378.52010202128,5849.24209969584,4877.4240483297,6000.46294543892,4933.52305215783,null,4854.5239350386,5749.97866180725,5203.01139728632,5409.93018656969],"y":[210.97456727773,230.304533614963,209.923620379157,217.67304350473,215.291695645638,209.837498352304,210.711708393134,219.008327924646,208.734531425498,214.726715227589,213.977358321846,215.897982398421,214.170634246804,213.228833049536,209.749778357334,216.749501659349,209.893678933755,221.294370313175,208.658857940882,222.239893964492,217.610467792116,215.118514824845,213.346900047362,215.320058490895,214.689665553905,214.627534777485,215.634633243643,214.692218350247,210.319364238158,219.874573095888,221.86027239114,208.726280077174,207.179219436459,229.881437974051,220.016747683287,220.013598748669,212.938166749105,218.880422438309,207.90682226792,208.246007057279,208.218368086219,224.770885063149,209.680455226265,215.799938122742,222.204675586894,216.789816362597,210.307431758195,225.312659346685,213.123834113218,214.969646663405,209.777567484602,220.012993147969,209.812723954953,224.715956731886,217.014909875952,219.950649769977,208.070285348222,219.743871841766,207.706088529341,224.077357901819,207.760925584473,221.167083564028,214.153685261868,231.052799356915,218.854712640867,229.747962164506,214.024435536191,228.846343360841,220.370509488322,223.011704282835,216.340556514077,220.614806520566,220.635361830704,216.963813922927,215.959743688069,229.926294113509,209.068827450834,220.248631374165,214.91370003093,222.924432444572,212.391154695116,221.239027936943,211.624736172706,224.030751002766,212.205882848054,228.366495611891,218.327724359371,217.964379142597,211.808151005767,229.9313876817,218.339507143386,228.235826994479,212.007063292712,224.389348054305,213.905455659889,225.681738970988,216.203969846107,221.986475342326,202.797672813758,225.023936641216,219.064137931913,228.111108232103,215.03777025342,228.081456790492,215.927640596777,215.122653664835,210.066586815938,219.009542853385,207.960071158223,208.711392827146,216.03814912308,228.894143454731,212.677893046103,230.15762882214,217.041878751665,229.907485064864,216.903622724675,222.295850667171,214.16016244702,null,215.274081491679,221.91005270537,211.861719318479,212.844370223023],"text":["species: Gentoo<br />sex: female<br />Body mass: 4500 grams<br />Flipper length: 211mm","species: Gentoo<br />sex: male<br />Body mass: 5700 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: female<br />Body mass: 4450 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5700 grams<br />Flipper length: 218mm","species: Gentoo<br />sex: male<br />Body mass: 5400 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 4550 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: female<br />Body mass: 4800 grams<br />Flipper length: 211mm","species: Gentoo<br />sex: male<br />Body mass: 5200 grams<br />Flipper length: 219mm","species: Gentoo<br />sex: female<br />Body mass: 4400 grams<br />Flipper length: 209mm","species: Gentoo<br />sex: male<br />Body mass: 5150 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 4650 grams<br />Flipper length: 214mm","species: Gentoo<br />sex: male<br />Body mass: 5550 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: female<br />Body mass: 4650 grams<br />Flipper length: 214mm","species: Gentoo<br />sex: male<br />Body mass: 5850 grams<br />Flipper length: 213mm","species: Gentoo<br />sex: female<br />Body mass: 4200 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5850 grams<br />Flipper length: 217mm","species: Gentoo<br />sex: female<br />Body mass: 4150 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 6300 grams<br />Flipper length: 221mm","species: Gentoo<br />sex: female<br />Body mass: 4800 grams<br />Flipper length: 209mm","species: Gentoo<br />sex: male<br />Body mass: 5350 grams<br />Flipper length: 222mm","species: Gentoo<br />sex: male<br />Body mass: 5700 grams<br />Flipper length: 218mm","species: Gentoo<br />sex: female<br />Body mass: 5000 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 4400 grams<br />Flipper length: 213mm","species: Gentoo<br />sex: male<br />Body mass: 5050 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 5000 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: male<br />Body mass: 5100 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: NA<br />Body mass: 4100 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: male<br />Body mass: 5650 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 4600 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5550 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: male<br />Body mass: 5250 grams<br />Flipper length: 222mm","species: Gentoo<br />sex: female<br />Body mass: 4700 grams<br />Flipper length: 209mm","species: Gentoo<br />sex: female<br />Body mass: 5050 grams<br />Flipper length: 207mm","species: Gentoo<br />sex: male<br />Body mass: 6050 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: female<br />Body mass: 5150 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: male<br />Body mass: 5400 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: female<br />Body mass: 4950 grams<br />Flipper length: 213mm","species: Gentoo<br />sex: male<br />Body mass: 5250 grams<br />Flipper length: 219mm","species: Gentoo<br />sex: female<br />Body mass: 4350 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: male<br />Body mass: 5350 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: female<br />Body mass: 3950 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: male<br />Body mass: 5700 grams<br />Flipper length: 225mm","species: Gentoo<br />sex: female<br />Body mass: 4300 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 4750 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: male<br />Body mass: 5550 grams<br />Flipper length: 222mm","species: Gentoo<br />sex: female<br />Body mass: 4900 grams<br />Flipper length: 217mm","species: Gentoo<br />sex: female<br />Body mass: 4200 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5400 grams<br />Flipper length: 225mm","species: Gentoo<br />sex: female<br />Body mass: 5100 grams<br />Flipper length: 213mm","species: Gentoo<br />sex: male<br />Body mass: 5300 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 4850 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5300 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: female<br />Body mass: 4400 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5000 grams<br />Flipper length: 225mm","species: Gentoo<br />sex: female<br />Body mass: 4900 grams<br />Flipper length: 217mm","species: Gentoo<br />sex: male<br />Body mass: 5050 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: female<br />Body mass: 4300 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: male<br />Body mass: 5000 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: female<br />Body mass: 4450 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: male<br />Body mass: 5550 grams<br />Flipper length: 224mm","species: Gentoo<br />sex: female<br />Body mass: 4200 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: male<br />Body mass: 5300 grams<br />Flipper length: 221mm","species: Gentoo<br />sex: female<br />Body mass: 4400 grams<br />Flipper length: 214mm","species: Gentoo<br />sex: male<br />Body mass: 5650 grams<br />Flipper length: 231mm","species: Gentoo<br />sex: female<br />Body mass: 4700 grams<br />Flipper length: 219mm","species: Gentoo<br />sex: male<br />Body mass: 5700 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: NA<br />Body mass: 4650 grams<br />Flipper length: 214mm","species: Gentoo<br />sex: male<br />Body mass: 5800 grams<br />Flipper length: 229mm","species: Gentoo<br />sex: female<br />Body mass: 4700 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: male<br />Body mass: 5550 grams<br />Flipper length: 223mm","species: Gentoo<br />sex: female<br />Body mass: 4750 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: male<br />Body mass: 5000 grams<br />Flipper length: 221mm","species: Gentoo<br />sex: male<br />Body mass: 5100 grams<br />Flipper length: 221mm","species: Gentoo<br />sex: female<br />Body mass: 5200 grams<br />Flipper length: 217mm","species: Gentoo<br />sex: female<br />Body mass: 4700 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: male<br />Body mass: 5800 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: female<br />Body mass: 4600 grams<br />Flipper length: 209mm","species: Gentoo<br />sex: male<br />Body mass: 6000 grams<br />Flipper length: 220mm","species: Gentoo<br />sex: female<br />Body mass: 4750 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: male<br />Body mass: 5950 grams<br />Flipper length: 223mm","species: Gentoo<br />sex: female<br />Body mass: 4625 grams<br />Flipper length: 212mm","species: Gentoo<br />sex: male<br />Body mass: 5450 grams<br />Flipper length: 221mm","species: Gentoo<br />sex: female<br />Body mass: 4725 grams<br />Flipper length: 212mm","species: Gentoo<br />sex: male<br />Body mass: 5350 grams<br />Flipper length: 224mm","species: Gentoo<br />sex: female<br />Body mass: 4750 grams<br />Flipper length: 212mm","species: Gentoo<br />sex: male<br />Body mass: 5600 grams<br />Flipper length: 228mm","species: Gentoo<br />sex: female<br />Body mass: 4600 grams<br />Flipper length: 218mm","species: Gentoo<br />sex: male<br />Body mass: 5300 grams<br />Flipper length: 218mm","species: Gentoo<br />sex: female<br />Body mass: 4875 grams<br />Flipper length: 212mm","species: Gentoo<br />sex: male<br />Body mass: 5550 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: female<br />Body mass: 4950 grams<br />Flipper length: 218mm","species: Gentoo<br />sex: male<br />Body mass: 5400 grams<br />Flipper length: 228mm","species: Gentoo<br />sex: female<br />Body mass: 4750 grams<br />Flipper length: 212mm","species: Gentoo<br />sex: male<br />Body mass: 5650 grams<br />Flipper length: 224mm","species: Gentoo<br />sex: female<br />Body mass: 4850 grams<br />Flipper length: 214mm","species: Gentoo<br />sex: male<br />Body mass: 5200 grams<br />Flipper length: 226mm","species: Gentoo<br />sex: male<br />Body mass: 4925 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: female<br />Body mass: 4875 grams<br />Flipper length: 222mm","species: Gentoo<br />sex: female<br />Body mass: 4625 grams<br />Flipper length: 203mm","species: Gentoo<br />sex: male<br />Body mass: 5250 grams<br />Flipper length: 225mm","species: Gentoo<br />sex: female<br />Body mass: 4850 grams<br />Flipper length: 219mm","species: Gentoo<br />sex: male<br />Body mass: 5600 grams<br />Flipper length: 228mm","species: Gentoo<br />sex: female<br />Body mass: 4975 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: male<br />Body mass: 5500 grams<br />Flipper length: 228mm","species: Gentoo<br />sex: NA<br />Body mass: 4725 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: male<br />Body mass: 5500 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: female<br />Body mass: 4700 grams<br />Flipper length: 210mm","species: Gentoo<br />sex: male<br />Body mass: 5500 grams<br />Flipper length: 219mm","species: Gentoo<br />sex: female<br />Body mass: 4575 grams<br />Flipper length: 208mm","species: Gentoo<br />sex: male<br />Body mass: 5500 grams<br />Flipper length: 209mm","species: Gentoo<br />sex: female<br />Body mass: 5000 grams<br />Flipper length: 216mm","species: Gentoo<br />sex: male<br />Body mass: 5950 grams<br />Flipper length: 229mm","species: Gentoo<br />sex: female<br />Body mass: 4650 grams<br />Flipper length: 213mm","species: Gentoo<br />sex: male<br />Body mass: 5500 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: female<br />Body mass: 4375 grams<br />Flipper length: 217mm","species: Gentoo<br />sex: male<br />Body mass: 5850 grams<br />Flipper length: 230mm","species: Gentoo<br />sex: NA<br />Body mass: 4875 grams<br />Flipper length: 217mm","species: Gentoo<br />sex: male<br />Body mass: 6000 grams<br />Flipper length: 222mm","species: Gentoo<br />sex: female<br />Body mass: 4925 grams<br />Flipper length: 214mm","species: Gentoo<br />sex: NA<br />Body mass: NA grams<br />Flipper length: NAmm","species: Gentoo<br />sex: female<br />Body mass: 4850 grams<br />Flipper length: 215mm","species: Gentoo<br />sex: male<br />Body mass: 5750 grams<br />Flipper length: 222mm","species: Gentoo<br />sex: female<br />Body mass: 5200 grams<br />Flipper length: 212mm","species: Gentoo<br />sex: male<br />Body mass: 5400 grams<br />Flipper length: 213mm"],"type":"scatter","mode":"markers","marker":{"autocolorscale":false,"color":"rgba(253,192,134,1)","opacity":0.8,"size":11.3385826771654,"symbol":"circle","line":{"width":1.88976377952756,"color":"rgba(253,192,134,1)"}},"hoveron":"points","name":"Gentoo","legendgroup":"Gentoo","showlegend":true,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null}],"layout":{"margin":{"t":25.2984640929846,"r":7.30593607305936,"b":44.8318804483188,"l":51.4736405147364},"plot_bgcolor":"rgba(255,255,255,1)","paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[2526.25024580886,6488.21231929562],"tickmode":"array","ticktext":["3000","4000","5000","6000"],"tickvals":[3000,4000,5000,6000],"categoryorder":"array","categoryarray":["3000","4000","5000","6000"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":17.2685761726858},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(0,0,0,1)","gridwidth":0.066417600664176,"zeroline":false,"anchor":"y","title":{"text":"Body Mass (g)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[169.182563757831,233.99900105211],"tickmode":"array","ticktext":["170","180","190","200","210","220","230"],"tickvals":[170,180,190,200,210,220,230],"categoryorder":"array","categoryarray":["170","180","190","200","210","220","230"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":17.2685761726858},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(0,0,0,1)","gridwidth":0.066417600664176,"zeroline":false,"anchor":"x","title":{"text":"Flipper Length (mm)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":"transparent","line":{"color":"rgba(0,0,0,1)","width":0.66417600664176,"linetype":"solid"},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":true,"legend":{"bgcolor":"transparent","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"y":1},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"ec604fee4519":{"x":{},"y":{},"colour":{},"text":{},"label":{},"label1":{},"type":"scatter"}},"cur_data":"ec604fee4519","visdat":{"ec604fee4519":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# `plotly`
+
+&lt;img src="figs/Lec15/plotly-9-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `plotly`
+
+
+```r
+heat &lt;- lincoln_weather %&gt;% 
+  select(CST, temp = `Max Temperature [F]`) %&gt;% 
+  mutate(date = ymd(CST), 
+         month = month(date, label = TRUE),
+         day = day(date),
+*        date_show = paste(month, day)) %&gt;%
+* ggplot(aes(x = month, y = day, text = date_show, fill = temp)) +
+  geom_tile(color = "white") +
+  scale_y_continuous(trans = "reverse", 
+                     breaks = seq(1, 31, 5)) + 
+  labs(title = "Maximum temperature by day in Lincoln, NE in 2016") +
+  scale_fill_scico(palette = "imola", 
+                   breaks = seq(20, 90, 10), 
+                   name = " °F") + 
+  guides(fill = guide_colorsteps()) +
+  theme(axis.ticks = element_blank(),
+        panel.background = element_blank(),
+        axis.title = element_blank(),
+        axis.text = element_text(face = 2)) +
+  coord_cartesian(expand = FALSE)
+```
+
+---
+
+# `plotly`
+
+
+```r
+ggplotly(heat, tooltip = c("text", "temp"))
+```
+
+<div id="htmlwidget-30468a25a798df234a3b" style="width:504px;height:396px;" class="plotly html-widget"></div>
+<script type="application/json" data-for="htmlwidget-30468a25a798df234a3b">{"x":{"data":[{"x":[1,2,3,4,5,6,7,8,9,10,11,12],"y":[-31,-30,-29,-28,-27,-26,-25,-24,-23,-22,-21,-20,-19,-18,-17,-16,-15,-14,-13,-12,-11,-10,-9,-8,-7,-6,-5,-4,-3,-2,-1],"z":[[0.433333333333333,null,0.411111111111111,null,0.733333333333333,null,0.866666666666667,0.833333333333333,null,0.766666666666667,null,0.355555555555556],[0.455555555555556,null,0.533333333333333,0.411111111111111,0.844444444444444,0.822222222222222,0.833333333333333,0.811111111111111,0.688888888888889,0.533333333333333,0.266666666666667,0.6],[0.511111111111111,0.466666666666667,0.555555555555556,0.433333333333333,0.822222222222222,0.866666666666667,0.788888888888889,0.833333333333333,0.677777777777778,0.622222222222222,0.322222222222222,0.4],[0.477777777777778,0.555555555555556,0.644444444444444,0.433333333333333,0.744444444444444,0.855555555555556,0.811111111111111,0.9,0.7,0.844444444444444,0.5,0.455555555555556],[0.455555555555556,0.744444444444444,0.555555555555556,0.455555555555556,0.722222222222222,0.855555555555556,0.866666666666667,0.844444444444444,0.833333333333333,0.844444444444444,0.522222222222222,0.444444444444444],[0.377777777777778,0.555555555555556,0.333333333333333,0.611111111111111,0.788888888888889,0.9,0.877777777777778,0.733333333333333,0.755555555555556,0.744444444444444,0.566666666666667,0.322222222222222],[0.244444444444444,0.355555555555556,0.522222222222222,0.677777777777778,0.811111111111111,0.844444444444444,0.877777777777778,0.777777777777778,0.688888888888889,0.7,0.511111111111111,0.466666666666667],[0.366666666666667,0.466666666666667,0.366666666666667,0.733333333333333,0.822222222222222,0.933333333333333,0.855555555555556,0.777777777777778,0.811111111111111,0.622222222222222,0.344444444444444,0.411111111111111],[0.311111111111111,0.444444444444444,0.466666666666667,0.8,0.777777777777778,0.844444444444444,0.933333333333333,0.888888888888889,0.9,0.666666666666667,0.333333333333333,0.444444444444444],[0.188888888888889,0.433333333333333,0.7,0.677777777777778,0.788888888888889,0.844444444444444,1,0.888888888888889,0.666666666666667,0.8,0.366666666666667,0.422222222222222],[0.233333333333333,0.466666666666667,0.788888888888889,0.7,0.688888888888889,0.955555555555556,0.955555555555556,0.844444444444444,0.844444444444444,0.677777777777778,0.377777777777778,0.444444444444444],[0.266666666666667,0.555555555555556,0.466666666666667,0.477777777777778,0.611111111111111,0.811111111111111,0.955555555555556,0.755555555555556,0.944444444444444,0.544444444444444,0.444444444444444,0.455555555555556],[0.188888888888889,0.655555555555556,0.333333333333333,0.544444444444444,0.666666666666667,0.922222222222222,0.933333333333333,0.733333333333333,0.833333333333333,0.588888888888889,0.344444444444444,0.355555555555556],[0.2,0.6,0.4,0.477777777777778,0.688888888888889,0.855555555555556,0.866666666666667,0.955555555555556,0.877777777777778,0.677777777777778,0.277777777777778,0.177777777777778],[0.0777777777777778,0.544444444444444,0.511111111111111,0.422222222222222,0.666666666666667,0.977777777777778,0.833333333333333,0.911111111111111,0.822222222222222,0.822222222222222,0.422222222222222,0],[0.244444444444444,0.433333333333333,0.511111111111111,0.588888888888889,0.5,0.966666666666667,0.844444444444444,0.888888888888889,0.766666666666667,0.744444444444444,0.722222222222222,0.177777777777778],[0.3,0.455555555555556,0.544444444444444,0.7,0.555555555555556,0.955555555555556,0.733333333333333,0.877777777777778,0.766666666666667,0.788888888888889,0.7,0.222222222222222],[0.477777777777778,0.455555555555556,0.744444444444444,0.744444444444444,0.555555555555556,0.844444444444444,0.877777777777778,0.855555555555556,0.577777777777778,0.711111111111111,0.633333333333333,0.177777777777778],[0.433333333333333,0.166666666666667,0.7,0.777777777777778,0.588888888888889,0.833333333333333,0.888888888888889,0.844444444444444,0.6,0.6,0.677777777777778,0.177777777777778],[0.288888888888889,0.233333333333333,0.622222222222222,0.688888888888889,0.688888888888889,0.933333333333333,0.877777777777778,0.844444444444444,0.644444444444444,0.455555555555556,0.544444444444444,0.477777777777778],[0.322222222222222,0.333333333333333,0.722222222222222,0.522222222222222,0.655555555555556,0.955555555555556,0.9,0.9,0.833333333333333,0.555555555555556,0.533333333333333,0.2],[0.255555555555556,0.533333333333333,0.611111111111111,0.577777777777778,0.766666666666667,0.944444444444444,0.944444444444444,0.933333333333333,0.722222222222222,0.744444444444444,0.744444444444444,0.255555555555556],[0.155555555555556,0.233333333333333,0.633333333333333,0.633333333333333,0.677777777777778,0.944444444444444,0.911111111111111,0.9,0.744444444444444,0.788888888888889,0.622222222222222,0.144444444444444],[0.222222222222222,0.311111111111111,0.522222222222222,0.566666666666667,0.733333333333333,0.933333333333333,0.844444444444444,0.811111111111111,0.8,0.766666666666667,0.577777777777778,0.166666666666667],[0.277777777777778,0.377777777777778,0.788888888888889,0.555555555555556,0.711111111111111,0.8,0.855555555555556,0.744444444444444,0.811111111111111,0.633333333333333,0.566666666666667,0.155555555555556],[0.288888888888889,0.344444444444444,0.711111111111111,0.633333333333333,0.833333333333333,0.8,0.888888888888889,0.744444444444444,0.688888888888889,0.488888888888889,0.688888888888889,0.266666666666667],[0.333333333333333,0.344444444444444,0.688888888888889,0.688888888888889,0.8,0.844444444444444,0.944444444444444,0.744444444444444,0.922222222222222,0.711111111111111,0.7,0.455555555555556],[0.244444444444444,0.277777777777778,0.611111111111111,0.588888888888889,0.7,0.788888888888889,0.811111111111111,0.811111111111111,0.8,0.666666666666667,0.755555555555556,0.488888888888889],[0.322222222222222,0.211111111111111,0.433333333333333,0.777777777777778,0.688888888888889,0.844444444444444,0.666666666666667,0.888888888888889,0.733333333333333,0.788888888888889,0.755555555555556,0.333333333333333],[0.366666666666667,0.266666666666667,0.511111111111111,0.611111111111111,0.577777777777778,0.833333333333333,0.611111111111111,0.9,0.777777777777778,0.8,0.711111111111111,0.388888888888889],[0.322222222222222,0.377777777777778,0.444444444444444,0.377777777777778,0.522222222222222,0.755555555555556,0.733333333333333,0.877777777777778,0.822222222222222,0.744444444444444,0.688888888888889,0.366666666666667]],"text":[["Jan 31<br />temp: 47",null,"Mar 31<br />temp: 45",null,"May 31<br />temp: 74",null,"Jul 31<br />temp: 86","Aug 31<br />temp: 83",null,"Oct 31<br />temp: 77",null,"Dec 31<br />temp: 40"],["Jan 30<br />temp: 49",null,"Mar 30<br />temp: 56","Apr 30<br />temp: 45","May 30<br />temp: 84","Jun 30<br />temp: 82","Jul 30<br />temp: 83","Aug 30<br />temp: 81","Sep 30<br />temp: 70","Oct 30<br />temp: 56","Nov 30<br />temp: 32","Dec 30<br />temp: 62"],["Jan 29<br />temp: 54","Feb 29<br />temp: 50","Mar 29<br />temp: 58","Apr 29<br />temp: 47","May 29<br />temp: 82","Jun 29<br />temp: 86","Jul 29<br />temp: 79","Aug 29<br />temp: 83","Sep 29<br />temp: 69","Oct 29<br />temp: 64","Nov 29<br />temp: 37","Dec 29<br />temp: 44"],["Jan 28<br />temp: 51","Feb 28<br />temp: 58","Mar 28<br />temp: 66","Apr 28<br />temp: 47","May 28<br />temp: 75","Jun 28<br />temp: 85","Jul 28<br />temp: 81","Aug 28<br />temp: 89","Sep 28<br />temp: 71","Oct 28<br />temp: 84","Nov 28<br />temp: 53","Dec 28<br />temp: 49"],["Jan 27<br />temp: 49","Feb 27<br />temp: 75","Mar 27<br />temp: 58","Apr 27<br />temp: 49","May 27<br />temp: 73","Jun 27<br />temp: 85","Jul 27<br />temp: 86","Aug 27<br />temp: 84","Sep 27<br />temp: 83","Oct 27<br />temp: 84","Nov 27<br />temp: 55","Dec 27<br />temp: 48"],["Jan 26<br />temp: 42","Feb 26<br />temp: 58","Mar 26<br />temp: 38","Apr 26<br />temp: 63","May 26<br />temp: 79","Jun 26<br />temp: 89","Jul 26<br />temp: 87","Aug 26<br />temp: 74","Sep 26<br />temp: 76","Oct 26<br />temp: 75","Nov 26<br />temp: 59","Dec 26<br />temp: 37"],["Jan 25<br />temp: 30","Feb 25<br />temp: 40","Mar 25<br />temp: 55","Apr 25<br />temp: 69","May 25<br />temp: 81","Jun 25<br />temp: 84","Jul 25<br />temp: 87","Aug 25<br />temp: 78","Sep 25<br />temp: 70","Oct 25<br />temp: 71","Nov 25<br />temp: 54","Dec 25<br />temp: 50"],["Jan 24<br />temp: 41","Feb 24<br />temp: 50","Mar 24<br />temp: 41","Apr 24<br />temp: 74","May 24<br />temp: 82","Jun 24<br />temp: 92","Jul 24<br />temp: 85","Aug 24<br />temp: 78","Sep 24<br />temp: 81","Oct 24<br />temp: 64","Nov 24<br />temp: 39","Dec 24<br />temp: 45"],["Jan 23<br />temp: 36","Feb 23<br />temp: 48","Mar 23<br />temp: 50","Apr 23<br />temp: 80","May 23<br />temp: 78","Jun 23<br />temp: 84","Jul 23<br />temp: 92","Aug 23<br />temp: 88","Sep 23<br />temp: 89","Oct 23<br />temp: 68","Nov 23<br />temp: 38","Dec 23<br />temp: 48"],["Jan 22<br />temp: 25","Feb 22<br />temp: 47","Mar 22<br />temp: 71","Apr 22<br />temp: 69","May 22<br />temp: 79","Jun 22<br />temp: 84","Jul 22<br />temp: 98","Aug 22<br />temp: 88","Sep 22<br />temp: 68","Oct 22<br />temp: 80","Nov 22<br />temp: 41","Dec 22<br />temp: 46"],["Jan 21<br />temp: 29","Feb 21<br />temp: 50","Mar 21<br />temp: 79","Apr 21<br />temp: 71","May 21<br />temp: 70","Jun 21<br />temp: 94","Jul 21<br />temp: 94","Aug 21<br />temp: 84","Sep 21<br />temp: 84","Oct 21<br />temp: 69","Nov 21<br />temp: 42","Dec 21<br />temp: 48"],["Jan 20<br />temp: 32","Feb 20<br />temp: 58","Mar 20<br />temp: 50","Apr 20<br />temp: 51","May 20<br />temp: 63","Jun 20<br />temp: 81","Jul 20<br />temp: 94","Aug 20<br />temp: 76","Sep 20<br />temp: 93","Oct 20<br />temp: 57","Nov 20<br />temp: 48","Dec 20<br />temp: 49"],["Jan 19<br />temp: 25","Feb 19<br />temp: 67","Mar 19<br />temp: 38","Apr 19<br />temp: 57","May 19<br />temp: 68","Jun 19<br />temp: 91","Jul 19<br />temp: 92","Aug 19<br />temp: 74","Sep 19<br />temp: 83","Oct 19<br />temp: 61","Nov 19<br />temp: 39","Dec 19<br />temp: 40"],["Jan 18<br />temp: 26","Feb 18<br />temp: 62","Mar 18<br />temp: 44","Apr 18<br />temp: 51","May 18<br />temp: 70","Jun 18<br />temp: 85","Jul 18<br />temp: 86","Aug 18<br />temp: 94","Sep 18<br />temp: 87","Oct 18<br />temp: 69","Nov 18<br />temp: 33","Dec 18<br />temp: 24"],["Jan 17<br />temp: 15","Feb 17<br />temp: 57","Mar 17<br />temp: 54","Apr 17<br />temp: 46","May 17<br />temp: 68","Jun 17<br />temp: 96","Jul 17<br />temp: 83","Aug 17<br />temp: 90","Sep 17<br />temp: 82","Oct 17<br />temp: 82","Nov 17<br />temp: 46","Dec 17<br />temp:  8"],["Jan 16<br />temp: 30","Feb 16<br />temp: 47","Mar 16<br />temp: 54","Apr 16<br />temp: 61","May 16<br />temp: 53","Jun 16<br />temp: 95","Jul 16<br />temp: 84","Aug 16<br />temp: 88","Sep 16<br />temp: 77","Oct 16<br />temp: 75","Nov 16<br />temp: 73","Dec 16<br />temp: 24"],["Jan 15<br />temp: 35","Feb 15<br />temp: 49","Mar 15<br />temp: 57","Apr 15<br />temp: 71","May 15<br />temp: 58","Jun 15<br />temp: 94","Jul 15<br />temp: 74","Aug 15<br />temp: 87","Sep 15<br />temp: 77","Oct 15<br />temp: 79","Nov 15<br />temp: 71","Dec 15<br />temp: 28"],["Jan 14<br />temp: 51","Feb 14<br />temp: 49","Mar 14<br />temp: 75","Apr 14<br />temp: 75","May 14<br />temp: 58","Jun 14<br />temp: 84","Jul 14<br />temp: 87","Aug 14<br />temp: 85","Sep 14<br />temp: 60","Oct 14<br />temp: 72","Nov 14<br />temp: 65","Dec 14<br />temp: 24"],["Jan 13<br />temp: 47","Feb 13<br />temp: 23","Mar 13<br />temp: 71","Apr 13<br />temp: 78","May 13<br />temp: 61","Jun 13<br />temp: 83","Jul 13<br />temp: 88","Aug 13<br />temp: 84","Sep 13<br />temp: 62","Oct 13<br />temp: 62","Nov 13<br />temp: 69","Dec 13<br />temp: 24"],["Jan 12<br />temp: 34","Feb 12<br />temp: 29","Mar 12<br />temp: 64","Apr 12<br />temp: 70","May 12<br />temp: 70","Jun 12<br />temp: 92","Jul 12<br />temp: 87","Aug 12<br />temp: 84","Sep 12<br />temp: 66","Oct 12<br />temp: 49","Nov 12<br />temp: 57","Dec 12<br />temp: 51"],["Jan 11<br />temp: 37","Feb 11<br />temp: 38","Mar 11<br />temp: 73","Apr 11<br />temp: 55","May 11<br />temp: 67","Jun 11<br />temp: 94","Jul 11<br />temp: 89","Aug 11<br />temp: 89","Sep 11<br />temp: 83","Oct 11<br />temp: 58","Nov 11<br />temp: 56","Dec 11<br />temp: 26"],["Jan 10<br />temp: 31","Feb 10<br />temp: 56","Mar 10<br />temp: 63","Apr 10<br />temp: 60","May 10<br />temp: 77","Jun 10<br />temp: 93","Jul 10<br />temp: 93","Aug 10<br />temp: 92","Sep 10<br />temp: 73","Oct 10<br />temp: 75","Nov 10<br />temp: 75","Dec 10<br />temp: 31"],["Jan 9<br />temp: 22","Feb 9<br />temp: 29","Mar 9<br />temp: 65","Apr 9<br />temp: 65","May 9<br />temp: 69","Jun 9<br />temp: 93","Jul 9<br />temp: 90","Aug 9<br />temp: 89","Sep 9<br />temp: 75","Oct 9<br />temp: 79","Nov 9<br />temp: 64","Dec 9<br />temp: 21"],["Jan 8<br />temp: 28","Feb 8<br />temp: 36","Mar 8<br />temp: 55","Apr 8<br />temp: 59","May 8<br />temp: 74","Jun 8<br />temp: 92","Jul 8<br />temp: 84","Aug 8<br />temp: 81","Sep 8<br />temp: 80","Oct 8<br />temp: 77","Nov 8<br />temp: 60","Dec 8<br />temp: 23"],["Jan 7<br />temp: 33","Feb 7<br />temp: 42","Mar 7<br />temp: 79","Apr 7<br />temp: 58","May 7<br />temp: 72","Jun 7<br />temp: 80","Jul 7<br />temp: 85","Aug 7<br />temp: 75","Sep 7<br />temp: 81","Oct 7<br />temp: 65","Nov 7<br />temp: 59","Dec 7<br />temp: 22"],["Jan 6<br />temp: 34","Feb 6<br />temp: 39","Mar 6<br />temp: 72","Apr 6<br />temp: 65","May 6<br />temp: 83","Jun 6<br />temp: 80","Jul 6<br />temp: 88","Aug 6<br />temp: 75","Sep 6<br />temp: 70","Oct 6<br />temp: 52","Nov 6<br />temp: 70","Dec 6<br />temp: 32"],["Jan 5<br />temp: 38","Feb 5<br />temp: 39","Mar 5<br />temp: 70","Apr 5<br />temp: 70","May 5<br />temp: 80","Jun 5<br />temp: 84","Jul 5<br />temp: 93","Aug 5<br />temp: 75","Sep 5<br />temp: 91","Oct 5<br />temp: 72","Nov 5<br />temp: 71","Dec 5<br />temp: 49"],["Jan 4<br />temp: 30","Feb 4<br />temp: 33","Mar 4<br />temp: 63","Apr 4<br />temp: 61","May 4<br />temp: 71","Jun 4<br />temp: 79","Jul 4<br />temp: 81","Aug 4<br />temp: 81","Sep 4<br />temp: 80","Oct 4<br />temp: 68","Nov 4<br />temp: 76","Dec 4<br />temp: 52"],["Jan 3<br />temp: 37","Feb 3<br />temp: 27","Mar 3<br />temp: 47","Apr 3<br />temp: 78","May 3<br />temp: 70","Jun 3<br />temp: 84","Jul 3<br />temp: 68","Aug 3<br />temp: 88","Sep 3<br />temp: 74","Oct 3<br />temp: 79","Nov 3<br />temp: 76","Dec 3<br />temp: 38"],["Jan 2<br />temp: 41","Feb 2<br />temp: 32","Mar 2<br />temp: 54","Apr 2<br />temp: 63","May 2<br />temp: 60","Jun 2<br />temp: 83","Jul 2<br />temp: 63","Aug 2<br />temp: 89","Sep 2<br />temp: 78","Oct 2<br />temp: 80","Nov 2<br />temp: 72","Dec 2<br />temp: 43"],["Jan 1<br />temp: 37","Feb 1<br />temp: 42","Mar 1<br />temp: 48","Apr 1<br />temp: 42","May 1<br />temp: 55","Jun 1<br />temp: 76","Jul 1<br />temp: 74","Aug 1<br />temp: 87","Sep 1<br />temp: 82","Oct 1<br />temp: 75","Nov 1<br />temp: 70","Dec 1<br />temp: 41"]],"colorscale":[[0,"#1933B2"],[0.0777777777777778,"#2040AC"],[0.144444444444444,"#264CA5"],[0.155555555555556,"#274DA5"],[0.166666666666667,"#2850A4"],[0.177777777777778,"#2A52A3"],[0.188888888888889,"#2B52A1"],[0.2,"#2C54A0"],[0.211111111111111,"#2C579F"],[0.222222222222222,"#2D599F"],[0.233333333333333,"#2E5A9E"],[0.244444444444444,"#2F5D9E"],[0.255555555555556,"#305F9B"],[0.266666666666667,"#325F9A"],[0.277777777777778,"#336199"],[0.288888888888889,"#336499"],[0.3,"#346598"],[0.311111111111111,"#366697"],[0.322222222222222,"#386894"],[0.333333333333333,"#396B93"],[0.344444444444444,"#3A6C92"],[0.355555555555556,"#3B6D91"],[0.366666666666667,"#3E6F8F"],[0.377777777777778,"#3F718D"],[0.388888888888889,"#40728C"],[0.4,"#41738B"],[0.411111111111111,"#447688"],[0.422222222222222,"#467887"],[0.433333333333333,"#477985"],[0.444444444444444,"#497A85"],[0.455555555555556,"#4B7D84"],[0.466666666666667,"#4C7F81"],[0.477777777777778,"#4E8080"],[0.488888888888889,"#51847F"],[0.5,"#53857F"],[0.511111111111111,"#55877E"],[0.522222222222222,"#588A7D"],[0.533333333333333,"#5A8C7D"],[0.544444444444444,"#5D907B"],[0.555555555555556,"#5F927A"],[0.566666666666667,"#629379"],[0.577777777777778,"#659779"],[0.588888888888889,"#669979"],[0.6,"#6A9D78"],[0.611111111111111,"#6C9F78"],[0.622222222222222,"#6FA277"],[0.633333333333333,"#72A576"],[0.644444444444444,"#75A875"],[0.655555555555556,"#78AB74"],[0.666666666666667,"#7AAD73"],[0.677777777777778,"#7EB172"],[0.688888888888889,"#80B372"],[0.7,"#84B672"],[0.711111111111111,"#85B871"],[0.722222222222222,"#88BB71"],[0.733333333333333,"#8CBF70"],[0.744444444444444,"#90C16E"],[0.755555555555556,"#92C56D"],[0.766666666666667,"#95C86D"],[0.777777777777778,"#98CB6C"],[0.788888888888889,"#9BCD6C"],[0.8,"#9FD26B"],[0.811111111111111,"#A3D46B"],[0.822222222222222,"#A6D86A"],[0.833333333333333,"#ABD968"],[0.844444444444444,"#AFDE68"],[0.855555555555556,"#B3E067"],[0.866666666666667,"#B8E467"],[0.877777777777778,"#BFE666"],[0.888888888888889,"#C3EA66"],[0.9,"#C9EB66"],[0.911111111111111,"#CFED66"],[0.922222222222222,"#D5F066"],[0.933333333333333,"#DAF266"],[0.944444444444444,"#E1F466"],[0.955555555555556,"#E6F766"],[0.966666666666667,"#ECF866"],[0.977777777777778,"#F3FA66"],[1,"#FFFF66"]],"type":"heatmap","showscale":false,"autocolorscale":false,"showlegend":false,"xaxis":"x","yaxis":"y","hoverinfo":"text","frame":null},{"x":[1],"y":[-1],"name":"99_0faf7029ea2960f0049aa8532f072462","type":"scatter","mode":"markers","opacity":0,"hoverinfo":"skip","showlegend":false,"marker":{"color":[0,1],"colorscale":[[0,"#1F3FAC"],[0.125,"#2B52A1"],[0.25,"#346598"],[0.375,"#447688"],[0.5,"#588A7D"],[0.625,"#72A576"],[0.75,"#90C16E"],[0.875,"#B3E067"],[1,"#E6F766"]],"colorbar":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"thickness":23.04,"title":" °F","titlefont":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"tickmode":"array","ticktext":["20","30","40","50","60","70","80","90"],"tickvals":[0.0625,0.1875,0.3125,0.4375,0.5625,0.6875,0.8125,0.9375],"tickfont":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895},"ticklen":2,"len":0.5}},"xaxis":"x","yaxis":"y","frame":null}],"layout":{"margin":{"t":42.8327106683271,"r":7.30593607305936,"b":24.6409298464093,"l":22.648401826484},"paper_bgcolor":"rgba(255,255,255,1)","font":{"color":"rgba(0,0,0,1)","family":"","size":14.6118721461187},"title":{"text":"Maximum temperature by day in Lincoln, NE in 2016","font":{"color":"rgba(0,0,0,1)","family":"","size":17.5342465753425},"x":0,"xref":"paper"},"xaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[0.5,12.5],"tickmode":"array","ticktext":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"tickvals":[1,2,3,4,5,6,7,8,9,10,11,12],"categoryorder":"array","categoryarray":["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"y","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"yaxis":{"domain":[0,1],"automargin":true,"type":"linear","autorange":false,"range":[-31.5,-0.5],"tickmode":"array","ticktext":["1","6","11","16","21","26","31"],"tickvals":[-1,-6,-11,-16,-21,-26,-31],"categoryorder":"array","categoryarray":["1","6","11","16","21","26","31"],"nticks":null,"ticks":"","tickcolor":null,"ticklen":3.65296803652968,"tickwidth":0,"showticklabels":true,"tickfont":{"color":"rgba(77,77,77,1)","family":"","size":11.689497716895},"tickangle":-0,"showline":false,"linecolor":null,"linewidth":0,"showgrid":true,"gridcolor":"rgba(255,255,255,1)","gridwidth":0.66417600664176,"zeroline":false,"anchor":"x","title":{"text":"","font":{"color":null,"family":null,"size":0}},"hoverformat":".2f"},"shapes":[{"type":"rect","fillcolor":null,"line":{"color":null,"width":0,"linetype":[]},"yref":"paper","xref":"paper","x0":0,"x1":1,"y0":0,"y1":1}],"showlegend":false,"legend":{"bgcolor":"rgba(255,255,255,1)","bordercolor":"transparent","borderwidth":1.88976377952756,"font":{"color":"rgba(0,0,0,1)","family":"","size":11.689497716895}},"hovermode":"closest","barmode":"relative"},"config":{"doubleClick":"reset","showSendToCloud":false},"source":"A","attrs":{"ec604513ac6f":{"x":{},"y":{},"text":{},"fill":{},"type":"heatmap"}},"cur_data":"ec604513ac6f","visdat":{"ec604513ac6f":["function (y) ","x"]},"highlight":{"on":"plotly_click","persistent":false,"dynamic":false,"selectize":false,"opacityDim":0.2,"selected":{"opacity":1},"debounce":0},"shinyEvents":["plotly_hover","plotly_click","plotly_selected","plotly_relayout","plotly_brushed","plotly_brushing","plotly_clickannotation","plotly_doubleclick","plotly_deselect","plotly_afterplot","plotly_sunburstclick"],"base_url":"https://plot.ly"},"evals":[],"jsHooks":[]}</script>
+
+---
+
+# `purrr`
+
+&lt;br&gt;
+
+.large[Part of the `tidyverse`]
+&lt;br&gt;
+.medium[[https://purrr.tidyverse.org/](https://purrr.tidyverse.org/)]
+&lt;br&gt;
+.medium[[https://r4ds.had.co.nz/iteration.html#the-map-functions](https://r4ds.had.co.nz/iteration.html#the-map-functions)]
+
+&lt;br&gt;
+
+.large[Useful for *functional programming*]
+&lt;br&gt;
+.medium[provides an alternative to for loops]
+
+&lt;br&gt;
+
+.large[`map_*` functions allow you to iterate over elements]
+
+---
+
+# `purrr`
+
+
+```r
+class(penguins$bill_depth_mm)
+```
+
+```
+## [1] "numeric"
+```
+
+--
+
+
+```r
+penguins %&gt;% 
+  map_chr(class)
+```
+
+```
+##           species            island    bill_length_mm     bill_depth_mm 
+##          "factor"          "factor"         "numeric"         "numeric" 
+## flipper_length_mm       body_mass_g               sex              year 
+##         "integer"         "integer"          "factor"         "integer"
+```
+
+--
+
+
+```r
+new_df &lt;- penguins %&gt;% 
+  map_df(class)
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; species &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; island &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bill_length_mm &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; bill_depth_mm &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; flipper_length_mm &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; body_mass_g &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; sex &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; year &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; factor &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; factor &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; numeric &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; integer &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; integer &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; factor &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; integer &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `purrr`
+
+
+```r
+penguins %&gt;% 
+  map_dbl(mean, na.rm = TRUE)
+```
+
+```
+##           species            island    bill_length_mm     bill_depth_mm 
+##                NA                NA          43.92193          17.15117 
+## flipper_length_mm       body_mass_g               sex              year 
+##         200.91520        4201.75439                NA        2008.02907
+```
+
+--
+
+
+```r
+penguins %&gt;% 
+  select_if(is.numeric) %&gt;% 
+  map_dbl(mean, na.rm = TRUE)
+```
+
+```
+##    bill_length_mm     bill_depth_mm flipper_length_mm       body_mass_g 
+##          43.92193          17.15117         200.91520        4201.75439 
+##              year 
+##        2008.02907
+```
+
+---
+
+# `purrr`
+
+&lt;br&gt;
+
+.large[Very helpful for a very common task:]
+&lt;br&gt;
+.medium[split your data frame into pieces]
+&lt;br&gt;
+.medium[apply a function to perform an action on each piece]
+&lt;br&gt;
+.medium[put those pieces back together]
+
+&lt;br&gt;
+
+.large[The previous examples used known functions (`class`, `mean`)]
+&lt;br&gt;
+.medium[but we can also use user-defined functions]
+
+---
+
+# `purrr`
+
+.center[Throughout the season, how did **Montreal's** standings points compare to the playoff threshold?]
+
+.center[`nhl2021_games`]
+
+.center[![logo](figs/Lec12/nhl_logo.png)]
+
+---
+
+# `purrr`
+
+.center[`nhl2021_games`]
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_id &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_date &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; away_team &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; home_team &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; home_score &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; away_score &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; max_period &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020001 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; PIT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; PHI &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020002 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; CHI &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; T.B &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020003 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MTL &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOR &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020004 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; VAN &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; EDM &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020005 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; STL &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; COL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020006 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; WSH &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BUF &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020007 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; BOS &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; N.J &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020008 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NYI &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; NYR &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020009 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-02-22 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; DAL &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; FLA &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020010 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-14 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; CAR &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; DET &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `purrr`
+
+
+```r
+north_div &lt;- nhl2021_games %&gt;% 
+  mutate(winner = ifelse(home_score &gt; away_score, "home", "away")) %&gt;% 
+  pivot_longer(home_team:away_team,
+               names_to = c("home_away", ".value"),
+               names_pattern = "(.+)_(.+)") %&gt;% 
+  mutate(points = case_when(winner == home_away ~ 2,
+                            winner != home_away &amp; max_period &gt; 3 ~ 1,
+                            TRUE ~ 0)) %&gt;% 
+  filter(team %in% c("WPG", "EDM", "CGY", "VAN", "MTL",
+                     "OTT", "WPG", "TOR")) %&gt;% 
+  arrange(game_date)
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_id &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; home_score &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; away_score &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; max_period &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; winner &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; home_away &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; team &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020003 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; home &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; home &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; TOR &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020003 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; home &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; away &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; MTL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020004 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; away &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; home &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; EDM &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 0 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:right;"&gt; 2020020004 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-01-13 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; away &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; away &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; VAN &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `purrr`
+
+
+```r
+north_total &lt;- north_div %&gt;% 
+  group_by(team) %&gt;% 
+  mutate(total_points = cumsum(points)) %&gt;% 
+  summarize(total_points = max(total_points)) %&gt;% 
+  arrange(desc(total_points))
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; team &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; total_points &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; TOR &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 77 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; EDM &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 72 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; WPG &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 63 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; MTL &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 59 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; CGY &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 55 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; OTT &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 51 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; VAN &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 50 &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `purrr`
+
+
+```r
+north_total %&gt;% 
+* ggplot(aes(x = team, y = total_points, fill = team == "MTL")) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+* scale_fill_manual(values = c("dark grey", "#AF1E2D")) +
+* geom_hline(yintercept = pluck(north_total, 2, 4),
+             color = "black", size = 2) +
+  labs(x = NULL, y = "Standings points",
+       title = "Montreal's standings points, 2021 season",
+       subtitle = "Compared to playoffs threshold in black") +
+  lab_theme()
+```
+
+---
+
+# `purrr`
+
+&lt;img src="figs/Lec15/example-6-1.png" width="504" style="display: block; margin: auto;" /&gt;
+
+---
+
+# `purrr`
+
+Start with an example: what was the status as of April 1?
+
+
+```r
+north_div %&gt;% 
+    filter(game_date &lt;= "2021-04-01") %&gt;% 
+    mutate(game_date = "2021-04-01") %&gt;% 
+    group_by(team, game_date) %&gt;% 
+    mutate(total_points = cumsum(points)) %&gt;% 
+    summarize(total_points = max(total_points)) %&gt;% 
+    arrange(desc(total_points)) %&gt;% 
+    ungroup() %&gt;% 
+    mutate(rank = row_number(), 
+           threshold = ifelse(rank == 4, total_points, NA))
+```
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; team &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; total_points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rank &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; threshold &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; TOR &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 49 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; WPG &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 46 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; EDM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 45 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; MTL &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 41 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; CGY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; VAN &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 35 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; OTT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-04-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `purrr`
+
+Create the function with the game date as the argument
+
+
+```r
+points_by_day &lt;- function(day) {
+  
+  north_div %&gt;% 
+    filter(game_date &lt;= day) %&gt;% 
+    mutate(game_date = day) %&gt;% 
+    group_by(team, game_date) %&gt;% 
+    mutate(total_points = cumsum(points)) %&gt;% 
+    summarize(total_points = max(total_points)) %&gt;% 
+    arrange(desc(total_points)) %&gt;% 
+    ungroup() %&gt;% 
+    mutate(rank = row_number(), 
+           threshold = ifelse(rank == 4, total_points, NA))
+  
+}
+```
+
+---
+
+# `purrr`
+
+Apply the function with `map_df`: apply the `points_by_day` function to every unique value of `game_date` from `north_div`
+
+
+```r
+points_by_day_df &lt;- 
+  map_df(unique(north_div$game_date), points_by_day)
+```
+
+--
+
+That df has the following for every game day:
+
+&lt;table class="table" style="font-size: 16px; width: auto !important; margin-left: auto; margin-right: auto;"&gt;
+ &lt;thead&gt;
+  &lt;tr&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; team &lt;/th&gt;
+   &lt;th style="text-align:left;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; game_date &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; total_points &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; rank &lt;/th&gt;
+   &lt;th style="text-align:right;font-weight: bold;color: white !important;background-color: #bb0000 !important;"&gt; threshold &lt;/th&gt;
+  &lt;/tr&gt;
+ &lt;/thead&gt;
+&lt;tbody&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; TOR &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 36 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 1 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; EDM &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 28 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 2 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; WPG &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 27 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 3 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; MTL &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 4 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 23 &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; CGY &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 22 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 5 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; VAN &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 20 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 6 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+  &lt;tr&gt;
+   &lt;td style="text-align:left;"&gt; OTT &lt;/td&gt;
+   &lt;td style="text-align:left;"&gt; 2021-03-01 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 17 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt; 7 &lt;/td&gt;
+   &lt;td style="text-align:right;"&gt;  &lt;/td&gt;
+  &lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+
+---
+
+# `gganimate`
+
+Use this new df with a `transition_manual` layer to create the animation
+
+
+```r
+*points_by_day_df %&gt;%
+  ggplot(aes(x = team, y = total_points, fill = team == "MTL")) +
+  geom_bar(stat = "identity", show.legend = FALSE) +
+  scale_fill_manual(values = c("dark grey", "#AF1E2D")) +
+* geom_hline(aes(yintercept = threshold),
+             color = "black", size = 2) +
+  labs(x = NULL, y = "Standings points",
+*      title = "Montreal's standings points: {current_frame}",
+       subtitle = "Compared to playoffs threshold in black") +
+  lab_theme() +
+  theme(panel.grid.major.x = element_blank()) +
+* transition_manual(game_date)
+```
+
+---
+
+# `gganimate`
+
+.center[![logo](figs/Lec15/MTL_pts.gif)]
+
+---
+
+# Upcoming
+
+&lt;br&gt;
+
+.large[Homework 5 due Tuesday]
+
+&lt;br&gt;
+
+.large[Lab 10 due Wednesday]
+
+&lt;br&gt;
+
+.large[Final reports due 11:30am EDT Friday]
+&lt;br&gt;
+.medium[no matter when your presentation is]
+    </textarea>
+<style data-target="print-only">@media screen {.remark-slide-container{display:block;}.remark-slide-scaler{box-shadow:none;}}</style>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function(d) {
+  var s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})(document);
+
+(function(d) {
+  var el = d.getElementsByClassName("remark-slides-area");
+  if (!el) return;
+  var slide, slides = slideshow.getSlides(), els = el[0].children;
+  for (var i = 1; i < slides.length; i++) {
+    slide = slides[i];
+    if (slide.properties.continued === "true" || slide.properties.count === "false") {
+      els[i - 1].className += ' has-continuation';
+    }
+  }
+  var s = d.createElement("style");
+  s.type = "text/css"; s.innerHTML = "@media print { .has-continuation { display: none; } }";
+  d.head.appendChild(s);
+})(document);
+// delete the temporary CSS (for displaying all slides initially) when the user
+// starts to view slides
+(function() {
+  var deleted = false;
+  slideshow.on('beforeShowSlide', function(slide) {
+    if (deleted) return;
+    var sheets = document.styleSheets, node;
+    for (var i = 0; i < sheets.length; i++) {
+      node = sheets[i].ownerNode;
+      if (node.dataset["target"] !== "print-only") continue;
+      node.parentNode.removeChild(node);
+    }
+    deleted = true;
+  });
+})();
+(function() {
+  "use strict"
+  // Replace <script> tags in slides area to make them executable
+  var scripts = document.querySelectorAll(
+    '.remark-slides-area .remark-slide-container script'
+  );
+  if (!scripts.length) return;
+  for (var i = 0; i < scripts.length; i++) {
+    var s = document.createElement('script');
+    var code = document.createTextNode(scripts[i].textContent);
+    s.appendChild(code);
+    var scriptAttrs = scripts[i].attributes;
+    for (var j = 0; j < scriptAttrs.length; j++) {
+      s.setAttribute(scriptAttrs[j].name, scriptAttrs[j].value);
+    }
+    scripts[i].parentElement.replaceChild(s, scripts[i]);
+  }
+})();
+(function() {
+  var links = document.getElementsByTagName('a');
+  for (var i = 0; i < links.length; i++) {
+    if (/^(https?:)?\/\//.test(links[i].getAttribute('href'))) {
+      links[i].target = '_blank';
+    }
+  }
+})();
+// adds .remark-code-has-line-highlighted class to <pre> parent elements
+// of code chunks containing highlighted lines with class .remark-code-line-highlighted
+(function(d) {
+  const hlines = d.querySelectorAll('.remark-code-line-highlighted');
+  const preParents = [];
+  const findPreParent = function(line, p = 0) {
+    if (p > 1) return null; // traverse up no further than grandparent
+    const el = line.parentElement;
+    return el.tagName === "PRE" ? el : findPreParent(el, ++p);
+  };
+
+  for (let line of hlines) {
+    let pre = findPreParent(line);
+    if (pre && !preParents.includes(pre)) preParents.push(pre);
+  }
+  preParents.forEach(p => p.classList.add("remark-code-has-line-highlighted"));
+})(document);</script>
+
+<script>
+slideshow._releaseMath = function(el) {
+  var i, text, code, codes = el.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+};
+slideshow._releaseMath(document);
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
