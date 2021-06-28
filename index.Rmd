@@ -28,24 +28,26 @@ Specific objectives:
 
 ## Lectures
 
-Lecture slides are available below in html format, and the .Rmd files are available at the GitHub repo linked in the nav bar above.
+Lecture slides are available below in html format, and the .Rmd files are linked from GitHub.
 
-+ [Lecture 1](slides/36-315_Summer2021_Lec1.html): intro and why data viz
-+ [Lecture 2](slides/36-315_Summer2021_Lec2.html): the grammar of graphics
-+ [Lecture 3](slides/36-315_Summer2021_Lec3.html): bar graphs
-+ [Lecture 4](slides/36-315_Summer2021_Lec4.html): visualizing distributions
-+ [Lecture 5](slides/36-315_Summer2021_Lec5.html): line graphs & working with time
-+ [Lecture 6](slides/36-315_Summer2021_Lec6.html): scatter plots & relational data
-+ [Lecture 7](slides/36-315_Summer2021_Lec7.html): grab bag (pie charts, heat maps, maps)
-+ [Lecture 8](slides/36-315_Summer2021_Lec8.html): taking plots to the next level
-+ [Lecture 9](slides/36-315_Summer2021_Lec9.html): colors, fonts, annotations, themes
-+ [Lecture 10](slides/36-315_Summer2021_Lec10.html): extensions to `ggplot2`
-+ [Lecture 11](slides/36-315_Summer2021_Lec11.html): midterm review
-+ [Lecture 12](slides/36-315_Summer2021_Lec12.html): model output visualizations from `tidymodels` & user-defined functions
-+ [Lecture 13](slides/36-315_Summer2021_Lec13.html): text analysis with `tidytext` and tables with `kableExtra`
-+ [Lecture 13](slides/36-315_Summer2021_Lec13_addl.html): tables with `gt` and `gtsummary`
-+ [Lecture 14](slides/36-315_Summer2021_Lec14.html): presentations with `xaringan`
-+ [Lecture 15](slides/36-315_Summer2021_Lec15.html): animation with `gganimate`, interactivity with `plotly`, and iteration with `purrr`
+| Lecture | Topic                                          | html | Rmd  |
+|---------|------------------------------------------------|------|------|
+| 1  | intro and why data viz | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec1#1) | [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec1.Rmd) |
+| 2  | the grammar of graphics  | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec2#1) | [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec2.Rmd)|
+| 3  | bar graphs | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec3#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec3.Rmd)|
+| 4  | visualizing distributions | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec4#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec4.Rmd)|
+| 5  | line graphs & working with time | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec5#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec5.Rmd)|
+| 6  | scatter plots & relational data | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec6#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec6.Rmd)|
+| 7  | grab bag (pie charts, heat maps, maps) | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec7#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec7.Rmd)|
+| 8  | taking plots to the next level | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec8#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec8.Rmd)|
+| 9  | colors, fonts, annotations, themes | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec9#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec9.Rmd)|
+| 10  | extensions to `ggplot2` | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec10#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec10.Rmd)|
+| 11  | midterm review | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec11#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec11.Rmd)|
+| 12  | model output visualizations from `tidymodels` & user-defined functions | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec12#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec12.Rmd)|
+| 13  | text analysis with `tidytext` and tables with `kableExtra` | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec13#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec13.Rmd)|
+| 13  | tables with `gt` and `gtsummary` | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec13_addl) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec13_addl.Rmd)|
+| 14  | presentations with `xaringan` | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec14#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec14.Rmd)|
+| 15  | animation with `gganimate`, interactivity with `plotly`, and iteration with `purrr` | [`r icons::fontawesome$solid$laptop`](https://cmu-36315.netlify.app/slides/36-315_summer2021_lec15#1) |  [`r icons::fontawesome$brands$github`](https://github.com/meghall06/CMU-36-315-site/blob/main/slides/36-315_Summer2021_Lec15.Rmd)|
 
 ## Labs
 
